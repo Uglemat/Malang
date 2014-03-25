@@ -10,6 +10,16 @@ Here's an example session:
     ---> 923
     malang > [@ * 2.] 9.
     ---> 18
+    malang > List := Builtins:To_List {one, two, three}.
+    ---> {one, {two, {three, nil}}}
+    malang > Lists:Reverse List.
+    ---> {three, {two, {one, nil}}}
+    malang > Factorial 5.
+    ---> 120
+    malang > Bools:And {true, false}.
+    ---> false
+    malang > Bools:Not false.
+    ---> true
 
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
