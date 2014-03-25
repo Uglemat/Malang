@@ -15,7 +15,7 @@ The only way to loop is to use recursion. The only control flow construct is 'ca
 
 There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules.
 
-numbers are what you would expect (malang can only parse positive integers, write 0 - <number> for
+numbers are what you would expect (malang can only parse positive integers, write 0 - `<number>` for
 negative numbers), strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
 "Helloo!, and then she said ... \n\n \t\t """` in triple quotes. Atoms are tokens that match the regex '[a-z][a-zA-Z0-9_]*',
 and are just values that you can use in your programs (in tuples, et cetera). Identifiers are just then names which
@@ -60,7 +60,7 @@ This will only match tuples with two identical elements:
 Because the second time it sees `Same`, it is no longer an unbound identifier, and malang will insist
 that it must match.
 
-The syntax for function application is <expr> <expr>.
+The syntax for function application is `<expr> <expr>`.
 
 As I said eariler, all functions take exactly one argument. It is automatically bound to the special
 identifier `@`.
