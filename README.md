@@ -125,4 +125,4 @@ argument 20000.
 
 # License
 
-GNU GPLv2
+GNU GPLv3
