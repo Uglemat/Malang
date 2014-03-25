@@ -1,0 +1,56 @@
+"""
+Copyright (C) 2014 Mattias Ugelvik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+""".
+
+Require := Builtins:Require.
+Print   := Builtins:Print.
+
+Lists := Require "libs/lists.malang".
+Bools := Require "libs/bool.malang".
+
+
+
+Print """
+    * Welcome   *
+    * To Malang *
+    * The Best  *
+    * Programming language *
+
+  "After I started using Malang™, I became super productive, and my 
+   skin became so smooth; I feel, like, 10 years younger! I recommend it.
+   Even though I'm paid to say this, I have to say, this product rocks!"
+     - Someone like you
+
+""".
+
+
+Factorial := [
+  case @ of
+    1 -> 1.
+    N -> N * Factorial (N-1).
+  end.
+].
+
+Factorial_Tail_Recursive := [
+  Helper := [
+    {N, Acc} := @.
+    case N <= 1 of
+      true  -> Acc.
+      false -> Helper {N-1, N * Acc}.
+    end.
+  ].
+  Helper {@, 1}.
+].

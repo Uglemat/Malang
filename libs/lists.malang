@@ -1,0 +1,94 @@
+"""
+Copyright (C) 2014 Mattias Ugelvik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+""".
+
+Reverse := [
+  _Rev := [
+    {List, Acc} := @.
+    case List of
+      nil -> Acc.
+      {H, T} -> _Rev {T, {H, Acc}}.
+    end.
+  ].
+  _Rev {@, nil}.
+].
+
+Head := [
+  {H, T} := @, H.
+].
+
+Tail := [
+  {H, T} := @, T.
+].
+
+Map := [
+  {Func, List} := @.
+  _Map := [
+    {L, Acc} := @.
+    case L of
+      nil -> Acc.
+      {H, T} -> _Map {T, {Func H, Acc}}.
+    end.
+  ].
+  Reverse (_Map {List, nil}).
+].
+
+Foldl := [
+  case @ of
+    {F, Acc, nil}    -> Acc.
+    {F, Acc, {H, T}} -> Foldl {F, F {Acc, H}, T}.
+  end.
+].
+
+Foldr := [
+  case @ of
+    {F, Acc, nil}    -> Acc.
+    {F, Acc, {H, T}} -> F {Foldr {F, Acc, T}, H}.
+  end.
+].
+
+Length := [
+  Foldl {[{Acc, Elem} := @, Acc+1.], 0, @}.
+].
+
+
+Range := [
+  {From, To} := @.
+  Helper := [
+    {N, Acc} := @.
+    case N <= From of
+      true  -> {N, Acc}.
+      false -> Helper {N-1, {N, Acc}}.
+    end.
+  ].
+  case To <= From of
+    true  -> nil.
+    false -> Helper {To-1, nil}.
+  end.
+].
+
+Nth := [
+  {N, {H, T}} := @.
+  case N <= 1 of
+    true  -> H.
+    false -> Nth {N-1, T}.
+  end.
+].
+
+Random_Choice := [
+  Nth {Builtins:Random_Range {1, Length @ + 1}
+      , @}.
+].
