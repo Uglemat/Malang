@@ -123,6 +123,8 @@ So if `My_Module` contains a function bound to the identifier `Factorial` then y
 It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
 argument 20000.
 
+The identifier `_` is special, it will match anything and is never bound to anything.
+
 # License
 
 GNU GPLv3
