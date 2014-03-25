@@ -245,11 +245,11 @@ def require(filename, env):
 
 
 
-# The main environment, with a few builtin functions already present.
 builtins_module = Node('module',
                       Env(bindings={name: node for name, node
                                     in builtin_funcs.builtins.items()}))
 builtins_module.content.bind('Require', Node('builtin', require))
+# The main environment, with the "Builtins" module already present.
 main_env = Env(bindings={'Builtins': builtins_module})
 
 
