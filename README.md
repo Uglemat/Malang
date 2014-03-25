@@ -4,6 +4,13 @@ Enter this in the shell to start dashing out compound expressions in the REPL:
 
     $ ./malang.py -i
 
+Here's an example session:
+
+    malang > 234, 923.
+    ---> 923
+    malang > [@ * 2.] 9.
+    ---> 18
+
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
@@ -25,6 +32,8 @@ negative numbers), strings are also what you'd expect, like `"string with \" < q
 "Helloo!, and then she said ... \n\n \t\t """` in triple quotes. Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`,
 and are just values that you can use in your programs (in tuples, et cetera). Identifiers are names which
 are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
+
+Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
 
 A Malang program is a list of compound expressions.
@@ -129,6 +138,7 @@ It evaluates `Factorial` in the context of `My_Module`, the result of that is a 
 argument 20000.
 
 The identifier `_` is special, it will match anything and is never bound to anything.
+
 
 # License
 
