@@ -17,9 +17,9 @@ There are 6 types of values: numbers (only integers), strings, atoms, tuples, fu
 
 numbers are what you would expect (malang can only parse positive integers, write 0 - `<number>` for
 negative numbers), strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
-"Helloo!, and then she said ... \n\n \t\t """` in triple quotes. Atoms are tokens that match the regex '[a-z][a-zA-Z0-9_]*',
-and are just values that you can use in your programs (in tuples, et cetera). Identifiers are just then names which
-are bound to values, and they must match the regexr '[A-Z_][a-zA-Z0-9_]*'
+"Helloo!, and then she said ... \n\n \t\t """` in triple quotes. Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`,
+and are just values that you can use in your programs (in tuples, et cetera). Identifiers are names which
+are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 
 
 A Malang program is a list of compound expressions.
