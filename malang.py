@@ -242,9 +242,6 @@ def require(filename, env):
 
 
 
-
-
-
 builtins_module = Node('module',
                       Env(bindings={name: node for name, node
                                     in builtin_funcs.builtins.items()}))
@@ -254,9 +251,9 @@ main_env = Env(bindings={'Builtins': builtins_module})
 
 
 
-stdlib_location = os.path.join(os.path.dirname(__file__), "stdlib.malang")
+stdlib_location = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stdlib.malang")
 with open(stdlib_location) as f:
-    with change_directory(os.path.dirname(__file__)):
+    with change_directory(os.path.dirname(os.path.abspath(__file__))):
         eval_malang(f.read(), main_env, stdlib_location)
 
 if __name__ == "__main__":

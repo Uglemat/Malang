@@ -1,5 +1,10 @@
 Malang is a (very) minimalistic functional programming language. It's pretty useless, but it was fun to make.
 
+Enter this in the shell to start dashing out compound expressions in the REPL:
+
+    $ ./malang.py -i
+
+
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
 Everything is an expression in Malang. Absolutely everything.
