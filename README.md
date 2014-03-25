@@ -1,5 +1,7 @@
 Malang is a (very) minimalistic functional programming language. It's pretty useless, but it was fun to make.
 
+It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it with `sudo apt-get install python3-ply`.
+
 Enter this in the shell to start dashing out compound expressions in the REPL:
 
     $ ./malang.py -i

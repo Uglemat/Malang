@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from __future__ import print_function
 from parser import parse
 import builtin_funcs
 from utils import Env, Node,  change_directory, MalangError, InvalidMatch
@@ -27,7 +26,7 @@ try:
 except ImportError:
     pass
 
-sys.setrecursionlimit(10000)
+sys.setrecursionlimit(5000)
     
 
 
