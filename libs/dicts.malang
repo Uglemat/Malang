@@ -1,0 +1,27 @@
+
+Get := [
+  {Key, D} := @.
+  case D of
+    nil         -> sorry.
+    {{K, V}, T} -> 
+        case K == Key of
+          true  -> {ok, V}.
+          false -> Get {Key, T}.
+        end.
+  end.
+].
+Remove := [
+  {Key, D} := @.
+  Helper := [
+    {Current, Result} := @.
+    case Current of
+      nil -> Result.
+      {{K, V}, T} ->
+          case K == Key of
+            true  -> Helper {T, Result}.
+            false -> Helper {T, {{K, V}, Result}}.
+          end.
+    end.
+  ].
+  Helper {D, nil}.
+].

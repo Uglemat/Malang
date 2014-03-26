@@ -22,7 +22,7 @@ ToStr   := Builtins:ToStr.
 
 Lists := Require "libs/lists.malang".
 Bools := Require "libs/bool.malang".
-
+Dicts := Require "libs/dicts.malang".
 
 
 Print """

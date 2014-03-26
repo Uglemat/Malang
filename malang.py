@@ -109,7 +109,6 @@ arithmetic_funcs = {
 }
 
 cmp_funcs = {
-    'eq': equal,
     'gt': greater_than,
     'lt': less_than,
     'ge': greater_than_or_eq,
@@ -165,10 +164,10 @@ def maval(expr, env, filename):
             elif _type == 'str' and T == 'plus':
                 return Node('str', op1.content + op2.content, infonode=expr)
         else:
-            raise MalangError("Invalid arithmetic expression", filename, infonode=op1)
+            raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
 
 
-    elif T in ('gt', 'lt', 'ge', 'le', 'eq'):
+    elif T in ('gt', 'lt', 'ge', 'le'):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         if op1._type == op2._type and op1._type in ('number', 'str', 'tuple', 'atom'):
             return Node('atom',
@@ -176,7 +175,11 @@ def maval(expr, env, filename):
                         infonode=expr
             )
         else:
-            raise MalangError("Invalid comparison expression", filename, infonode=op1)
+            raise MalangError("Invalid comparison expression", filename, infonode=expr)
+    elif T == 'eq':
+        op1, op2 = (trampoline(op, env, filename) for op in expr.content)
+        return Node('atom', {True: 'true', False: 'false'}[equal(op1, op2)], infonode=expr)
+
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
 
