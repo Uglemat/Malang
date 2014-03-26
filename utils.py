@@ -16,12 +16,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 
-
+def get_lineno(infonode):
+    if (hasattr(infonode, "lineno") and
+        infonode.lineno is not None):
+        return infonode.lineno
+    return None
+    
 
 class MalangError(Exception):
-    def __init__(self, text, filename):
-        Exception.__init__(self,
-                           text + " in file {!r}".format(filename))
+    def __init__(self, text, filename, infonode=None):
+
+        append = ""
+        if get_lineno(infonode):
+            append = " at line #{}".format(get_lineno(infonode))
+        append += " in file {!r}".format(filename)
+
+        Exception.__init__(self, text + append)
 
 class UnboundIdentifier(MalangError):
     pass
@@ -30,10 +40,17 @@ class InvalidMatch(MalangError):
     pass
 
 class Node(object):
-    def __init__(self, _type, content):
+    def __init__(self, _type, content, lineno=None, infonode=None):
         self._type = _type
         self.content = content
 
+        # `infonode` is used merely to track line numbers
+
+        self.lineno = lineno
+        if self.lineno is None:
+            self.lineno = get_lineno(infonode)
+
+        #print("Lineno:, ", self._type,  self.lineno)
 
 class Env(object):
     def __init__(self, parent=None, bindings=None):

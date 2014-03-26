@@ -76,7 +76,7 @@ def patternmatch(pattern, expr, env, filename):
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
-    exception = InvalidMatch("Invalid match", filename)
+    exception = InvalidMatch("Invalid match", filename, infonode=pattern)
 
     if env.is_unbound_identifier(pattern):
         env.bind(pattern.content, expr)
@@ -99,7 +99,7 @@ def patternmatch(pattern, expr, env, filename):
             raise exception
         return 
         
-    raise MalangError("Don't know how to pattern-match that. ", filename)
+    raise MalangError("Don't know how to pattern-match that. ", filename, infonode=pattern)
 
 arithmetic_funcs = {
     'plus':   operator.add,
@@ -165,7 +165,7 @@ def maval(expr, env, filename):
             elif _type == 'str' and T == 'plus':
                 return Node('str', op1.content + op2.content)
         else:
-            raise MalangError("Invalid arithmetic expression", filename)
+            raise MalangError("Invalid arithmetic expression", filename, infonode=op1)
 
 
     elif T in ('gt', 'lt', 'ge', 'le', 'eq'):
@@ -175,7 +175,7 @@ def maval(expr, env, filename):
                         {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)]
             )
         else:
-            raise MalangError("Invalid comparison expression", filename)
+            raise MalangError("Invalid comparison expression", filename, infonode=op1)
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content))
 
@@ -201,10 +201,12 @@ def maval(expr, env, filename):
             return thunk(maval,
                          func.content['code'],
                          Env(parent=func.content['parent_env'], bindings={'@': arg}),
-                         filename)
+                         func.content['filename'])
 
     elif T == 'func_def':
-        return Node('function', {'code': expr.content, 'parent_env': env})
+        return Node('function', {'code': expr.content[0],
+                                 'filename': expr.content[1],
+                                 'parent_env': env}, infonode=expr)
 
     elif T == 'program':
         start = expr.content[:-1]
@@ -222,7 +224,7 @@ def maval(expr, env, filename):
             except InvalidMatch:
                 continue
             return thunk(maval, arrow['expr'], env_copy, filename)
-        raise MalangError("No pattern matched in case_of expression", filename)
+        raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
 
     raise MalangError("Unknown expression", filename)
 
@@ -280,7 +282,7 @@ if __name__ == "__main__":
             if not inp:
                 continue
             try:
-                print("--->", builtin_funcs.to_str(
+                print("--->", builtin_funcs.tostr(
                     eval_malang(inp, 
                                 interpreter_env, "<REPL>"), None).content
                 )

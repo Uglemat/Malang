@@ -72,19 +72,20 @@ def t_ATOM(t):
     r'[a-z][a-zA-Z0-9_]*'
     if t.value in keywords:
         t.type = keywords[t.value]
-        t.value = Node('keyword', t.value)
+        t.value = Node('keyword', t.value, lineno=t.lineno)
     else:
-        t.value = Node('atom', t.value)
+        t.value = Node('atom', t.value, lineno=t.lineno)
     return t
 
 def t_ID(t):
     r'([A-Z_][a-zA-Z0-9_]*|@)'
-    t.value = Node('id', t.value)
+    t.value = Node('id', t.value, lineno=t.lineno)
     return t
 
 def t_longstr(t):
     r'"""'
     t.lexer.longstr_start = t.lexer.lexpos
+    t.lexer.longstr_lineno = t.lineno
     t.lexer.begin("longstr")
 
 
@@ -94,7 +95,8 @@ def t_longstr_esc(t):
 def t_longstr_LONGSTR(t):
     r'"""'
     t.value = Node('str',
-        unescape_str(t.lexer.lexdata[t.lexer.longstr_start:t.lexer.lexpos-3]))
+                   unescape_str(t.lexer.lexdata[t.lexer.longstr_start:t.lexer.lexpos-3]),
+                   lineno=t.lexer.longstr_lineno)
     t.lexer.begin("INITIAL")
     return t
 
@@ -108,7 +110,8 @@ def t_longstr_newline(t):
 
 def t_str(t):
     r'"'
-    t.lexer.longstr_start = t.lexer.lexpos
+    t.lexer.str_start = t.lexer.lexpos
+    t.lexer.str_lineno = t.lineno
     t.lexer.begin("str")
 
 def t_str_esc(t):
@@ -117,7 +120,8 @@ def t_str_esc(t):
 def t_str_STR(t):
     r'"'
     t.value = Node('str',
-        unescape_str(t.lexer.lexdata[t.lexer.longstr_start:t.lexer.lexpos-1]))
+                   unescape_str(t.lexer.lexdata[t.lexer.str_start:t.lexer.lexpos-1]),
+                   lineno=t.lexer.str_lineno)
     t.lexer.begin("INITIAL")
     return t
 
@@ -130,7 +134,7 @@ def t_str_newline(t):
 
 def t_NUMBER(t):
     r'\d+'
-    t.value = Node('number', int(t.value))
+    t.value = Node('number', int(t.value), t.lineno)
     return t
 
 def t_newline(t):
@@ -145,7 +149,7 @@ t_str_ignore = ''
 
 def t_error(t):
     print("Illegal character '{}'".format(t.value[0]))
-    t.lexer.skip(1)# Error handling rule
+    t.lexer.skip(1)
 def t_longstr_error(t):
     print("Illegal character '{}'".format(t.value[0]))
     t.lexer.skip(1)
@@ -171,11 +175,11 @@ def t_str_error(t):
 
 def p_program(p):
     'program : program compound_expr'
-    p[0] = Node('program', p[1].content + [p[2]])
+    p[0] = Node('program', p[1].content + [p[2]], infonode=p[1])
 
 def p_program_single(p):
     'program : compound_expr'
-    p[0] = Node('program', [p[1]])
+    p[0] = Node('program', [p[1]], infonode=p[1])
 
 
 
@@ -185,16 +189,16 @@ def p_compound_expr(p):
 
 def p_compound_expr_list(p):
     'compound_expr_list : compound_expr_list COMMA match_expr'
-    p[0] = Node('program', p[1].content + [p[3]])
+    p[0] = Node('program', p[1].content + [p[3]], infonode=p[1])
 
 def p_compound_expr_list_single(p):
     'compound_expr_list : match_expr'
-    p[0] = Node('program', [p[1]])
+    p[0] = Node('program', [p[1]], infonode=p[1])
 
 
 def p_match_expr_bind(p):
     'match_expr : cmp_expr BIND match_expr'
-    p[0] = Node('bind', (p[1], p[3]))
+    p[0] = Node('bind', (p[1], p[3]), infonode=p[1])
 
 
 def p_match_cmp_expr(p):
@@ -204,23 +208,23 @@ def p_match_cmp_expr(p):
 
 def p_cmp_expr_gt(p):
     'cmp_expr : cmp_expr GT expression'
-    p[0] = Node('gt', (p[1], p[3]))
+    p[0] = Node('gt', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_lt(p):
     'cmp_expr : cmp_expr LT expression'
-    p[0] = Node('lt', (p[1], p[3]))
+    p[0] = Node('lt', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_ge(p):
     'cmp_expr : cmp_expr GE expression'
-    p[0] = Node('ge', (p[1], p[3]))
+    p[0] = Node('ge', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_le(p):
     'cmp_expr : cmp_expr LE expression'
-    p[0] = Node('le', (p[1], p[3]))
+    p[0] = Node('le', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_eq(p):
     'cmp_expr : cmp_expr EQ expression'
-    p[0] = Node('eq', (p[1], p[3]))
+    p[0] = Node('eq', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_expr(p):
     'cmp_expr : expression'
@@ -228,11 +232,11 @@ def p_cmp_expr_expr(p):
 
 def p_expression_plus(p):
     'expression : expression PLUS term'
-    p[0] = Node('plus', (p[1], p[3]))
+    p[0] = Node('plus', (p[1], p[3]), infonode=p[1])
 
 def p_expression_minus(p):
     'expression : expression MINUS term'
-    p[0] = Node('minus', (p[1], p[3]))
+    p[0] = Node('minus', (p[1], p[3]), infonode=p[1])
 
 
 def p_expression_term(p):
@@ -241,11 +245,11 @@ def p_expression_term(p):
 
 def p_term_times(p):
     'term : term TIMES fncall'
-    p[0] = Node('times', (p[1], p[3]))
+    p[0] = Node('times', (p[1], p[3]), infonode=p[1])
 
 def p_term_div(p):
     'term : term DIVIDE fncall'
-    p[0] = Node('divide', (p[1], p[3]))
+    p[0] = Node('divide', (p[1], p[3]), infonode=p[1])
 
 def p_term_fncall(p):
     'term : fncall'
@@ -253,7 +257,7 @@ def p_term_fncall(p):
 
 def p_fncall(p):
     'fncall : fncall module_access'
-    p[0] = Node('fncall', (p[1], p[2]))
+    p[0] = Node('fncall', (p[1], p[2]), infonode=p[1])
 
 def p_fncall_module_access(p):
     'fncall : module_access'
@@ -261,7 +265,7 @@ def p_fncall_module_access(p):
 
 def p_module_access(p):
     'module_access : module_access COLON item'
-    p[0] = Node('module_access', (p[1], p[3]))
+    p[0] = Node('module_access', (p[1], p[3]), infonode=p[1])
 
 def p_module_access_item(p):
     'module_access : item'
@@ -286,12 +290,13 @@ def p_item_expr(p):
 
 def p_func_def(p):
     'func_def : LBRACKET program RBRACKET'
-    p[0] = Node('func_def', p[2])
+    p[0] = Node('func_def', (p[2], file_name), lineno=p.lineno(1))
 
 def p_case_of(p):
     'case_of : CASE match_expr OF arrow_list END'
     p[0] = Node('case_of', {'matched_expr': p[2],
-                            'arrow_list':    p[4]}
+                            'arrow_list':    p[4]},
+                lineno=p.lineno(1)
     )
 
 def p_arrow_list(p):
@@ -306,11 +311,11 @@ def p_arrow_list_single(p):
 
 def p_tuple(p):
     'tuple : LBRACE expr_list RBRACE'
-    p[0] = Node('tuple', tuple(p[2]))
+    p[0] = Node('tuple', tuple(p[2]), lineno=p.lineno(1))
 
 def p_tuple_empty(p):
     'tuple : LBRACE RBRACE'
-    p[0] = Node('tuple', ())
+    p[0] = Node('tuple', (), lineno=p.lineno(1))
 
 def p_expr_list(p):
     'expr_list : expr_list COMMA match_expr'
@@ -331,7 +336,18 @@ def p_error(p):
 lexer  = lex.lex()
 parser = yacc.yacc()
 
+file_name = ""
 def parse(s, filename):
+    global file_name
+    file_name = filename
+    """
+    I can't think of something much better than using a global variable here.
+    I need function definitions to know which files they are in, to correctly
+    report which file an error has occured in, when I'm in the evaluation function `maval`.
+    By using the global variable `file_name`, I can store the file name a function definition
+    was parsed in together with the code (look in the function `p_func_def` above to see).
+    """
+
     lexer.lineno = 1
     try:
         return parser.parse(s, lexer=lexer)

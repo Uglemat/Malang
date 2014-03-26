@@ -61,7 +61,7 @@ Foldr := [
 ].
 
 Length := [
-  Foldl {[{Acc, Elem} := @, Acc+1.], 0, @}.
+  Foldl {[{Acc, _} := @, Acc+1.], 0, @}.
 ].
 
 
@@ -91,4 +91,16 @@ Nth := [
 Random_Choice := [
   Nth {Builtins:Random_Range {1, Length @ + 1}
       , @}.
+].
+
+Concat := [
+  {L1, L2} := @.
+  Helper := [
+    {Elems_Left, Result} := @.
+    case Elems_Left of
+      nil    -> Result.
+      {H, T} -> Helper {T, {H, Result}}.
+    end.
+  ].
+  Helper {Reverse L1, L2}.
 ].

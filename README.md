@@ -12,7 +12,7 @@ Here's an example session:
     ---> 923
     malang > [@ * 2.] 9.
     ---> 18
-    malang > List := Builtins:To_List {one, two, three}.
+    malang > List := ToList {one, two, three}.
     ---> {one, {two, {three, nil}}}
     malang > Lists:Reverse List.
     ---> {three, {two, {one, nil}}}

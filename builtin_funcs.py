@@ -30,7 +30,7 @@ def builtin(name):
 def _print(s, env):
     
     print(s.content if s._type == 'str' else
-          to_str(s, env).content, end="")
+          tostr(s, env).content, end="")
     return s
 
 @builtin("Sleep")
@@ -48,27 +48,27 @@ def random_range(tup, env):
 @builtin("List_Env")
 def list_env(_a, env):
     for k, v in env.bindings.items():
-        print("{:<20} => {}".format(k, to_str(v, env).content))
+        print("{:<20} => {}".format(k, tostr(v, env).content))
     if not env.parent is None:
         return list_env(None, env.parent)
     return Node('atom', 'ok')
 
-@builtin("To_List")
-def to_list(tup, env):
+@builtin("ToList")
+def tolist(tup, env):
     assert tup._type == 'tuple'
     if tup.content == ():
         return Node('atom', 'nil')
     else:
         return Node('tuple', (tup.content[0],
-                              to_list(Node('tuple', tup.content[1:]), env)))
+                              tolist(Node('tuple', tup.content[1:]), env)))
 
-@builtin("To_Str")
-def to_str(val, env, depth=0):
+@builtin("ToStr")
+def tostr(val, env, depth=0):
     T = val._type
     if T == 'tuple' and depth > 50:
         content = "{...}"
     elif T == 'tuple':
-        content = "{" + ", ".join(to_str(elem, env, depth=depth+1).content
+        content = "{" + ", ".join(tostr(elem, env, depth=depth+1).content
                                   for elem in val.content) + "}"
     elif T in ('module', 'function', 'builtin'):
         content = '[{}]'.format(T)
