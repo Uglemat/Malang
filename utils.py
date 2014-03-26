@@ -61,13 +61,13 @@ class Env(object):
         if name != "_":
             self.bindings[name] = val
 
-    def get(self, name, filename):
+    def get(self, name, filename, infonode=None):
         if name in self.bindings:
             return self.bindings[name]
         elif self.parent is not None:
-            return self.parent.get(name, filename)
+            return self.parent.get(name, filename, infonode=infonode)
         raise UnboundIdentifier("Identifier {!r} not bound to a value".format(name),
-                                filename)
+                                filename, infonode=infonode)
 
     def is_bound(self, name):
         try:

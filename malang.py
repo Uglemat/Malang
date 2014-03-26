@@ -82,7 +82,7 @@ def patternmatch(pattern, expr, env, filename):
         env.bind(pattern.content, expr)
         return
     elif pattern._type == 'id' and env.is_bound(pattern.content):
-        val = env.get(pattern.content, filename)
+        val = env.get(pattern.content, filename, infonode=pattern)
         if not equal(val, expr):
             raise exception
         return
@@ -189,7 +189,7 @@ def maval(expr, env, filename):
         patternmatch(pattern, val, env, filename)
         return val
     elif T == 'id':
-        return env.get(expr.content, filename)
+        return env.get(expr.content, filename, infonode=expr)
     elif T == 'module_access':
         module = trampoline(expr.content[0], env, filename)
         assert module._type == 'module', "That's not a module"

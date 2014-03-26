@@ -104,3 +104,20 @@ Concat := [
   ].
   Helper {Reverse L1, L2}.
 ].
+
+Any := [
+  {Func, List} := @.
+  case List of
+    nil    -> false.
+    {H, T} ->
+      case Bools:Truthy (Func H) of
+        true  -> true.
+        false -> Any {Func, T}.
+      end.
+  end.
+].
+
+Member := [
+  {Val, List} := @.
+  Any {[@ == Val.], List}.
+].

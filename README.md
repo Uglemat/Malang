@@ -22,6 +22,14 @@ Here's an example session:
     ---> false
     malang > Bools:Not false.
     ---> true
+    malang > Ages := ToList {{peter, 20}, {mary, 22}, {george, 30}}.
+    ---> {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
+    malang > Dicts:Get {george, Ages}.
+    ---> {ok, 30}
+    malang > Dicts:Get {me, Ages}.
+    ---> sorry
+    malang > Dicts:Remove {peter, Ages}.
+    ---> {{george, 30}, {{mary, 22}, nil}}
 
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.

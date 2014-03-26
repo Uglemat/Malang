@@ -25,3 +25,10 @@ Remove := [
   ].
   Helper {D, nil}.
 ].
+
+Member := [
+  {Key, Dict} := @.
+  Lists:Any {
+    [{K, _} := @, K == Key.]
+    , Dict }.
+].
