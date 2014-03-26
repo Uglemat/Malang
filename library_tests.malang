@@ -95,6 +95,8 @@ false := Lists:Any {[@ == 2.], ToList {1,3}}.
 true  := Lists:Member {"str", ToList {one, 2, "str"}}.
 false := Lists:Member {str,   ToList {one, 2, "Str"}}.
 
+nil := Lists:Repeat {0, hello}.
+{hello, {hello, {hello, nil}}} := Lists:Repeat {3, hello}.
 
 """
         Dicts Tests:

@@ -163,6 +163,8 @@ def maval(expr, env, filename):
                 return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
             elif _type == 'str' and T == 'plus':
                 return Node('str', op1.content + op2.content, infonode=expr)
+            elif _type == 'tuple' and T == 'plus':
+                return Node('tuple', op1.content + op2.content, infonode=expr)
         else:
             raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
 

@@ -121,3 +121,15 @@ Member := [
   {Val, List} := @.
   Any {[@ == Val.], List}.
 ].
+
+Repeat := [
+  {Times, Elem} := @.
+  Helper := [
+    {TimesLeft, Acc} := @.
+    case TimesLeft <= 0 of
+      true  -> Acc.
+      false -> Helper {TimesLeft-1, {Elem, Acc}}.
+    end.
+  ].
+  Helper {Times, nil}.
+].
