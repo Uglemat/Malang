@@ -25,6 +25,7 @@ Truthy := [
   end.
 ].
 
+
 And := [
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of

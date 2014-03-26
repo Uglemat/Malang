@@ -134,7 +134,7 @@ def t_str_newline(t):
 
 def t_NUMBER(t):
     r'\d+'
-    t.value = Node('number', int(t.value), t.lineno)
+    t.value = Node('number', int(t.value), lineno=t.lineno)
     return t
 
 def t_newline(t):

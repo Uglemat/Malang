@@ -161,9 +161,9 @@ def maval(expr, env, filename):
             _type = op1._type
 
             if _type == 'number':
-                return Node('number', arithmetic_funcs[T](op1.content, op2.content))
+                return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
             elif _type == 'str' and T == 'plus':
-                return Node('str', op1.content + op2.content)
+                return Node('str', op1.content + op2.content, infonode=expr)
         else:
             raise MalangError("Invalid arithmetic expression", filename, infonode=op1)
 
@@ -172,12 +172,13 @@ def maval(expr, env, filename):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         if op1._type == op2._type and op1._type in ('number', 'str', 'tuple', 'atom'):
             return Node('atom',
-                        {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)]
+                        {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)],
+                        infonode=expr
             )
         else:
             raise MalangError("Invalid comparison expression", filename, infonode=op1)
     elif T == 'tuple':
-        return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content))
+        return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
 
     elif T == 'bind':
         pattern, e = expr.content
@@ -226,7 +227,7 @@ def maval(expr, env, filename):
             return thunk(maval, arrow['expr'], env_copy, filename)
         raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
 
-    raise MalangError("Unknown expression", filename)
+    raise MalangError("Unknown expression", filename, infonode=expr)
 
 
 
