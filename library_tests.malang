@@ -98,6 +98,16 @@ false := Lists:Member {str,   ToList {one, 2, "Str"}}.
 nil := Lists:Repeat {0, hello}.
 {hello, {hello, {hello, nil}}} := Lists:Repeat {3, hello}.
 
+nil := Lists:Remove {hay, nil}.
+
+Nums := ToList {1, 2, 3}.
+Nums := Lists:Remove {4, Nums}.
+{1, {3, nil}} := Lists:Remove {2, Nums}.
+
+nil := Lists:Filter {[@==5.], Nums}.
+nil := Lists:Filter {[@==5.], nil}.
+{1, {2, nil}} := Lists:Filter {[@ <= 2.], Nums}.
+
 """
         Dicts Tests:
 """.
