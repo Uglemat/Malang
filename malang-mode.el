@@ -3,7 +3,6 @@
 (defvar malang-mode-hook nil)
 (defvar malang-mode-map
   (let ((malang-mode-map (make-keymap)))
-    ;(define-key malang-mode-map "\C-j" 'func)
     malang-mode-map)
   "Keymap for malang major mode")
 

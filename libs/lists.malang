@@ -16,14 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Reverse := [
-  _Rev := [
+  Helper := [
     {List, Acc} := @.
     case List of
       nil -> Acc.
-      {H, T} -> _Rev {T, {H, Acc}}.
+      {H, T} -> Helper {T, {H, Acc}}.
     end.
   ].
-  _Rev {@, nil}.
+  Helper {@, nil}.
 ].
 
 Head := [
@@ -132,4 +132,33 @@ Repeat := [
     end.
   ].
   Helper {Times, nil}.
+].
+
+Remove := [
+  {Elem, List} := @.
+  Helper := [
+    {Current, Acc} := @.
+    case Current of
+      nil -> Acc.
+      {Elem,  T} -> Helper {T, Acc}.
+      {Other, T} -> Helper {T, {Other, Acc}}.
+    end.
+  ].
+  Reverse (Helper {List, nil}).
+].
+
+Filter := [
+  {F, List} := @.
+  Helper := [
+    {Current, Acc} := @.
+    case Current of
+      nil -> Acc.
+      {H, T} ->
+        case Bools:Truthy (F H) of
+          true  -> Helper {T, {H, Acc}}.
+          false -> Helper {T, Acc}.
+        end.
+    end.
+  ].
+  Reverse (Helper {List, nil}).
 ].
