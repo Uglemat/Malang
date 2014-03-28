@@ -27,7 +27,8 @@ keywords = {kw: kw.upper()
             for kw in ['case', 'of', 'end']}
 
 tokens = (
-    'NUMBER',   'PLUS','MINUS','TIMES','DIVIDE',
+    'NUMBER',   'PLUS','MINUS','TIMES',
+    'DIVIDE',   'MODULO',
     'LPAREN',   'RPAREN',
     'LBRACE',   'RBRACE',
     'LBRACKET', 'RBRACKET',
@@ -50,6 +51,7 @@ t_PLUS    = r'\+'
 t_MINUS   = r'-'
 t_TIMES   = r'\*'
 t_DIVIDE  = r'/'
+t_MODULO = r'%'
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 t_LBRACE = r'\{'
@@ -256,6 +258,11 @@ def p_term_times(p):
 def p_term_div(p):
     'term : term DIVIDE fncall'
     p[0] = Node('divide', (p[1], p[3]), infonode=p[1])
+
+def p_term_mod(p):
+    'term : term MODULO fncall'
+    p[0] = Node('modulo', (p[1], p[3]), infonode=p[1])
+
 
 def p_term_fncall(p):
     'term : fncall'

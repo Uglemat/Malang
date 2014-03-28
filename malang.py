@@ -105,7 +105,8 @@ arithmetic_funcs = {
     'plus':   operator.add,
     'minus':  operator.sub,
     'divide': operator.floordiv,
-    'times':  operator.mul
+    'times':  operator.mul,
+    'modulo': operator.mod
 }
 
 cmp_funcs = {
@@ -155,7 +156,7 @@ def maval(expr, env, filename):
     T = expr._type
     if T in ('number', 'str', 'atom'):
         return expr
-    elif T in ('plus', 'minus', 'divide', 'times'):
+    elif T in ('plus', 'minus', 'divide', 'times', 'modulo'):
 
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         if op1._type == op2._type:
