@@ -71,6 +71,15 @@ def less_than_or_eq(val_1, val_2):
     return less_than(val_1, val_2) or equal(val_1, val_2)
 
 
+def transform_list_to_tuple(elems):
+    """
+    `elems` may or may not have been evaluated, this function should work either way
+    """
+    if len(elems) == 0:
+        return Node('atom', 'nil')
+    else:
+        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:])))
+
 def patternmatch(pattern, expr, env, filename):
     """ `expr` should've been evaluated, `pattern` should not yet have been evaluated.
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
@@ -78,22 +87,34 @@ def patternmatch(pattern, expr, env, filename):
     """
     exception = InvalidMatch("Invalid match", filename, infonode=pattern)
 
-    if env.is_unbound_identifier(pattern):
+
+    if pattern._type == 'list':
+        return patternmatch(transform_list_to_tuple(pattern.content), expr, env, filename)
+
+    elif env.is_unbound_identifier(pattern):
         env.bind(pattern.content, expr)
         return
+
     elif pattern._type == 'id' and env.is_bound(pattern.content):
         val = env.get(pattern.content, filename, infonode=pattern)
         if not equal(val, expr):
             raise exception
         return
+
     elif pattern._type != expr._type:
         raise exception
+
     elif pattern._type == 'tuple':
         if not len(pattern.content) == len(expr.content):
             raise exception
         for pat, e in zip(pattern.content, expr.content):
             patternmatch(pat, e, env, filename)
         return
+
+    elif pattern._type == 'list':
+        print("Hay")
+        return patternmatch(transform_list_to_tuple(pattern), expr, env, filename)
+
     elif pattern._type in ('number', 'str', 'atom'):
         if not pattern.content == expr.content:
             raise exception
@@ -187,6 +208,10 @@ def maval(expr, env, filename):
 
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
+
+    elif T == 'list':
+        elems = tuple(trampoline(e, env, filename) for e in expr.content)
+        return transform_list_to_tuple(elems)
 
     elif T == 'bind':
         pattern, e = expr.content

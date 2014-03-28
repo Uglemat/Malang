@@ -34,7 +34,7 @@ tokens = (
     'LBRACKET', 'RBRACKET',
     'STR',      'LONGSTR',
     'DOT',      'ID',
-    'COLON',
+    'COLON',    'STARTLIST',
     'COMMA',    'ATOM',
     'BIND',     'ARROW',
     'GT', 'LT', 'GE',  'LE', 'EQ', 'NE'
@@ -69,6 +69,7 @@ t_GT = r'>'
 t_LT = r'<'
 t_EQ = r'=='
 t_NE = r'!='
+t_STARTLIST = r'\#\['
 
 
 def t_ATOM(t):
@@ -289,6 +290,7 @@ def p_item_num(p):
             | STR 
             | LONGSTR
             | tuple
+            | list
             | ATOM
             | ID
             | func_def
@@ -320,23 +322,30 @@ def p_arrow_list_single(p):
     'arrow_list : expression ARROW compound_expr'
     p[0] = [{'pattern': p[1], 'expr': p[3]}]
 
-
-
 def p_tuple(p):
     'tuple : LBRACE expr_list RBRACE'
-    p[0] = Node('tuple', tuple(p[2]), lineno=p.lineno(1))
+    p[0] = Node('tuple', p[2], lineno=p.lineno(1))
 
 def p_tuple_empty(p):
     'tuple : LBRACE RBRACE'
     p[0] = Node('tuple', (), lineno=p.lineno(1))
 
+def p_list(p):
+    'list : STARTLIST expr_list RBRACKET'
+    p[0] = Node('list', p[2], lineno=p.lineno(1))
+
+def p_list_empty(p):
+    'list : STARTLIST RBRACKET'
+    p[0] = Node('list', (), lineno=p.lineno(1))
+
+
 def p_expr_list(p):
     'expr_list : expr_list COMMA match_expr'
-    p[0] = p[1] + [p[3]]
+    p[0] = p[1] + (p[3],)
 
 def p_expr_list_single(p):
     'expr_list : match_expr'
-    p[0] = [p[1]]
+    p[0] = (p[1],)
 
 
 # Error rule for syntax errors

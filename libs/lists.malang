@@ -19,11 +19,11 @@ Reverse := [
   Helper := [
     {List, Acc} := @.
     case List of
-      nil -> Acc.
+      #[] -> Acc.
       {H, T} -> Helper {T, {H, Acc}}.
     end.
   ].
-  Helper {@, nil}.
+  Helper {@, #[]}.
 ].
 
 Head := [
@@ -39,23 +39,23 @@ Map := [
   Helper := [
     {L, Acc} := @.
     case L of
-      nil -> Acc.
+      #[] -> Acc.
       {H, T} -> Helper {T, {Func H, Acc}}.
     end.
   ].
-  Reverse (Helper {List, nil}).
+  Reverse (Helper {List, #[]}).
 ].
 
 Foldl := [
   case @ of
-    {F, Acc, nil}    -> Acc.
+    {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> Foldl {F, F {Acc, H}, T}.
   end.
 ].
 
 Foldr := [
   case @ of
-    {F, Acc, nil}    -> Acc.
+    {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> F {Foldr {F, Acc, T}, H}.
   end.
 ].
@@ -75,8 +75,8 @@ Range := [
     end.
   ].
   case To <= From of
-    true  -> nil.
-    false -> Helper {To-1, nil}.
+    true  -> #[].
+    false -> Helper {To-1, #[]}.
   end.
 ].
 
@@ -98,7 +98,7 @@ Concat := [
   Helper := [
     {Elems_Left, Result} := @.
     case Elems_Left of
-      nil    -> Result.
+      #[]    -> Result.
       {H, T} -> Helper {T, {H, Result}}.
     end.
   ].
@@ -108,7 +108,7 @@ Concat := [
 Any := [
   {Func, List} := @.
   case List of
-    nil    -> false.
+    #[]    -> false.
     {H, T} ->
       case Bools:Truthy (Func H) of
         true  -> true.
@@ -131,7 +131,7 @@ Repeat := [
       false -> Helper {TimesLeft-1, {Elem, Acc}}.
     end.
   ].
-  Helper {Times, nil}.
+  Helper {Times, #[]}.
 ].
 
 Remove := [
@@ -139,12 +139,12 @@ Remove := [
   Helper := [
     {Current, Acc} := @.
     case Current of
-      nil -> Acc.
+      #[] -> Acc.
       {Elem,  T} -> Helper {T, Acc}.
       {Other, T} -> Helper {T, {Other, Acc}}.
     end.
   ].
-  Reverse (Helper {List, nil}).
+  Reverse (Helper {List, #[]}).
 ].
 
 Filter := [
@@ -152,7 +152,7 @@ Filter := [
   Helper := [
     {Current, Acc} := @.
     case Current of
-      nil -> Acc.
+      #[] -> Acc.
       {H, T} ->
         case Bools:Truthy (F H) of
           true  -> Helper {T, {H, Acc}}.
@@ -160,5 +160,5 @@ Filter := [
         end.
     end.
   ].
-  Reverse (Helper {List, nil}).
+  Reverse (Helper {List, #[]}).
 ].

@@ -17,11 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Truthy := [
   case @ of
-    {} -> false.
-    0 -> false.
+    {}    -> false.
+    0     -> false.
     false -> false.
-    "" -> false.
-    _ -> true.
+    ""    -> false.
+    nil   -> false.
+    _     -> true.
   end.
 ].
 

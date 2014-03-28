@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Get := [
   {Key, D} := @.
   case D of
-    nil           -> sorry.
+    #[]           -> sorry.
     {{Key, V}, T} -> {ok, V}.
     {{K,   V}, T} -> Get {Key, T}.
   end.
@@ -29,12 +29,12 @@ Remove := [
   Helper := [
     {Current, Result} := @.
     case Current of
-      nil           -> Result.
+      #[]           -> Result.
       {{Key, V}, T} -> Helper {T, Result}.
       {{K,   V}, T} -> Helper {T, {{K, V}, Result}}.
     end.
   ].
-  Helper {D, nil}.
+  Helper {D, #[]}.
 ].
 
 Set := [

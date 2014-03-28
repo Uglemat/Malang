@@ -16,7 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 nil := ToList {}.
-{"one", {2, nil}} := ToList {"one", 2}.
+#[] := nil.
+{1, nil} := #[1].
+
+#["one", 2] := #["one", 2].
 """
         Bools Tests:
 """.
@@ -52,67 +55,67 @@ false := Bools:Xor {0, 0}.
         Lists Tests:
 """.
 
-L := ToList {1, two, "three"}.
+L := #[1, two, "three"].
 
 1 := Lists:Head L.
-{two, {"three", nil}} := Lists:Tail L.
+#[two, "three"] := Lists:Tail L.
 
-{"three", {two, {1, nil}}} := Lists:Reverse L.
-nil := Lists:Reverse nil.
-{elm, nil} := Lists:Reverse {elm, nil}.
+#["three", two, 1] := Lists:Reverse L.
+#[]    := Lists:Reverse #[].
+#[elm] := Lists:Reverse #[elm].
 
 Double := [ @ * 2. ].
-Nums := ToList {1,2,3}.
+Nums := #[1,2,3].
 
-{2, {4, {6, nil}}} := Lists:Map {Double, Nums}.
-nil := Lists:Map {Double, nil}.
+#[2, 4, 6] := Lists:Map {Double, Nums}.
+#[] := Lists:Map {Double, nil}.
 
 StrConcat := [{Acc, Elem} := @. Acc + Elem.].
-"123" := Lists:Foldl {StrConcat, "", ToList {"1", "2", "3"}}.
-"321" := Lists:Foldr {StrConcat, "", ToList {"1", "2", "3"}}.
+"123" := Lists:Foldl {StrConcat, "", #["1", "2", "3"]}.
+"321" := Lists:Foldr {StrConcat, "", #["1", "2", "3"]}.
 
 "" := Lists:Foldl {StrConcat, "", nil}.
 "" := Lists:Foldr {StrConcat, "", nil}.
 
 0 := Lists:Length nil.
-1 := Lists:Length {one, nil}.
-2 := Lists:Length {one, {two, nil}}.
+1 := Lists:Length #[one].
+2 := Lists:Length #[one, two].
 
 nil := Lists:Range {10, 10}.
-{10, {11, {12, nil}}} := Lists:Range {10, 13}.
+#[10, 11, 12] := Lists:Range {10, 13}.
 
-first  := Lists:Nth {1, {first, nil}}.
-second := Lists:Nth {2, {first, {second, nil}}}.
+first  := Lists:Nth {1, #[first]}.
+second := Lists:Nth {2, #[first, second]}.
 
-{1, nil} := Lists:Concat {nil, {1, nil}}.
-{2, nil} := Lists:Concat {{2, nil}, nil}.
-{1, {2, {3, {4, nil}}}}
-    := Lists:Concat {ToList {1, 2}, ToList {3, 4}}.
+#[1] := Lists:Concat {#[ ], #[1]}.
+#[2] := Lists:Concat {#[2], #[ ]}.
+#[1, 2, 3, 4] := Lists:Concat {#[1, 2], #[3, 4]}.
 
-true  := Lists:Any {[@ == 2.], ToList {1,2,3}}.
-false := Lists:Any {[@ == 2.], ToList {1,3}}.
 
-true  := Lists:Member {"str", ToList {one, 2, "str"}}.
-false := Lists:Member {str,   ToList {one, 2, "Str"}}.
+true  := Lists:Any {[@ == 2.], #[1, 2, 3]}.
+false := Lists:Any {[@ == 2.], #[1, 3]}.
 
-nil := Lists:Repeat {0, hello}.
-{hello, {hello, {hello, nil}}} := Lists:Repeat {3, hello}.
+true  := Lists:Member {"str", #[one, 2, "str"]}.
+false := Lists:Member {str,   #[one, 2, "Str"]}.
 
-nil := Lists:Remove {hay, nil}.
+#[] := Lists:Repeat {0, hello}.
+#[hello, hello, hello] := Lists:Repeat {3, hello}.
 
-Nums := ToList {1, 2, 3}.
+#[] := Lists:Remove #[hay].
+
+Nums := #[1, 2, 3].
 Nums := Lists:Remove {4, Nums}.
-{1, {3, nil}} := Lists:Remove {2, Nums}.
+#[1, 3] := Lists:Remove {2, Nums}.
 
-nil := Lists:Filter {[@==5.], Nums}.
-nil := Lists:Filter {[@==5.], nil}.
-{1, {2, nil}} := Lists:Filter {[@ <= 2.], Nums}.
+#[] := Lists:Filter {[@==5.], Nums}.
+#[] := Lists:Filter {[@==5.], #[]}.
+#[1, 2] := Lists:Filter {[@ <= 2.], Nums}.
 
 """
         Dicts Tests:
 """.
 
-D := ToList {{one, 1}, {two, 2}, {"three", three}}.
+D := #[{one, 1}, {two, 2}, {"three", three}].
 {ok, 1} := Dicts:Get {one, D}.
 sorry   := Dicts:Get {four, D}.
 

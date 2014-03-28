@@ -10,24 +10,22 @@ Here's an example session:
 
     malang > 234, 923.
     ---> 923
-    malang > [@ * 2.] 9.
-    ---> 18
-    malang > List := ToList {one, two, three}.
+    malang > [@ * @.] 9.
+    ---> 81
+    malang > List := #[one, two, three].
     ---> {one, {two, {three, nil}}}
     malang > Lists:Reverse List.
     ---> {three, {two, {one, nil}}}
-    malang > Factorial 5.
-    ---> 120
     malang > Bools:And {true, false}.
     ---> false
-    malang > Bools:Not false.
-    ---> true
-    malang > Ages := ToList {{peter, 20}, {mary, 22}, {george, 30}}.
+    malang > Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
     ---> {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
     malang > Dicts:Get {george, Ages}.
     ---> {ok, 30}
     malang > Dicts:Get {me, Ages}.
     ---> sorry
+    malang > Dicts:Set {me, 123, Ages}.
+    ---> {{me, 123}, {{george, 30}, {{mary, 22}, {{peter, 20}, nil}}}}
     malang > Dicts:Remove {peter, Ages}.
     ---> {{george, 30}, {{mary, 22}, nil}}
 
@@ -45,7 +43,9 @@ identifier, once you've said that A := 3, you can't change it. A is 3 always.
 
 The only way to loop is to use recursion. The only control flow construct is 'case of'.
 
-There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules.
+There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
+not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
+of the form {<key>, <val>}.
 
 numbers are what you would expect (malang can only parse positive integers, write 0 - `<number>` for
 negative numbers), strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
@@ -55,6 +55,8 @@ are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 
 Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
+Lists have almost the same syntax as tuples: #[1, 2, 3], however that is just syntactic sugar.
+#[1, 2, 3] translates into {1, {2, {3, nil}}}.
 
 A Malang program is a list of compound expressions.
 
