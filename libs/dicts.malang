@@ -23,6 +23,7 @@ Get := [
     {{K,   V}, T} -> Get {Key, T}.
   end.
 ].
+
 Remove := [
   {Key, D} := @.
   Helper := [
@@ -36,9 +37,26 @@ Remove := [
   Helper {D, nil}.
 ].
 
+Set := [
+  {K, V, D} := @.
+  {{K, V}, Remove {K, D}}.
+].
+
 Member := [
   {Key, Dict} := @.
   Lists:Any {
     [{K, _} := @, K == Key.]
     , Dict }.
+].
+
+Keys := [
+  Lists:Map {
+    [{K, V} := @, K.]
+    , @}.
+].
+
+Values := [
+  Lists:Map {
+    [{K, V} := @, V.]
+    , @}.
 ].

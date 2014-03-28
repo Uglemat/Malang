@@ -124,6 +124,18 @@ true  := Dicts:Member {two,  Dicts:Remove {"three", D}}.
 false := Dicts:Member {four, Dicts:Remove {two,     D}}.
 false := Dicts:Member {one,  Dicts:Remove {one,     D}}.
 
+true := Dicts:Member {4, Dicts:Set {4, four, D}}.
+{ok, four} := Dicts:Get {4, Dicts:Set {4, four, D}}.
+
+Vals := Dicts:Values D.
+Keys := Dicts:Keys D.
+false := Lists:Member {one, Vals}.
+false := Lists:Member {three, Keys}.
+true := Lists:Member {"three", Keys}.
+true := Lists:Member {2, Vals}.
+3 := Lists:Length Vals.
+3 := Lists:Length Keys.
+
 
 
 Print "All library tests passed.\n".
