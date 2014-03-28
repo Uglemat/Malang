@@ -316,7 +316,7 @@ if __name__ == "__main__":
             if not inp:
                 continue
             try:
-                print("--->", builtin_funcs.tostr(
+                print(builtin_funcs.tostr(
                     eval_malang(inp, 
                                 interpreter_env, "<REPL>"), None).content
                 )

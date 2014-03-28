@@ -9,25 +9,25 @@ Enter this in the shell to start dashing out compound expressions in the REPL:
 Here's an example session:
 
     malang > 234, 923.
-    ---> 923
+    923
     malang > [@ * @.] 9.
-    ---> 81
+    81
     malang > List := #[one, two, three].
-    ---> {one, {two, {three, nil}}}
+    {one, {two, {three, nil}}}
     malang > Lists:Reverse List.
-    ---> {three, {two, {one, nil}}}
+    {three, {two, {one, nil}}}
     malang > Bools:And {true, false}.
-    ---> false
+    false
     malang > Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
-    ---> {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
+    {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
     malang > Dicts:Get {george, Ages}.
-    ---> {ok, 30}
+    {ok, 30}
     malang > Dicts:Get {me, Ages}.
-    ---> sorry
+    sorry
     malang > Dicts:Set {me, 123, Ages}.
-    ---> {{me, 123}, {{george, 30}, {{mary, 22}, {{peter, 20}, nil}}}}
+    {{me, 123}, {{george, 30}, {{mary, 22}, {{peter, 20}, nil}}}}
     malang > Dicts:Remove {peter, Ages}.
-    ---> {{george, 30}, {{mary, 22}, nil}}
+    {{george, 30}, {{mary, 22}, nil}}
 
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
@@ -55,8 +55,8 @@ are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 
 Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
-Lists have almost the same syntax as tuples: #[1, 2, 3], however that is just syntactic sugar.
-\#[1, 2, 3] translates into {1, {2, {3, nil}}}.
+Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just syntactic sugar.
+`#[1, 2, 3]` translates into `{1, {2, {3, nil}}}`.
 
 A Malang program is a list of compound expressions.
 
