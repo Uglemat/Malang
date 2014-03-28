@@ -36,7 +36,7 @@ tokens = (
     'COLON',
     'COMMA',    'ATOM',
     'BIND',     'ARROW',
-    'GT', 'LT', 'GE',  'LE', 'EQ'
+    'GT', 'LT', 'GE',  'LE', 'EQ', 'NE'
 ) + tuple(keywords.values())
 
 states = (
@@ -66,6 +66,7 @@ t_LE = r'<='
 t_GT = r'>'
 t_LT = r'<'
 t_EQ = r'=='
+t_NE = r'!='
 
 
 def t_ATOM(t):
@@ -225,6 +226,11 @@ def p_cmp_expr_le(p):
 def p_cmp_expr_eq(p):
     'cmp_expr : cmp_expr EQ expression'
     p[0] = Node('eq', (p[1], p[3]), infonode=p[1])
+
+def p_cmp_expr_ne(p):
+    'cmp_expr : cmp_expr NE expression'
+    p[0] = Node('ne', (p[1], p[3]), infonode=p[1])
+
 
 def p_cmp_expr_expr(p):
     'cmp_expr : expression'

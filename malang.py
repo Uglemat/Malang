@@ -112,7 +112,9 @@ cmp_funcs = {
     'gt': greater_than,
     'lt': less_than,
     'ge': greater_than_or_eq,
-    'le': less_than_or_eq
+    'le': less_than_or_eq,
+    'eq': equal,
+    'ne': lambda op1, op2: not equal(op1, op2)
 }
 
 def thunk(func, *args, **kwargs):
@@ -178,9 +180,9 @@ def maval(expr, env, filename):
             )
         else:
             raise MalangError("Invalid comparison expression", filename, infonode=expr)
-    elif T == 'eq':
+    elif T in ('eq', 'ne'):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
-        return Node('atom', {True: 'true', False: 'false'}[equal(op1, op2)], infonode=expr)
+        return Node('atom', {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)], infonode=expr)
 
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
