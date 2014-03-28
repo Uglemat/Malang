@@ -45,7 +45,7 @@ The only way to loop is to use recursion. The only control flow construct is 'ca
 
 There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
-of the form {<key>, <val>}.
+of the form `{<key>, <val>}`.
 
 numbers are what you would expect (malang can only parse positive integers, write 0 - `<number>` for
 negative numbers), strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
