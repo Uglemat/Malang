@@ -36,14 +36,14 @@ Tail := [
 
 Map := [
   {Func, List} := @.
-  _Map := [
+  Helper := [
     {L, Acc} := @.
     case L of
       nil -> Acc.
-      {H, T} -> _Map {T, {Func H, Acc}}.
+      {H, T} -> Helper {T, {Func H, Acc}}.
     end.
   ].
-  Reverse (_Map {List, nil}).
+  Reverse (Helper {List, nil}).
 ].
 
 Foldl := [

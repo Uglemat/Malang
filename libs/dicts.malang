@@ -18,12 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Get := [
   {Key, D} := @.
   case D of
-    nil         -> sorry.
-    {{K, V}, T} -> 
-        case K == Key of
-          true  -> {ok, V}.
-          false -> Get {Key, T}.
-        end.
+    nil           -> sorry.
+    {{Key, V}, T} -> {ok, V}.
+    {{K,   V}, T} -> Get {Key, T}.
   end.
 ].
 Remove := [
@@ -31,12 +28,9 @@ Remove := [
   Helper := [
     {Current, Result} := @.
     case Current of
-      nil -> Result.
-      {{K, V}, T} ->
-          case K == Key of
-            true  -> Helper {T, Result}.
-            false -> Helper {T, {{K, V}, Result}}.
-          end.
+      nil           -> Result.
+      {{Key, V}, T} -> Helper {T, Result}.
+      {{K,   V}, T} -> Helper {T, {{K, V}, Result}}.
     end.
   ].
   Helper {D, nil}.
