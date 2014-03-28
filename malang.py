@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from parser import parse
 import builtin_funcs
-from utils import Env, Node,  change_directory, MalangError, InvalidMatch
+from utils import Env, Node,  change_directory, MalangError, InvalidMatch, AST_to_str
 import re, operator, sys, os
 
 try:
@@ -174,9 +174,17 @@ def maval(expr, env, filename):
     Don't call `maval' directly, call `eval_malang' instead (because `eval_malang' never returns a thunk,
     only Node() values).
     """
+
     T = expr._type
     if T in ('number', 'str', 'atom'):
         return expr
+
+    elif T == 'uminus':
+        op = trampoline(expr.content, env, filename)
+        if not op._type == 'number':
+            raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
+        return Node('number', -op.content, infonode=expr)
+
     elif T in ('plus', 'minus', 'divide', 'times', 'modulo'):
 
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
@@ -260,7 +268,7 @@ def maval(expr, env, filename):
             return thunk(maval, arrow['expr'], env_copy, filename)
         raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
 
-    raise MalangError("Unknown expression", filename, infonode=expr)
+    raise MalangError("Unknown expression {!r}".format(AST_to_str(expr)), filename, infonode=expr)
 
 
 

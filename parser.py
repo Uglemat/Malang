@@ -45,6 +45,12 @@ states = (
   ('str','exclusive'),
 )
 
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE', 'MODULO'),
+    ('right', 'UMINUS'),
+)
+
 
 # Regular expression rules for simple tokens
 t_PLUS    = r'\+'
@@ -240,34 +246,36 @@ def p_cmp_expr_expr(p):
     p[0] = p[1]
 
 def p_expression_plus(p):
-    'expression : expression PLUS term'
+    'expression : expression PLUS expression'
     p[0] = Node('plus', (p[1], p[3]), infonode=p[1])
 
+
 def p_expression_minus(p):
-    'expression : expression MINUS term'
+    'expression : expression MINUS expression'
     p[0] = Node('minus', (p[1], p[3]), infonode=p[1])
 
 
-def p_expression_term(p):
-    'expression : term'
-    p[0] = p[1]
+def p_expression_uminus(p):
+    'expression : MINUS expression %prec UMINUS'
+    p[0] = Node('uminus', p[2], infonode=p[1])
 
-def p_term_times(p):
-    'term : term TIMES fncall'
+
+def p_expression_times(p):
+    'expression : expression TIMES expression'
     p[0] = Node('times', (p[1], p[3]), infonode=p[1])
 
-def p_term_div(p):
-    'term : term DIVIDE fncall'
+def p_expression_div(p):
+    'expression : expression DIVIDE expression'
     p[0] = Node('divide', (p[1], p[3]), infonode=p[1])
 
-def p_term_mod(p):
-    'term : term MODULO fncall'
+def p_expression_mod(p):
+    'expression : expression MODULO expression'
     p[0] = Node('modulo', (p[1], p[3]), infonode=p[1])
 
-
-def p_term_fncall(p):
-    'term : fncall'
+def p_expression_fncall(p):
+    'expression : fncall'
     p[0] = p[1]
+
 
 def p_fncall(p):
     'fncall : fncall module_access'
@@ -296,7 +304,6 @@ def p_item_num(p):
             | func_def
             | case_of'''
     p[0] = p[1]
-
 
 
 def p_item_expr(p):

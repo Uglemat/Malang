@@ -21,7 +21,17 @@ def get_lineno(infonode):
         infonode.lineno is not None):
         return infonode.lineno
     return None
-    
+
+def AST_to_str(ast):
+    if isinstance(ast, Node):
+        if isinstance(ast.content, (list, tuple)):
+            return "{}({})".format(ast._type, ", ".join(AST_to_str(elem) for elem in ast.content))
+        elif isinstance(ast.content, Node):
+            return "{}({})".format(ast._type, AST_to_str(ast.content))
+        else:
+            return "{}({})".format(ast._type, ast.content)
+    else:
+        return str(ast)
 
 class MalangError(Exception):
     def __init__(self, text, filename, infonode=None):
@@ -49,8 +59,6 @@ class Node(object):
         self.lineno = lineno
         if self.lineno is None:
             self.lineno = get_lineno(infonode)
-
-        #print("Lineno:, ", self._type,  self.lineno)
 
 class Env(object):
     def __init__(self, parent=None, bindings=None):

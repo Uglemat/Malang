@@ -47,9 +47,8 @@ There are 6 types of values: numbers (only integers), strings, atoms, tuples, fu
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
 of the form `{<key>, <val>}`.
 
-numbers are what you would expect (malang can only parse positive integers, write 0 - `<number>` for
-negative numbers), strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
-"Helloo!, and then she said ... \n\n \t\t """` in triple quotes. Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`,
+numbers are what you would expect, strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
+"Helloo!, and then she said ... \n\n \t\t """` in triple quotes. In my code, I escape quotes inside triple quotes, just because the malang-mode for emacs doesn't understand triple quotes (it thinks it is 3 different strings). Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`,
 and are just values that you can use in your programs (in tuples, et cetera). Identifiers are names which
 are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 
