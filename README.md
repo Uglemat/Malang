@@ -56,7 +56,7 @@ are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
 Lists have almost the same syntax as tuples: #[1, 2, 3], however that is just syntactic sugar.
-#[1, 2, 3] translates into {1, {2, {3, nil}}}.
+\#[1, 2, 3] translates into {1, {2, {3, nil}}}.
 
 A Malang program is a list of compound expressions.
 
