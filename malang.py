@@ -260,7 +260,7 @@ main_env = Env(bindings={'Builtins': builtins_module})
 
 
 
-stdlib_location = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stdlib.malang")
+stdlib_location = os.path.join(os.path.dirname(os.path.abspath(__file__)), "init.malang")
 with open(stdlib_location) as f:
     with change_directory(os.path.dirname(os.path.abspath(__file__))):
         eval_malang(f.read(), main_env, stdlib_location)
