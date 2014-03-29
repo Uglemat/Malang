@@ -26,6 +26,7 @@ try:
 except ImportError:
     pass
 
+
 sys.setrecursionlimit(5000)
     
 
@@ -301,6 +302,22 @@ with open(stdlib_location) as f:
 
 if __name__ == "__main__":
     interpreter_env = Env(parent=main_env)
+
+    if 'readline' in dir():
+        readline.parse_and_bind("tab: complete")
+        class Completer:
+            matches = []
+            @classmethod
+            def completer(cls, text, state):
+                if state == 0:
+                    cls.matches = [var for var in interpreter_env.all_identifiers()
+                                   if var.startswith(text)]
+                try:
+                    return cls.matches[state]
+                except IndexError:
+                    return None
+
+        readline.set_completer(Completer.completer)
 
     if len(sys.argv) == 1:
         print("Usage: $ malang [-i] <file1> <file2> ... <fileN>")

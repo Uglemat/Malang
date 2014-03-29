@@ -45,13 +45,19 @@ def random_range(tup, env):
     assert (num1._type, num2._type) == ('number', 'number')
     return Node('number', random.randrange(num1.content,num2.content))
 
-@builtin("List_Env")
-def list_env(_a, env):
+@builtin("ListEnv")
+def list_env(_arg, env):
     for k, v in env.bindings.items():
-        print("{:<20} => {}".format(k, tostr(v, env).content))
+        print("{:<15} => {}".format(k, tostr(v, env).content))
     if not env.parent is None:
         return list_env(None, env.parent)
     return Node('atom', 'ok')
+
+@builtin("ClearEnv")
+def clear_env(_arg, env):
+    env.clear()
+    return Node('atom', 'ok')
+
 
 @builtin("ToList")
 def tolist(tup, env):

@@ -89,7 +89,14 @@ class Env(object):
 
     def shallow_copy(self):
         return Env(parent=self.parent, bindings=self.bindings.copy())
+    
+    def clear(self):
+        self.bindings = {}
 
+    def all_identifiers(self):
+        return (set(self.bindings.keys()) | 
+                (set() if self.parent is None else
+                 self.parent.all_identifiers()))
 
 class change_directory:
     """Context manager for changing the current working directory"""
