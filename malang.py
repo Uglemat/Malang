@@ -236,7 +236,7 @@ def maval(expr, env, filename):
     elif T == 'fncall':
         func, arg = (trampoline(e, env, filename) for e in expr.content)
         if func._type == 'builtin':
-            return func.content(arg, env)
+            return func.content(arg, env, filename, expr)
         elif func._type == 'function':
             return thunk(maval,
                          func.content['code'],
@@ -270,12 +270,12 @@ def maval(expr, env, filename):
 
 
 
-def require(filename, env):
-    assert filename._type == 'str', "Filname must be a string"
-    with open(filename.content) as f:
+def require(filename_to_open, env, filename, infonode):
+    utils.assert_type(filename_to_open, 'str', filename, infonode)
+    with open(filename_to_open.content) as f:
         code = f.read()
     module_env = Env(parent=main_env)
-    eval_malang(code, module_env, filename.content)
+    eval_malang(code, module_env, filename_to_open.content)
     return Node('module', module_env)
 
 
@@ -335,7 +335,7 @@ if __name__ == "__main__":
                                 interpreter_env, "<REPL>"), None).content
                 )
 
-            except Exception as e:
-                print("ERROR:", e)
+            except MalangError as e:
+                print("Error:", e)
 
                 
