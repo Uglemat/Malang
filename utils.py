@@ -41,15 +41,22 @@ def AST_to_str(ast):
     else:
         return str(ast)
 
-def assert_type(node, _type, filename, infonode, tuplelength=None):
-    if not node._type == _type:
-        raise MalangError("Incorrect type, got {}, expected {}.".format(node._type, _type),
-                          filename=filename,
-                          infonode=infonode)
-    elif node._type == 'tuple' and tuplelength is not None and len(node.content) != tuplelength:
-        text = "Tuple has invalid length, got tuple of length {}, expected tuple of length {}".format(
-            len(node.content), tuplelength)
-        raise MalangError(text, filename, infonode)
+
+def assert_type(node, types, filename, infonode, tuplelength=None):
+    if isinstance(types, str):
+        T = types
+        if not node._type == T:
+            raise MalangError("Incorrect type: got {!r}, expected {!r}.".format(node._type, T),
+                              filename, infonode)
+        elif node._type == 'tuple' and tuplelength is not None and len(node.content) != tuplelength:
+            text = "Tuple has invalid length: got tuple of length {}, expected tuple of length {}".format(
+                len(node.content), tuplelength)
+            raise MalangError(text, filename, infonode)
+
+    elif node._type not in types:
+        raise MalangError("Incorrect type: got {!r}, expected one of {!r}.".format(
+            node._type, types),
+                          filename, infonode)
 
 class MalangError(Exception):
     def __init__(self, text, filename, infonode=None):

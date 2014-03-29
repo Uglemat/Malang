@@ -235,6 +235,7 @@ def maval(expr, env, filename):
 
     elif T == 'fncall':
         func, arg = (trampoline(e, env, filename) for e in expr.content)
+        utils.assert_type(func, ('builtin', 'function'), filename, expr)
         if func._type == 'builtin':
             return func.content(arg, env, filename, expr)
         elif func._type == 'function':
@@ -270,6 +271,9 @@ def maval(expr, env, filename):
 
 
 
+
+# The reason I don't define `require` in the builtin_funcs module is that I need access to
+# `main_env` inside `require`.
 def require(filename_to_open, env, filename, infonode):
     utils.assert_type(filename_to_open, 'str', filename, infonode)
     with open(filename_to_open.content) as f:

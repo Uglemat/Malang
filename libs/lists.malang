@@ -19,7 +19,7 @@ Reverse := [
   Helper := [
     {List, Acc} := @.
     case List of
-      #[] -> Acc.
+      #[]    -> Acc.
       {H, T} -> Helper {T, {H, Acc}}.
     end.
   ].
@@ -39,7 +39,7 @@ Map := [
   Helper := [
     {L, Acc} := @.
     case L of
-      #[] -> Acc.
+      #[]    -> Acc.
       {H, T} -> Helper {T, {Func H, Acc}}.
     end.
   ].
@@ -139,7 +139,7 @@ Remove := [
   Helper := [
     {Current, Acc} := @.
     case Current of
-      #[] -> Acc.
+      #[]        -> Acc.
       {Elem,  T} -> Helper {T, Acc}.
       {Other, T} -> Helper {T, {Other, Acc}}.
     end.
@@ -152,7 +152,7 @@ Filter := [
   Helper := [
     {Current, Acc} := @.
     case Current of
-      #[] -> Acc.
+      #[]    -> Acc.
       {H, T} ->
         case Bools:Truthy (F H) of
           true  -> Helper {T, {H, Acc}}.
@@ -161,4 +161,16 @@ Filter := [
     end.
   ].
   Reverse (Helper {List, #[]}).
+].
+
+Zip := [
+  {L1, L2} := @.
+  Helper := [
+    case @ of
+      {nil, _, Acc}             -> Acc.
+      {_, nil, Acc}             -> Acc.
+      {{H1, T1}, {H2, T2}, Acc} -> Helper {T1, T2, {{H1, H2}, Acc}}.
+    end.
+  ].
+  Reverse (Helper {L1, L2, #[]}).
 ].
