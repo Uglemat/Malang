@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Require := Builtins:Require.
 Print   := Builtins:Print.
+Input   := Builtins:Input.
 ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
+
 
 Lists := Require "libs/lists.malang".
 Bools := Require "libs/bools.malang".

@@ -16,6 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 
+
+try:
+    readline_imported = True
+    import readline
+except ImportError:
+    readline_imported = False
+
+
 def get_lineno(infonode):
     if (hasattr(infonode, "lineno") and
         infonode.lineno is not None):
@@ -109,3 +117,31 @@ class change_directory:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.saved_path)
+
+
+class tab_completion:
+    def __enter__(self):
+        if readline_imported:
+            readline.parse_and_bind("tab: complete")
+
+    def __exit__(self, etype, value, traceback):
+        """
+        Couldn't find out how I'm supposed to disable tab completion,
+        setting tab to something different seems to work.
+        """
+        if readline_imported:
+            readline.parse_and_bind("tab: nothing")
+
+class Completer:
+    def __init__(self, env):
+        self.env = env
+        self.matches = []
+
+    def __call__(self, text, state):
+        if state == 0:
+            self.matches = [var for var in self.env.all_identifiers()
+                            if var.startswith(text)]
+        try:
+            return self.matches[state]
+        except IndexError:
+            return None

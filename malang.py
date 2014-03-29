@@ -18,13 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from parser import parse
 import builtin_funcs
-from utils import Env, Node,  change_directory, MalangError, InvalidMatch, AST_to_str
-import re, operator, sys, os
-
-try:
-    import readline
-except ImportError:
-    pass
+from utils import Env, Node, change_directory, MalangError, readline_imported
+import utils
+import re, operator, sys
+from os import path
 
 
 sys.setrecursionlimit(5000)
@@ -86,7 +83,7 @@ def patternmatch(pattern, expr, env, filename):
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
-    exception = InvalidMatch("Invalid match", filename, infonode=pattern)
+    exception = utils.InvalidMatch("Invalid match", filename, infonode=pattern)
 
 
     if pattern._type == 'list':
@@ -264,12 +261,12 @@ def maval(expr, env, filename):
             env_copy = env.shallow_copy()
             try:
                 patternmatch(arrow['pattern'], val, env_copy, filename)
-            except InvalidMatch:
+            except utils.InvalidMatch:
                 continue
             return thunk(maval, arrow['expr'], env_copy, filename)
         raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
 
-    raise MalangError("Unknown expression {!r}".format(AST_to_str(expr)), filename, infonode=expr)
+    raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), filename, infonode=expr)
 
 
 
@@ -295,47 +292,39 @@ main_env = Env(bindings={'Builtins': builtins_module})
 
 
 
-stdlib_location = os.path.join(os.path.dirname(os.path.abspath(__file__)), "init.malang")
+stdlib_location = path.join(path.dirname(path.abspath(__file__)), "init.malang")
 with open(stdlib_location) as f:
-    with change_directory(os.path.dirname(os.path.abspath(__file__))):
+    with change_directory(path.dirname(path.abspath(__file__))):
         eval_malang(f.read(), main_env, stdlib_location)
 
 if __name__ == "__main__":
     interpreter_env = Env(parent=main_env)
 
-    if 'readline' in dir():
-        readline.parse_and_bind("tab: complete")
-        class Completer:
-            matches = []
-            @classmethod
-            def completer(cls, text, state):
-                if state == 0:
-                    cls.matches = [var for var in interpreter_env.all_identifiers()
-                                   if var.startswith(text)]
-                try:
-                    return cls.matches[state]
-                except IndexError:
-                    return None
-
-        readline.set_completer(Completer.completer)
+    if readline_imported:
+        import readline
+        readline.set_completer(utils.Completer(interpreter_env))
 
     if len(sys.argv) == 1:
         print("Usage: $ malang [-i] <file1> <file2> ... <fileN>")
         exit()
 
+
     interactive = "-i" in sys.argv
     if interactive:
         sys.argv.remove("-i")
 
+
     for filename in sys.argv[1:]:
         with open(filename) as f:
-            with change_directory(os.path.dirname(os.path.abspath(filename))):
+            with change_directory(path.dirname(path.abspath(filename))):
                 eval_malang(f.read(), interpreter_env, filename)
+
 
     if interactive:
         while True:
             try:
-                inp = input('malang > ')
+                with utils.tab_completion():
+                    inp = input('malang > ')
             except EOFError:
                 break
             if not inp:

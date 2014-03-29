@@ -33,6 +33,11 @@ def _print(s, env):
           tostr(s, env).content, end="")
     return s
 
+@builtin("Input")
+def _input(prompt, env):
+    assert prompt._type == 'str'
+    return Node('str', input(prompt.content))
+
 @builtin("Sleep")
 def sleep(t, env):
     time.sleep(t.content/1000.0)
