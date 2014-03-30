@@ -36,14 +36,7 @@ Tail := [
 
 Map := [
   {Func, List} := @.
-  Helper := [
-    {L, Acc} := @.
-    case L of
-      #[]    -> Acc.
-      {H, T} -> Helper {T, {Func H, Acc}}.
-    end.
-  ].
-  Reverse (Helper {List, #[]}).
+  #[Func E | E <- List].
 ].
 
 Foldl := [
@@ -136,15 +129,7 @@ Repeat := [
 
 Remove := [
   {Elem, List} := @.
-  Helper := [
-    {Current, Acc} := @.
-    case Current of
-      #[]        -> Acc.
-      {Elem,  T} -> Helper {T, Acc}.
-      {Other, T} -> Helper {T, {Other, Acc}}.
-    end.
-  ].
-  Reverse (Helper {List, #[]}).
+  #[E | E <- List, E != Elem].
 ].
 
 Filter := [
