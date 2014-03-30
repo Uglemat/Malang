@@ -148,3 +148,19 @@ Zip := [
   ].
   Reverse (Helper {L1, L2, #[]}).
 ].
+
+Take := [
+  {N, List} := @.
+  Helper := [
+    case @ of
+      {_, nil, Acc} -> Acc.
+      {0, _,   Acc} -> Acc.
+      {Left, {H, T}, Acc} ->
+        Helper {Left-1, T, {H, Acc}}.
+    end.
+  ].
+  case N > 0 of
+    true  -> Reverse (Helper {N, List, nil}).
+    false -> #[].
+  end.
+].

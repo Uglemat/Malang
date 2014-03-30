@@ -7,10 +7,24 @@
 ;; enough with emacs. I'm considering making it stop highlighting comments.
 ;;
 
+(defun insert-func ()
+  (interactive)
+  (beginning-of-line)
+  (let ((indentation (skip-chars-forward " \t")))
+    (end-of-line)
+    (insert " [\n")
+    (indent-to (+ indentation 2))
+    (save-excursion
+      (insert "\n")
+      (indent-to indentation)
+      (insert "]\."))))
+
 (defvar malang-mode-hook nil)
+
 (defvar malang-mode-map
-  (let ((malang-mode-map (make-keymap)))
-    malang-mode-map)
+  (let ((map (make-keymap)))
+    (define-key map (kbd "C-c C-f") 'insert-func)
+    map)
   "Keymap for malang major mode")
 
 (add-to-list 'auto-mode-alist '("\\.malang\\'" . malang-mode))

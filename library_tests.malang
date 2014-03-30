@@ -125,6 +125,9 @@ Nums := Lists:Remove {4, Nums}.
 #[{1, one}] := Lists:Zip {#[1], #[one, two]}.
 #[{1, one}] := Lists:Zip {#[1, 2], #[one]}.
 
+#[] := Lists:Take {0, Nums}.
+#[one] := Lists:Take {1, #[one, two, three]}.
+#[one, two, three] := Lists:Take {50, #[one, two, three]}.
 
 """
         Dicts Tests:

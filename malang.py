@@ -286,6 +286,7 @@ def maval(expr, env, filename):
         eval_list_comprehension(env, leftside_expr, emitters, filename, acc=result)
         return python_list_to_malang_list(result)
 
+
     elif T == 'bind':
         pattern, e = expr.content
         val = trampoline(e, env, filename)
