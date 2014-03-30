@@ -78,6 +78,66 @@ def transform_list_to_tuple(elems):
     else:
         return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:])))
 
+def python_list_to_malang_list(_list):
+    acc = Node('atom', 'nil')
+    while _list:
+        acc = Node('tuple', (_list.pop(), acc))
+    
+    return acc
+
+def generate_items(malang_list, filename):
+    """
+    A generator that yields all the elements of a malang list
+    """
+    while not is_nil(malang_list):
+        utils.assert_type(malang_list, 'tuple', filename, infonode=malang_list, tuplelength=2)
+        head, malang_list = malang_list.content
+        yield head
+
+def is_nil(v):
+    return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
+
+def eval_list_comprehension(env, expr, emitters, filename, acc):
+    """
+    This evaluates the list comprehension, and mutates `acc`, which should be
+    a python list. `expr` is the expression on the left hand side of the pipe
+    in a list comprehension (like #[<expr> | ...]). Emitters is a python tuple
+    of `emitters`, which are the things on the right hand side of a list comprehension,
+    seperated by commas (like #[<expr> | <emitter1> , <emitter2>, ... <emitterN> ].
+    An emitter can either be `filter`, which restricts what goes into the list, or
+    or an actual emitter, which is a pattern combined with an expression that
+    evaluates to a list, and the pattern is pattern matched with each element of the list
+    one at a time.
+    """
+
+    emitter = emitters[0]
+    last_emitter = len(emitters) <= 1
+
+    if emitter._type == 'filter':
+        result = trampoline(emitter.content, env, filename)
+        if result._type == 'atom' and result.content == 'true':
+            if last_emitter:
+                acc.append(trampoline(expr, env, filename))
+            else:
+                eval_list_comprehension(env, expr, emitters[1:], filename, acc)
+
+    elif emitter._type == 'emitter':
+        pattern     = emitter.content['pattern']
+        malang_list = trampoline(emitter.content['expr'], env, filename)
+
+
+        if last_emitter:
+            for item in generate_items(malang_list, filename):
+                temp_env = env.shallow_copy()
+                patternmatch(pattern, item, temp_env, filename)
+                acc.append(trampoline(expr, temp_env, filename))
+        else:
+            for item in generate_items(malang_list, filename):
+                temp_env = env.shallow_copy()
+                patternmatch(pattern, item, temp_env, filename)
+                eval_list_comprehension(temp_env, expr, emitters[1:], filename, acc=acc)
+
+
 def patternmatch(pattern, expr, env, filename):
     """ `expr` should've been evaluated, `pattern` should not yet have been evaluated.
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
@@ -219,13 +279,22 @@ def maval(expr, env, filename):
         elems = tuple(trampoline(e, env, filename) for e in expr.content)
         return transform_list_to_tuple(elems)
 
+    elif T == 'list_comprehension':
+        result = []
+        leftside_expr, emitters = expr.content
+
+        eval_list_comprehension(env, leftside_expr, emitters, filename, acc=result)
+        return python_list_to_malang_list(result)
+
     elif T == 'bind':
         pattern, e = expr.content
         val = trampoline(e, env, filename)
         patternmatch(pattern, val, env, filename)
         return val
+
     elif T == 'id':
         return env.get(expr.content, filename, infonode=expr)
+
     elif T == 'module_access':
         module = trampoline(expr.content[0], env, filename)
         assert module._type == 'module', "That's not a module"

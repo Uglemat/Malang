@@ -37,6 +37,7 @@ tokens = (
     'COLON',    'STARTLIST',
     'COMMA',    'ATOM',
     'BIND',     'ARROW',
+    'LEFTARROW','PIPE',
     'GT', 'LT', 'GE',  'LE', 'EQ', 'NE'
 ) + tuple(keywords.values())
 
@@ -69,6 +70,8 @@ t_BIND = r':='
 t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
 t_ARROW = r'->'
+t_LEFTARROW = r'<-'
+t_PIPE = r'\|'
 t_GE = r'>='
 t_LE = r'<='
 t_GT = r'>'
@@ -336,6 +339,27 @@ def p_tuple(p):
 def p_tuple_empty(p):
     'tuple : LBRACE RBRACE'
     p[0] = Node('tuple', (), lineno=p.lineno(1))
+
+def p_list_comprehension(p):
+    'list : STARTLIST match_expr PIPE comprehension_list RBRACKET'
+    p[0] = Node('list_comprehension', (p[2], p[4]))
+
+def p_comprehension_list(p):
+    'comprehension_list : match_expr LEFTARROW match_expr COMMA comprehension_list'
+    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}),) + p[5]
+
+def p_comprehension_list_single(p):
+    'comprehension_list : match_expr LEFTARROW match_expr'
+    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}),)
+
+def p_comprehension_list_filter(p):
+    'comprehension_list : match_expr COMMA comprehension_list'
+    p[0] = (Node('filter', p[1]),) + p[3]
+
+def p_comprehension_list_filter_single(p):
+    'comprehension_list : match_expr'
+    p[0] = (Node('filter', p[1]),)
+
 
 def p_list(p):
     'list : STARTLIST expr_list RBRACKET'

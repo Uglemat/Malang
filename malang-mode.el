@@ -1,4 +1,11 @@
 
+;;
+;; A problem with this mode is that it doesn't understand triple quotes, so
+;; if there are quotes in triple quotes it'll mess up the syntax highlighting,
+;; even though it's completely valid malang code. This mode thinks triple quotes
+;; are 3 different strings. I'd fix it if I knew how, I'm just not proficient 
+;; enough with emacs. I'm considering making it stop highlighting comments.
+;;
 
 (defvar malang-mode-hook nil)
 (defvar malang-mode-map
@@ -10,7 +17,7 @@
 
 (defconst malang-font-lock-keywords
   (list
-   '("\\(\\<\\(case\\|of\\|end\\)\\>\\|->\\)" . font-lock-keyword-face)
+   '("\\(\\<\\(case\\|of\\|end\\)\\>\\|->\\|<-\\)" . font-lock-keyword-face)
    '("\\<\\([a-z][A-Za-z0-9_]*\\)\\>" . font-lock-constant-face)
    '("\\(\\<\\([A-Z_][A-Za-z0-9_]*\\)\\>\\|@\\)" . font-lock-variable-name-face))
   "highlighting expressions for malang mode.")

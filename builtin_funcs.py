@@ -76,7 +76,7 @@ def tolist(tup, env, filename, infonode):
                               tolist(Node('tuple', tup.content[1:]), env)))
 
 @builtin("ToStr")
-def tostr(val, env, filename="", infonode=None, depth=0):
+def tostr(val, env=None, filename="", infonode=None, depth=0):
     T = val._type
     if T == 'tuple' and depth > 50:
         content = "{...}"
