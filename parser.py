@@ -342,23 +342,23 @@ def p_tuple_empty(p):
 
 def p_list_comprehension(p):
     'list : STARTLIST match_expr PIPE comprehension_list RBRACKET'
-    p[0] = Node('list_comprehension', (p[2], p[4]))
+    p[0] = Node('list_comprehension', (p[2], p[4]), lineno=p.lineno(1))
 
 def p_comprehension_list(p):
     'comprehension_list : match_expr LEFTARROW match_expr COMMA comprehension_list'
-    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}),) + p[5]
+    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}, infonode=p[1]),) + p[5]
 
 def p_comprehension_list_single(p):
     'comprehension_list : match_expr LEFTARROW match_expr'
-    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}),)
+    p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}, infonode=p[1]),)
 
 def p_comprehension_list_filter(p):
     'comprehension_list : match_expr COMMA comprehension_list'
-    p[0] = (Node('filter', p[1]),) + p[3]
+    p[0] = (Node('filter', p[1], infonode=p[1]),) + p[3]
 
 def p_comprehension_list_filter_single(p):
     'comprehension_list : match_expr'
-    p[0] = (Node('filter', p[1]),)
+    p[0] = (Node('filter', p[1], infonode=p[1]),)
 
 
 def p_list(p):

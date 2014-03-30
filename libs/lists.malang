@@ -164,3 +164,11 @@ Take := [
     false -> #[].
   end.
 ].
+
+Drop := [
+  case @ of
+    {_, #[]}    -> #[].
+    {0, List}   -> List.
+    {N, {H, T}} -> Drop {N-1, T}.
+  end.
+].

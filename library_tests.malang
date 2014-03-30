@@ -129,6 +129,12 @@ Nums := Lists:Remove {4, Nums}.
 #[one] := Lists:Take {1, #[one, two, three]}.
 #[one, two, three] := Lists:Take {50, #[one, two, three]}.
 
+#[1,2,3] := Lists:Drop {0, Nums}.
+#[2,3] := Lists:Drop {1, Nums}.
+#[3]   := Lists:Drop {2, Nums}.
+#[]    := Lists:Drop {3, Nums}.
+#[]    := Lists:Drop {4, Nums}.
+
 """
         Dicts Tests:
 """.

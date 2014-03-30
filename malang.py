@@ -69,14 +69,15 @@ def less_than_or_eq(val_1, val_2):
     return less_than(val_1, val_2) or equal(val_1, val_2)
 
 
-def transform_list_to_tuple(elems):
+def transform_list_to_tuple(elems, infonode):
     """
     `elems` may or may not have been evaluated, this function should work either way
     """
     if len(elems) == 0:
-        return Node('atom', 'nil')
+        return Node('atom', 'nil', infonode=infonode)
     else:
-        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:])))
+        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
+                    infonode=infonode)
 
 def python_list_to_malang_list(_list):
     acc = Node('atom', 'nil')
@@ -147,7 +148,8 @@ def patternmatch(pattern, expr, env, filename):
 
 
     if pattern._type == 'list':
-        return patternmatch(transform_list_to_tuple(pattern.content), expr, env, filename)
+        return patternmatch(transform_list_to_tuple(pattern.content, infonode=pattern),
+                            expr, env, filename)
 
     elif env.is_unbound_identifier(pattern):
         env.bind(pattern.content, expr)
@@ -168,10 +170,6 @@ def patternmatch(pattern, expr, env, filename):
         for pat, e in zip(pattern.content, expr.content):
             patternmatch(pat, e, env, filename)
         return
-
-    elif pattern._type == 'list':
-        print("Hay")
-        return patternmatch(transform_list_to_tuple(pattern), expr, env, filename)
 
     elif pattern._type in ('number', 'str', 'atom'):
         if not pattern.content == expr.content:
@@ -277,7 +275,7 @@ def maval(expr, env, filename):
 
     elif T == 'list':
         elems = tuple(trampoline(e, env, filename) for e in expr.content)
-        return transform_list_to_tuple(elems)
+        return transform_list_to_tuple(elems, expr)
 
     elif T == 'list_comprehension':
         result = []
