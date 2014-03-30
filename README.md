@@ -10,8 +10,8 @@ Here's an example session:
 
     malang > 234, 923.
     923
-    malang > [@ * @.] 9.
-    81
+    malang > [@ * @.] 5.
+    25
     malang > List := #[one, two, three].
     {one, {two, {three, nil}}}
     malang > Lists:Reverse List.
@@ -25,9 +25,12 @@ Here's an example session:
     malang > Dicts:Get {me, Ages}.
     sorry
     malang > Dicts:Set {me, 123, Ages}.
-    {{me, 123}, {{george, 30}, {{mary, 22}, {{peter, 20}, nil}}}}
+    {{me, 123}, {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}}
     malang > Dicts:Remove {peter, Ages}.
-    {{george, 30}, {{mary, 22}, nil}}
+    {{mary, 22}, {{george, 30}, nil}}
+    malang > Pairings := #[{P1, P2} | {P1, _} <- Ages, {P2, _} <- Ages, P1 > P2].
+    {{peter, mary}, {{peter, george}, {{mary, george}, nil}}}
+    malang > 
 
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.

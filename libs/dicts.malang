@@ -26,15 +26,7 @@ Get := [
 
 Remove := [
   {Key, D} := @.
-  Helper := [
-    {Current, Result} := @.
-    case Current of
-      #[]           -> Result.
-      {{Key, V}, T} -> Helper {T, Result}.
-      {{K,   V}, T} -> Helper {T, {{K, V}, Result}}.
-    end.
-  ].
-  Helper {D, #[]}.
+  #[{K, V} | {K, V} <- D, K != Key].
 ].
 
 Set := [
