@@ -149,18 +149,7 @@ Remove := [
 
 Filter := [
   {F, List} := @.
-  Helper := [
-    {Current, Acc} := @.
-    case Current of
-      #[]    -> Acc.
-      {H, T} ->
-        case Bools:Truthy (F H) of
-          true  -> Helper {T, {H, Acc}}.
-          false -> Helper {T, Acc}.
-        end.
-    end.
-  ].
-  Reverse (Helper {List, #[]}).
+  #[E | E <- List, Bools:Truthy(F E)].
 ].
 
 Zip := [
