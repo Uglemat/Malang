@@ -164,6 +164,15 @@ Add := [{N1, N2} := @.
 #[]    := Lists:Drop {3, Nums}.
 #[]    := Lists:Drop {4, Nums}.
 
+#[8] := Lists:Takewhile {[@ > 3.], #[8, 2, 10, 3]}.
+#[1, 2, 3] := Lists:Takewhile {[@ < 4.], #[1, 2, 3, 4, 5, 6]}.
+#[] := Lists:Takewhile {[@ != "hay".], #[]}.
+
+#[] := Lists:Dropwhile {[@ > 0.], #[1, 2, 3]}.
+#[] := Lists:Dropwhile {[@ > 0.], #[]}.
+#[1, 2, 3, 4, 5] := Lists:Dropwhile {[@ > 4.], #[1, 2, 3, 4, 5]}.
+#[2, 1] := Lists:Dropwhile {[@ > 2.], #[4, 3, 2, 1]}.
+
 """
         Dicts Tests:
 """.

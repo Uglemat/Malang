@@ -219,3 +219,30 @@ Drop := [
     {N, {H, T}} -> Drop {N-1, T}.
   end.
 ].
+
+
+Takewhile := [
+  {F, List} := @.
+  Helper := [
+    case @ of
+      {nil,    Acc} -> Acc.
+      {{H, T}, Acc} ->
+        case Bools:Truthy (F H) of
+          true  -> Helper {T, {H, Acc}}.
+          false -> Acc.
+        end.
+    end.
+  ].
+  Reverse (Helper {List, nil}).
+].
+
+Dropwhile :=  [
+  case @ of
+    {_, #[]}    -> #[].
+    {F, {H, T}} ->
+      case Bools:Truthy (F H) of
+        true  -> Dropwhile {F, T}.
+        false -> {H, T}.
+      end.
+  end.
+].
