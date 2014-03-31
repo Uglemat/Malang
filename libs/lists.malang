@@ -122,6 +122,30 @@ All := [
   end.
 ].
 
+
+And := [
+  case @ of
+    #[]    -> true.
+    {H, T} ->
+      case Bools:Truthy H of
+        false -> false.
+        true  -> And T.
+      end.
+  end.
+].
+
+Or := [
+  case @ of
+    #[]    -> false.
+    {H, T} ->
+      case Bools:Truthy H of
+        true  -> true.
+        false -> Or T.
+      end.
+  end.
+].
+
+
 Member := [
   {Val, List} := @.
   Any {[@ == Val.], List}.

@@ -58,16 +58,7 @@ true  := Bools:Xor {true, false}.
 false := Bools:Xor {true, true}.
 false := Bools:Xor {0, 0}.
 
-true  := Bools:All #[].
-true  := Bools:All #[1, 2, 3].
-true  := Bools:All #[true].
-false := Bools:All #[1, 2, false, 4].
-false := Bools:All #[0].
 
-false := Bools:Any #[].
-false := Bools:Any #[0, false, nil, "", {}].
-true  := Bools:Any #[0, false, nil, "", {}, "Hello"].
-true  := Bools:Any #[true, 1].
 
 """
         Lists Tests:
@@ -116,6 +107,19 @@ false := Lists:Any {[@ == 2.], #[1, 3]}.
 true  := Lists:All {[@ == 4.], #[4, 4, 4, 4]}.
 true  := Lists:All {[@ == 4.], #[]}.
 false := Lists:All {[@ == 4.], #[4, 4, 4, four, 4]}.
+
+
+true  := Lists:And #[].
+true  := Lists:And #[1, 2, 3].
+true  := Lists:And #[true].
+false := Lists:And #[1, 2, false, 4].
+false := Lists:And #[0].
+
+false := Lists:Or #[].
+false := Lists:Or #[0, false, nil, "", {}].
+true  := Lists:Or #[0, false, nil, "", {}, "Hello"].
+true  := Lists:Or #[true, 1].
+
 
 true  := Lists:Member {"str", #[one, 2, "str"]}.
 false := Lists:Member {str,   #[one, 2, "Str"]}.

@@ -57,25 +57,3 @@ Not := [
     false -> true.
   end.
 ].
-
-All := [
-  case @ of
-    #[]    -> true.
-    {H, T} ->
-      case Truthy H of
-        false -> false.
-        true  -> All T.
-      end.
-  end.
-].
-
-Any := [
-  case @ of
-    #[]    -> false.
-    {H, T} ->
-      case Truthy H of
-        true  -> true.
-        false -> Any T.
-      end.
-  end.
-].
