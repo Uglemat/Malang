@@ -125,6 +125,16 @@ Nums := Lists:Remove {4, Nums}.
 #[{1, one}] := Lists:Zip {#[1], #[one, two]}.
 #[{1, one}] := Lists:Zip {#[1, 2], #[one]}.
 
+Add := [{N1, N2} := @.
+        N1 + N2.].
+
+#[]  := Lists:Zipwith {Add, #[], #[]}.
+#[]  := Lists:Zipwith {Add, #[1, 2], #[]}.
+#[]  := Lists:Zipwith {Add, #[], #[1, 2, 4]}.
+#[4] := Lists:Zipwith {Add, #[1, 2], #[3]}.
+#[4, 5, 6] := Lists:Zipwith {Add, #[1, 2, 3], #[3, 3, 3]}.
+
+
 #[] := Lists:Take {0, Nums}.
 #[one] := Lists:Take {1, #[one, two, three]}.
 #[one, two, three] := Lists:Take {50, #[one, two, three]}.

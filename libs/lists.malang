@@ -149,6 +149,17 @@ Zip := [
   Reverse (Helper {L1, L2, #[]}).
 ].
 
+Zipwith := [
+  {F, L1, L2} := @.
+  Helper := [
+    case @ of
+      {nil, _, Acc}             -> Acc.
+      {_, nil, Acc}             -> Acc.
+      {{H1, T1}, {H2, T2}, Acc} -> Helper {T1, T2, {F {H1, H2}, Acc}}.
+    end.
+  ].
+  Reverse (Helper {L1, L2, #[]}).].
+
 Take := [
   {N, List} := @.
   Helper := [
