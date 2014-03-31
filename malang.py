@@ -313,8 +313,14 @@ def maval(expr, env, filename):
                          func.content['filename'])
 
     elif T == 'func_def':
+        maybe_docstring = expr.content[0].content[0].content[0]
+        if maybe_docstring._type == "str":
+            docstring = maybe_docstring.content
+        else:
+            docstring = None
         return Node('function', {'code': expr.content[0],
                                  'filename': expr.content[1],
+                                 'docstring': docstring,
                                  'parent_env': env}, infonode=expr)
 
     elif T == 'program':

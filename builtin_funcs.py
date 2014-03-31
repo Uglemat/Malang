@@ -18,6 +18,11 @@ from utils import Node, assert_type
 import time
 import random
 
+def print_docstring(docstring):
+    print(" - Docstring:")
+    for line in docstring.splitlines():
+        print(line)
+
 builtins = {}
 def builtin(name):
     def _f(func):
@@ -32,6 +37,19 @@ def _print(s, env, filename, infonode):
     print(s.content if s._type == 'str' else
           tostr(s, env).content, end="")
     return s
+
+@builtin("Help")
+def _help(fun, env, filename, infonode):
+    assert_type(fun, ('function', 'builtin'), filename, infonode)
+    if fun._type == 'builtin':
+        print("Have not implemented `Help` for builtins yet")
+    elif fun._type == 'function':
+        print("Function was defined in the file {!r}".format(fun.content['filename']))
+        if fun.content['docstring'] is None:
+            print("That function doesn't have a docstring")
+        else:
+            print_docstring(fun.content['docstring'])
+    return Node('atom', 'ok')
 
 @builtin("Input")
 def _input(prompt, env, filename, infonode):

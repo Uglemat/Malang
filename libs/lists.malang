@@ -16,6 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Reverse := [
+  """
+  @ = List
+
+  Return `List` in reverse order.
+  """.
   Helper := [
     {List, Acc} := @.
     case List of
@@ -27,19 +32,41 @@ Reverse := [
 ].
 
 Head := [
-  {H, T} := @, H.
+  """
+  @ = List
+
+  Return the first element of `List`.
+  """.  {H, T} := @, H.
 ].
 
 Tail := [
+  """
+  @ = List
+
+  Return `List` without its first element.
+  """.
   {H, T} := @, T.
 ].
 
 Map := [
+  """
+  @ = {Func, List}
+
+  Applies `Func` to every elemement of `List` are returns the result.
+  """.
   {Func, List} := @.
   #[Func E | E <- List].
 ].
 
 Foldl := [
+  """
+  @ = {Func, Acc, List}
+
+  Fold to the left of `List`, starting with `Acc` as the initial value.
+
+  Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
+  and E`lem` is the current element of the list being folded.
+  """.
   case @ of
     {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> Foldl {F, F {Acc, H}, T}.
@@ -47,6 +74,14 @@ Foldl := [
 ].
 
 Foldr := [
+  """
+  @ = {Func, Acc, List}
+
+  Fold to the right of `List`, starting with `Acc` as the initial value.
+
+  Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
+  and `Elem` is the current element of the list being folded.
+  """.
   case @ of
     {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> F {Foldr {F, Acc, T}, H}.
@@ -54,11 +89,21 @@ Foldr := [
 ].
 
 Length := [
+  """
+  @ = List
+
+  Returns the length of `List`.
+  """.
   Foldl {[{Acc, _} := @, Acc+1.], 0, @}.
 ].
 
 
 Range := [
+  """
+  @ = {From, To}
+
+  Returns a list of integers ranging from `From` (inclusive), to `To` (exclusive).
+  """.
   {From, To} := @.
   Helper := [
     {N, Acc} := @.
@@ -74,6 +119,12 @@ Range := [
 ].
 
 Nth := [
+  """
+  @ = {N, List}
+
+  Returns the Nth element of `List`. The list must
+  be long enough.
+  """.
   {N, {H, T}} := @.
   case N <= 1 of
     true  -> H.
@@ -82,11 +133,21 @@ Nth := [
 ].
 
 Random_Choice := [
+  """
+  @ = List
+
+  Returns a random element of `List`.
+  """.
   Nth {Builtins:Random_Range {1, Length @ + 1}
       , @}.
 ].
 
 Concat := [
+  """
+  @ = {List1, List2}
+
+  Concatenates two lists.
+  """.
   {L1, L2} := @.
   Helper := [
     {Elems_Left, Result} := @.
@@ -99,6 +160,14 @@ Concat := [
 ].
 
 Any := [
+  """
+  @ = {Func, List}
+
+  Returns `true` if any of the elements of `List` pass the predicate function `Func`.
+
+  The return value of `Func` is passed into `Bools:Truthy` before checking if it
+  is `true` or `false`.
+  """.
   {Func, List} := @.
   case List of
     #[]    -> false.
@@ -111,6 +180,14 @@ Any := [
 ].
 
 All := [
+  """
+  @ = {Func, List}
+
+  Returns `true` if all the elements of `List` pass the predicate function `Func`.
+
+  The return value of `Func` is passed into `Bools:Truthy` before checking if it
+  is `true` or `false`.
+  """.
   {Func, List} := @.
   case List of
     #[]    -> true.
@@ -124,6 +201,12 @@ All := [
 
 
 And := [
+  """
+  @ = List
+
+  Returns `true` if all of the elements of `List` are `true` according to
+  `Bools:Truthy`, false otherwise.
+  """.
   case @ of
     #[]    -> true.
     {H, T} ->
@@ -135,6 +218,12 @@ And := [
 ].
 
 Or := [
+  """
+  @ = List
+
+  Returns `true` if any of the elements of `List` are `true` according to
+  `Bools:Truthy`, false otherwise.
+  """.
   case @ of
     #[]    -> false.
     {H, T} ->
@@ -147,11 +236,21 @@ Or := [
 
 
 Member := [
+  """
+  @ = {Val, List}
+
+  Returns `true` if `Val` is a member of the `List`, false otherwise.
+  """.
   {Val, List} := @.
   Any {[@ == Val.], List}.
 ].
 
 Repeat := [
+  """
+  @ = {N, Elem}
+
+  Return a list of `N` `Elem`s.
+  """.
   {Times, Elem} := @.
   Helper := [
     {TimesLeft, Acc} := @.
@@ -164,16 +263,35 @@ Repeat := [
 ].
 
 Remove := [
+  """
+  @ = {Elem, List}
+
+  Return a list with all elements that are equal to `Elem` removed.
+  """.
   {Elem, List} := @.
   #[E | E <- List, E != Elem].
 ].
 
 Filter := [
+  """
+  @ = {Func, List}
+
+  Return a list only with elements that pass the predicate function `Func`.
+
+
+  The return value of `Func` is passed into `Bools:Truthy` before checking if it
+  is `true` or `false`.
+  """.
   {F, List} := @.
   #[E | E <- List, Bools:Truthy(F E)].
 ].
 
 Zip := [
+  """
+  @ = {List1, List2}
+
+  Zip two lists together. Returns a list of tuples.
+  """.
   {L1, L2} := @.
   Helper := [
     case @ of
@@ -186,6 +304,15 @@ Zip := [
 ].
 
 Zipwith := [
+  """
+  @ = {Func, L1, L2}
+
+  Zip two lists together using the function `Func`.
+
+  `Func` is called with the argument `{Elem1, Elem2}`, where `Elem1`
+  is an element from `L1`, and `Elem2` is the corresponding element
+  from `L2`.
+  """.
   {F, L1, L2} := @.
   Helper := [
     case @ of
@@ -197,6 +324,11 @@ Zipwith := [
   Reverse (Helper {L1, L2, #[]}).].
 
 Take := [
+  """
+  @ = {N, List}
+
+  Return the first `N` elements of `List`.
+  """.
   {N, List} := @.
   Helper := [
     case @ of
@@ -213,6 +345,11 @@ Take := [
 ].
 
 Drop := [
+  """
+  @ = {N, List}.
+
+  Drop the first `N` element off of `List`, and return the resulting list.
+  """.
   case @ of
     {_, #[]}    -> #[].
     {0, List}   -> List.
@@ -222,6 +359,18 @@ Drop := [
 
 
 Takewhile := [
+  """
+  @ = {Func, List}
+
+  Takes elements from `List` as long as they pass the predicate
+  function `Func`, and returns the resulting list.
+
+  It stops taking elements as soon as an element doesn't pass the
+  predicate function `Func`.
+
+  The return value of `Func` is passed into `Bools:Truthy` before checking if it
+  is `true` or `false`.
+  """.
   {F, List} := @.
   Helper := [
     case @ of
@@ -237,6 +386,18 @@ Takewhile := [
 ].
 
 Dropwhile :=  [
+  """
+  @ = {Func, List}
+
+  Drops elements from `List` as long as they pass the predicate
+  function `Func`, and returns the resulting list.
+
+  It stops dropping elements as soon as an element doesn't pass the
+  predicate function `Func`.
+
+  The return value of `Func` is passed into `Bools:Truthy` before checking if it
+  is `true` or `false`.
+  """.
   case @ of
     {_, #[]}    -> #[].
     {F, {H, T}} ->

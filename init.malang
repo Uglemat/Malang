@@ -20,6 +20,7 @@ Print   := Builtins:Print.
 Input   := Builtins:Input.
 ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
+Help    := Builtins:Help.
 
 
 Lists := Require "libs/lists.malang".
