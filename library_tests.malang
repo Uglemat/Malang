@@ -58,6 +58,17 @@ true  := Bools:Xor {true, false}.
 false := Bools:Xor {true, true}.
 false := Bools:Xor {0, 0}.
 
+true  := Bools:All #[].
+true  := Bools:All #[1, 2, 3].
+true  := Bools:All #[true].
+false := Bools:All #[1, 2, false, 4].
+false := Bools:All #[0].
+
+false := Bools:Any #[].
+false := Bools:Any #[0, false, nil, "", {}].
+true  := Bools:Any #[0, false, nil, "", {}, "Hello"].
+true  := Bools:Any #[true, 1].
+
 """
         Lists Tests:
 """.
