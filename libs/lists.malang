@@ -110,6 +110,18 @@ Any := [
   end.
 ].
 
+All := [
+  {Func, List} := @.
+  case List of
+    #[]    -> true.
+    {H, T} ->
+      case Bools:Truthy (Func H) of
+        false -> false.
+        true  -> All {Func, T}.
+      end.
+  end.
+].
+
 Member := [
   {Val, List} := @.
   Any {[@ == Val.], List}.

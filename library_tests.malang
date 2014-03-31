@@ -113,6 +113,10 @@ second := Lists:Nth {2, #[first, second]}.
 true  := Lists:Any {[@ == 2.], #[1, 2, 3]}.
 false := Lists:Any {[@ == 2.], #[1, 3]}.
 
+true  := Lists:All {[@ == 4.], #[4, 4, 4, 4]}.
+true  := Lists:All {[@ == 4.], #[]}.
+false := Lists:All {[@ == 4.], #[4, 4, 4, four, 4]}.
+
 true  := Lists:Member {"str", #[one, 2, "str"]}.
 false := Lists:Member {str,   #[one, 2, "Str"]}.
 
