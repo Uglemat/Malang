@@ -19,7 +19,8 @@ Get := [
   """
   @ = {Key, Dict}
 
-  Find the first `{K, V}` pair where `K` == `Key` in the list `Dict` and return the `V`.
+  Finds the first `{K, V}` pair where `K` == `Key` in the list `Dict` and returns
+  `{ok, V}` if the search is successful, and `sorry` otherwise.
   """.
   {Key, D} := @.
   case D of
@@ -78,7 +79,8 @@ Values := [
   @ = Dict
 
   Returns a list of all the values in Dict.
-  """.  Lists:Map {
+  """.
+  Lists:Map {
     [{K, V} := @, V.]
     , @}.
 ].
