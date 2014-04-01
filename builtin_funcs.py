@@ -23,8 +23,7 @@ def print_docstring(docstring):
         print("That function doesn't have a docstring")
     else:
         print(" - Docstring:")
-        for line in docstring.splitlines():
-            print(line)
+        print(docstring)
 
 builtins = {}
 def builtin(name):

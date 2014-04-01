@@ -381,6 +381,7 @@ def p_expr_list_single(p):
 
 # Error rule for syntax errors
 def p_error(p):
+    lexer.begin("INITIAL")
     if p is None:
         raise SyntaxError("Syntax error (probably somewhere near the end)")
     else:
