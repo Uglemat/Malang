@@ -19,9 +19,12 @@ import time
 import random
 
 def print_docstring(docstring):
-    print(" - Docstring:")
-    for line in docstring.splitlines():
-        print(line)
+    if docstring is None:
+        print("That function doesn't have a docstring")
+    else:
+        print(" - Docstring:")
+        for line in docstring.splitlines():
+            print(line)
 
 builtins = {}
 def builtin(name):
@@ -33,6 +36,11 @@ def builtin(name):
 
 @builtin("Print")
 def _print(s, env, filename, infonode):
+    """
+    @ = Val
+
+    Print `Val`.
+    """
     
     print(s.content if s._type == 'str' else
           tostr(s, env).content, end="")
@@ -40,30 +48,48 @@ def _print(s, env, filename, infonode):
 
 @builtin("Help")
 def _help(fun, env, filename, infonode):
+    """
+    @ = Func
+
+    Prints information about the function `Func`.
+    """
     assert_type(fun, ('function', 'builtin'), filename, infonode)
     if fun._type == 'builtin':
-        print("Have not implemented `Help` for builtins yet")
+        print("This is a builtin function")
+        print_docstring(fun.content.__doc__)
     elif fun._type == 'function':
         print("Function was defined in the file {!r}".format(fun.content['filename']))
-        if fun.content['docstring'] is None:
-            print("That function doesn't have a docstring")
-        else:
-            print_docstring(fun.content['docstring'])
+        print_docstring(fun.content['docstring'])
     return Node('atom', 'ok')
 
 @builtin("Input")
 def _input(prompt, env, filename, infonode):
+    """
+    @ = Prompt
+
+    Get input from the user, with the prompt `Prompt`.
+    """
     assert_type(prompt, 'str', filename, infonode)
     return Node('str', input(prompt.content))
 
 @builtin("Sleep")
 def sleep(amount, env, filename, infonode):
+    """
+    @ = Ms
+
+    Pause execution for `Ms` milliseconds.
+    """
     assert_type(amount, 'number', filename, infonode)
     time.sleep(amount.content/1000.0)
     return Node('atom', 'ok')
 
 @builtin("Random_Range")
 def random_range(tup, env, filename, infonode):
+    """
+    @ = {Start, Stop}
+
+    Returns a random integer between `Start` (inclusive) and `Stop` (exclusive).
+    """
     assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
     num1, num2 = tup.content
     assert_type(num1, 'number', filename, infonode)
@@ -72,6 +98,11 @@ def random_range(tup, env, filename, infonode):
 
 @builtin("ListEnv")
 def list_env(_arg, env, filename, infonode):
+    """
+    @ = <whatever>
+
+    Prints a listing of all the identifiers bound in the current environment.
+    """
     for k, v in env.bindings.items():
         print("{:<15} => {}".format(k, tostr(v, env).content))
     if not env.parent is None:
@@ -80,12 +111,23 @@ def list_env(_arg, env, filename, infonode):
 
 @builtin("ClearEnv")
 def clear_env(_arg, env, filename, infonode):
+    """
+    @ = <whatever>
+
+    Removes the identifier bindings in the current environment.
+    This doesn't remove identifier bindings from 'parent' environments.
+    """
     env.clear()
     return Node('atom', 'ok')
 
 
 @builtin("ToList")
 def tolist(tup, env, filename, infonode):
+    """
+    @ = Tuple
+
+    Convert `Tuple` to a malang list.
+    """
     assert_type(tup, 'tuple', filename, infonode)
     if tup.content == ():
         return Node('atom', 'nil')
@@ -95,6 +137,11 @@ def tolist(tup, env, filename, infonode):
 
 @builtin("ToStr")
 def tostr(val, env=None, filename="", infonode=None, depth=0):
+    """
+    @ = Val
+
+    Returns a string representation of `Val`.
+    """
     T = val._type
     if T == 'tuple' and depth > 50:
         content = "{...}"
