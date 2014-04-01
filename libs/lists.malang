@@ -36,7 +36,8 @@ Head := [
   @ = List
 
   Return the first element of `List`.
-  """.  {H, T} := @, H.
+  """.
+  {H, T} := @, H.
 ].
 
 Tail := [
@@ -346,7 +347,7 @@ Take := [
 
 Drop := [
   """
-  @ = {N, List}.
+  @ = {N, List}
 
   Drop the first `N` element off of `List`, and return the resulting list.
   """.

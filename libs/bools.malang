@@ -16,6 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Truthy := [
+  """
+  @ = Val
+
+  Returns `true` if `Val` is 'truthy', `false` otherwise.
+
+  These are the 'falsy' values: `{}`, `0`, `false`, `""` and `nil`.
+  All other values are considered 'truthy'.
+  """.
   case @ of
     {}    -> false.
     0     -> false.
@@ -28,6 +36,11 @@ Truthy := [
 
 
 And := [
+  """
+  @ = {Val1, Val2}
+
+  Returns `true` if and only if both `Val1` and `Val2` are truthy, `false` otherwise.
+  """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {true, true} -> true.
@@ -36,6 +49,11 @@ And := [
 ].
 
 Or := [
+  """
+  @ = {Val1, Val2}
+
+  Returns `true` if either `Val1` or `Val2` is truthy, `false` otherwise.
+  """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {false, false} -> false.
@@ -44,6 +62,11 @@ Or := [
 ].
 
 Xor := [
+  """
+  @ = {Val1, Val2}
+
+  Returns `true` if exactly one of `Val1` and `Val2` is truthy, `false` otherwise.
+  """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {Same, Same} -> false.
@@ -52,6 +75,11 @@ Xor := [
 ].
 
 Not := [
+  """
+  @ = Val
+
+  Returns `false` if `Val` is truthy, `true` otherwise.
+  """
   case Truthy @ of
     true  -> false.
     false -> true.

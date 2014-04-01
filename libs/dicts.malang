@@ -16,6 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Get := [
+  """
+  @ = {Key, Dict}
+
+  Find the first `{K, V}` pair where `K` == `Key` in the list `Dict` and return the `V`.
+  """.
   {Key, D} := @.
   case D of
     #[]           -> sorry.
@@ -25,16 +30,32 @@ Get := [
 ].
 
 Remove := [
+  """
+  @ = {Key, Dict}
+
+  Return a new `Dict` with all `{K, V}` pairs where `K` == `Key` removed.
+  """.
   {Key, D} := @.
   #[{K, V} | {K, V} <- D, K != Key].
 ].
 
 Set := [
+  """
+  @ = {Key, Val, Dict}
+
+  Return a new `Dict` with the pair `{Key, Val}` inserted, and all `{K, V}` pairs
+  where `K` == `Key` removed.
+  """.
   {K, V, D} := @.
   {{K, V}, Remove {K, D}}.
 ].
 
 Member := [
+  """
+  @ = {Key, Dict}
+
+  Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` == `Key`.
+  """.
   {Key, Dict} := @.
   Lists:Any {
     [{K, _} := @, K == Key.]
@@ -42,13 +63,22 @@ Member := [
 ].
 
 Keys := [
+  """
+  @ = Dict
+
+  Returns a list of all the keys in Dict.
+  """.
   Lists:Map {
     [{K, V} := @, K.]
     , @}.
 ].
 
 Values := [
-  Lists:Map {
+  """
+  @ = Dict
+
+  Returns a list of all the values in Dict.
+  """.  Lists:Map {
     [{K, V} := @, V.]
     , @}.
 ].
