@@ -15,6 +15,36 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
+Join :=  [
+  """
+  @ = {Str, List}
+
+  Return a str which is the string representation of all the elements of `List`
+  separated by `Str` concatenated.
+  """.
+  {Str, List} := @.
+  Helper := [
+    {Current, Acc} := @.
+    case Current of
+      #[]    -> Acc.
+      {H, T} -> Helper {T, Acc + Str + ToStr H}.
+    end.
+  ].
+  case List of
+    #[]    -> "".
+    {H, T} -> Helper {T, ToStr H}.
+  end.
+].
+
+ListToStr := [
+  """
+  @ = List
+
+  Return the string representation for `List`.
+  """.
+  "#[" + Join {", ", @} + "]".
+].
+
 Reverse := [
   """
   @ = List
@@ -63,7 +93,7 @@ Foldl := [
   """
   @ = {Func, Acc, List}
 
-  Fold to the left of `List`, starting with `Acc` as the initial value.
+  Fold from left to right of `List`, starting with `Acc` as the initial value.
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
   and E`lem` is the current element of the list being folded.
@@ -78,7 +108,7 @@ Foldr := [
   """
   @ = {Func, Acc, List}
 
-  Fold to the right of `List`, starting with `Acc` as the initial value.
+  Fold from right to left of `List`, starting with `Acc` as the initial value.
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
   and `Elem` is the current element of the list being folded.

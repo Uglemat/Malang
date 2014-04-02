@@ -64,6 +64,14 @@ false := Bools:Xor {0, 0}.
         Lists Tests:
 """.
 
+"" := Lists:Join {" -=- ", #[]}.
+"1|3|9" := Lists:Join {"|", #[1, 3, 9]}.
+
+"#[]"  := Lists:ListToStr nil.
+"#[1]" := Lists:ListToStr #[1].
+"#[1, {hello}, 2]" := Lists:ListToStr #[1, {hello}, 2].
+
+
 L := #[1, two, "three"].
 
 1 := Lists:Head L.
