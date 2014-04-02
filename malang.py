@@ -79,12 +79,6 @@ def transform_list_to_tuple(elems, infonode):
         return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
                     infonode=infonode)
 
-def python_list_to_malang_list(_list):
-    acc = Node('atom', 'nil')
-    while _list:
-        acc = Node('tuple', (_list.pop(), acc))
-    
-    return acc
 
 def generate_items(malang_list, filename):
     """
@@ -145,6 +139,13 @@ def patternmatch(pattern, expr, env, filename):
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
     exception = utils.InvalidMatch("Invalid match", filename, infonode=pattern)
+
+
+    if pattern._type == 'uminus' and pattern.content._type == 'number':
+        # Special rule for negative numbers, otherwise I wouldn't be able to match
+        # them.
+        pattern = pattern.content
+        pattern.content = -pattern.content
 
 
     if pattern._type == 'list':
@@ -282,7 +283,7 @@ def maval(expr, env, filename):
         leftside_expr, emitters = expr.content
 
         eval_list_comprehension(env, leftside_expr, emitters, filename, acc=result)
-        return python_list_to_malang_list(result)
+        return utils.python_list_to_malang_list(result)
 
 
     elif T == 'bind':

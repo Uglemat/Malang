@@ -317,6 +317,32 @@ Filter := [
   #[E | E <- List, Bools:Truthy(F E)].
 ].
 
+Separate := [
+  """
+  @ = {Func, List}.
+
+  Returns a tuble of the form `{TrueBucket, FalseBucket}` where `TrueBucket`
+  are a list of elements from `List` that are truthy according to `Func`, and
+  where `FalseBucket` are a list of elements from `List` that are falsy according
+  to `Func`.
+  
+  The elements of the bucket have no guaranteed ordering.
+  """.
+  {Func, List} := @.
+  Helper := [
+    case @ of
+      {nil, TrueBucket, FalseBucket} -> {TrueBucket, FalseBucket}.
+      {{H, T}, TrueBucket, FalseBucket} ->
+        case Bools:Truthy (Func H) of
+          true  -> Helper {T, {H, TrueBucket}, FalseBucket}.
+          false -> Helper {T, TrueBucket, {H, FalseBucket}}.
+        end.
+    end.
+  ].
+
+  Helper {List, nil, nil}.
+].
+
 Zip := [
   """
   @ = {List1, List2}
@@ -354,25 +380,38 @@ Zipwith := [
   ].
   Reverse (Helper {L1, L2, #[]}).].
 
+Partition_At := [
+  """
+  {N, List} := @
+
+  Return a tuple of the form `{Seen, Unseen}`
+  where `Seen` are elements before and including the `N`th element
+  of `List`, and `Unseen` are the rest. `Seen` IS REVERSED. The reason
+  `Seen` is reversed is that I want to implement other functions in terms
+  of this function, and don't want unnecessary overhead.
+  """.
+  {N, List} := @.
+  Helper := [
+    case @ of
+      {_, nil,    Seen}    -> {Seen,    nil}.
+      {0, Unseen, Seen}    -> {Seen, Unseen}.
+      {Left, {H, T}, Seen} ->
+        Helper {Left-1, T, {H, Seen}}.
+    end.
+  ].
+  case N > 0 of
+    true  -> Helper {N, List, nil}.
+    false -> {#[], List}.
+  end.
+].
+
 Take := [
   """
   @ = {N, List}
 
   Return the first `N` elements of `List`.
   """.
-  {N, List} := @.
-  Helper := [
-    case @ of
-      {_, nil, Acc} -> Acc.
-      {0, _,   Acc} -> Acc.
-      {Left, {H, T}, Acc} ->
-        Helper {Left-1, T, {H, Acc}}.
-    end.
-  ].
-  case N > 0 of
-    true  -> Reverse (Helper {N, List, nil}).
-    false -> #[].
-  end.
+  Reverse (Head (Partition_At @)).
 ].
 
 Drop := [
@@ -381,11 +420,7 @@ Drop := [
 
   Drop the first `N` element off of `List`, and return the resulting list.
   """.
-  case @ of
-    {_, #[]}    -> #[].
-    {0, List}   -> List.
-    {N, {H, T}} -> Drop {N-1, T}.
-  end.
+  Tail (Partition_At @).
 ].
 
 

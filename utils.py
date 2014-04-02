@@ -42,6 +42,14 @@ def AST_to_str(ast):
         return str(ast)
 
 
+def python_list_to_malang_list(_list):
+    acc = Node('atom', 'nil')
+    while _list:
+        acc = Node('tuple', (_list.pop(), acc))
+    
+    return acc
+
+
 def assert_type(node, types, filename, infonode, tuplelength=None):
     if isinstance(types, str):
         T = types

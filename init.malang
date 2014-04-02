@@ -23,9 +23,10 @@ ToStr   := Builtins:ToStr.
 Help    := Builtins:Help.
 
 
-Lists := Require "libs/lists.malang".
-Bools := Require "libs/bools.malang".
-Dicts := Require "libs/dicts.malang".
+Lists   := Require "libs/lists.malang".
+Bools   := Require "libs/bools.malang".
+Dicts   := Require "libs/dicts.malang".
+Sorting := Require "libs/sorting.malang".
 
 """
 The environment of this file is accessible by all malang programs.
