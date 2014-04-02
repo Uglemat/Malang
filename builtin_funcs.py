@@ -96,16 +96,27 @@ def random_range(tup, env, filename, infonode):
     return Node('number', random.randrange(num1.content,num2.content))
 
 @builtin("ListEnv")
-def list_env(_arg, env, filename, infonode):
+def list_env(arg, env, filename, infonode):
     """
-    @ = <whatever>
+    @ = Arg
 
-    Prints a listing of all the identifiers bound in the current environment.
+    If `Arg` is a module, then print a listing of all the identifiers
+    bound in the environment (and parent environments) of module.
+    If `Arg` isn't a module, then do the same thing, but for the
+    current environment.
     """
+    if arg is not None:
+        if arg._type == 'module':
+            print("Identifier bindings in module environment:\n")
+            return list_env(None, arg.content, filename, infonode)
+        else:
+            print("Identifier bindings in current environment:\n")
+
     for k, v in env.bindings.items():
         print("{:<15} => {}".format(k, tostr(v, env).content))
     if not env.parent is None:
-        return list_env(None, env.parent)
+        print("Showing bindings for parent environment below:\n")
+        return list_env(None, env.parent, filename, infonode)
     return Node('atom', 'ok')
 
 @builtin("ClearEnv")
@@ -132,7 +143,8 @@ def tolist(tup, env, filename, infonode):
         return Node('atom', 'nil')
     else:
         return Node('tuple', (tup.content[0],
-                              tolist(Node('tuple', tup.content[1:]), env)))
+                              tolist(Node('tuple', tup.content[1:]), env,
+                                     filename, infonode)))
 
 @builtin("ToStr")
 def tostr(val, env=None, filename="", infonode=None, depth=0):
