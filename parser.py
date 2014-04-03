@@ -146,8 +146,23 @@ def t_str_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_NUMBER(t):
-    r'\d+'
-    t.value = Node('number', int(t.value), lineno=t.lineno)
+    (r"(([2-9]|1[0-6])\#(\d|[a-fA-F])+"
+     r"|\d+)")
+    
+    if "#" in t.value:
+        radix, val = t.value.split("#")
+        radix = int(radix)
+    else:
+        val = t.value
+        radix = 10
+
+    try:
+        integer = int(val, radix)
+    except ValueError:
+        raise MalangError("Invalid number {!r}".format(t.value),
+                          file_name, Node("dummynode", "", lineno=t.lineno))
+
+    t.value = Node('number', integer, lineno=t.lineno)
     return t
 
 def t_newline(t):

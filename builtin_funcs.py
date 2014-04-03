@@ -61,6 +61,15 @@ def _help(fun, env, filename, infonode):
         print_docstring(fun.content['docstring'])
     return Node('atom', 'ok')
 
+@builtin("TypeOf")
+def type_of(thing, env, filename, infonode):
+    """
+    @ = Thing
+
+    Returns a string representation of the type of `Thing`
+    """
+    return Node('str', thing._type)
+
 @builtin("Input")
 def _input(prompt, env, filename, infonode):
     """
