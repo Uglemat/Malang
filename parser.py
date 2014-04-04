@@ -38,7 +38,8 @@ tokens = (
     'COMMA',    'ATOM',
     'BIND',     'ARROW',
     'LEFTARROW','PIPE',
-    'GT', 'LT', 'GE',  'LE', 'EQ', 'NE'
+    'GT', 'LT', 'GE',  'LE', 'EQ', 'NE',
+    'COMMENT'
 ) + tuple(keywords.values())
 
 states = (
@@ -80,6 +81,9 @@ t_EQ = r'=='
 t_NE = r'!='
 t_STARTLIST = r'\#\['
 
+def t_COMMENT(t):
+    r'--(.*)'
+    pass
 
 def t_ATOM(t):
     r'[a-z][a-zA-Z0-9_]*'
@@ -208,7 +212,6 @@ def p_program(p):
 def p_program_single(p):
     'program : compound_expr'
     p[0] = Node('program', [p[1]], infonode=p[1])
-
 
 
 def p_compound_expr(p):
