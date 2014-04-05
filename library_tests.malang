@@ -238,4 +238,4 @@ LenCmp := [  {L1, L2} := @.  Lists:Length L1 < Lists:Length L2.].
 #[#[], #["Hello"]]       := Sorting:Sortwith {LenCmp, #[#[], #["Hello"]]}.
 #[#[], #[92], #[-23, 4]] := Sorting:Sortwith {LenCmp, #[#[-23, 4], #[], #[92]]}.
 
-Print "All library tests passed.\n".
+Io:Print "All library tests passed.\n".

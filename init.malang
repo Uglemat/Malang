@@ -16,14 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Require := Builtins:Require.
-Print   := Builtins:Print.
-PrintLn := [Print (@ + "\n").].
-Input   := Builtins:Input.
 ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
 Help    := Builtins:Help.
 
 
+Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".
 Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
@@ -39,7 +37,7 @@ So any identifiers in this file will be available in all malang programs.
 """.
 
 
-Print """
+Io:Print """
     * Welcome   *
     * To Malang *
     * The Best  *

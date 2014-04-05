@@ -1,0 +1,6 @@
+
+Readfile  := Builtins:Readfile.
+Writefile := Builtins:Writefile.
+Print     := Builtins:Print.
+PrintLn   := [Print (@ + "\n").].
+Input     := Builtins:Input.

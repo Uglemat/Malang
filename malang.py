@@ -420,11 +420,17 @@ if __name__ == "__main__":
 
 
     if interactive:
+
+        color = lambda n: "\x1b[{}m".format(n)
+        readlinecolor = lambda n: "\001{}\002".format(color(n))
+        color_prompt = "{}Malang {}> {}".format(readlinecolor(36), readlinecolor(31), readlinecolor(32))
+
         while True:
             try:
                 with utils.tab_completion():
-                    inp = input('malang > ')
+                    inp = input(color_prompt)
             except EOFError:
+                print(color(39))
                 break
             if not inp:
                 continue
@@ -435,8 +441,7 @@ if __name__ == "__main__":
                         repr_str=True
                     ).content,
                 )
-
             except MalangError as e:
-                print("Error:", e)
-
-                
+                print("{}Error: {}".format(color(31), e))
+            finally:
+                print(color(39), end="")

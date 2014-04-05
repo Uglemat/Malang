@@ -20,14 +20,15 @@ Create := [
     case @ of
       {set, K, V} -> Create (Dicts:Set {K, V, Attrs}).
       show ->
-        Print "Object:\n",
-        #[(Print ~ Lists:Join)
+        Io:Print "Object:\n",
+        #[(Io:Print ~ Lists:Join)
             #["  ", ToStr At, " -> ",
               (ToStr ~ Lists:Tail ~ Dicts:Get) {At, Attrs},
               "\n"] | At <- Dicts:Keys Attrs],
         ok.
-      Attr -> {ok, Val} := Dicts:Get {Attr, Attrs},
-              Val.
+      Attr -> 
+        {ok, Val} := Dicts:Get {Attr, Attrs},
+        Val.
     end.
   ].
 ].
@@ -37,7 +38,7 @@ Point := Create #[
   {x, 10},
   {y, 20},
   {hello, [
-    Print ("Hi there, " + @ + "\n").
+    Io:Print ("Hi there, " + @ + "\n").
   ]},
   {tostr, [
     Lists:Join #["x: ", (ToStr ~ Point) x, " y: ", (ToStr ~ Point) y].

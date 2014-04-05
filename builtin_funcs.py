@@ -14,11 +14,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type
+from utils import Node, assert_type, MalangError
 import time
 import random
 
-def print_docstring(docstring):
+def print_docstring(fun):
+    if fun._type == 'function':
+        print("Function was defined in the file {!r}".format(fun.content['filename']))
+        docstring = fun.content['docstring']
+    elif fun._type == 'builtin':
+        print("This is a builtin function")
+        docstring = fun.content.__doc__
+
+
     if docstring is None:
         print("That function doesn't have a docstring")
     else:
@@ -45,20 +53,63 @@ def _print(s, env, filename, infonode):
           tostr(s, env).content, end="")
     return s
 
+@builtin("Writefile")
+def writefile(arg, env, filename, infonode):
+    """
+    @ = {Str, Filename}
+
+    Overwrite the contents of `Filename` to be `Str`.
+    """
+    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    _str, fname = arg.content
+    assert_type(_str, 'str',  filename, infonode)
+    assert_type(fname, 'str', filename, infonode)
+
+    try:
+        with open(fname.content, mode="w") as f:
+            f.write(_str.content)
+    except IOError as e:
+        raise MalangError(e.args[1], filename, infonode)
+
+    return Node('atom', 'ok')
+
+
+@builtin("Readfile")
+def readfile(fname, env, filename, infonode):
+    """
+    @ = Filename
+
+    Read the text in `Filename` and return the resulting string.
+    """
+    assert_type(fname, 'str', filename, infonode)
+    try:
+        with open(fname.content) as f:
+            return Node('str', f.read())
+    except IOError as e:
+        raise MalangError(e.args[1], filename, infonode)
+
 @builtin("Help")
 def _help(fun, env, filename, infonode):
     """
     @ = Func
 
     Prints information about the function `Func`.
+    Alternatively, if `Func` is a module, it will
+    print all the information about all the functions
+    inside that module.
     """
-    assert_type(fun, ('function', 'builtin'), filename, infonode)
-    if fun._type == 'builtin':
-        print("This is a builtin function")
-        print_docstring(fun.content.__doc__)
-    elif fun._type == 'function':
-        print("Function was defined in the file {!r}".format(fun.content['filename']))
-        print_docstring(fun.content['docstring'])
+    assert_type(fun, ('function', 'builtin', 'module'), filename, infonode)
+
+    if fun._type == 'module':
+        mod_env = fun.content
+        print("Functions in module:")
+        for ident, val in mod_env.bindings.items():
+            if val._type in ('function', 'builtin'):
+                print("\nHelp for function bound to the name {!r}:".format(ident))
+                _help(val, env, filename, infonode)
+    elif fun._type in ('builtin', 'function'):
+        print_docstring(fun)
+
     return Node('atom', 'ok')
 
 @builtin("TypeOf")
