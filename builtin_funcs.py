@@ -156,7 +156,7 @@ def tolist(tup, env, filename, infonode):
                                      filename, infonode)))
 
 @builtin("ToStr")
-def tostr(val, env=None, filename="", infonode=None, depth=0):
+def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
     """
     @ = Val
 
@@ -167,11 +167,11 @@ def tostr(val, env=None, filename="", infonode=None, depth=0):
         content = "{...}"
     elif T == 'tuple':
         content = "{" + ", ".join(tostr(elem, env, filename, infonode,
-                                        depth=depth+1).content
+                                        depth=depth+1, repr_str=repr_str).content
                                   for elem in val.content) + "}"
     elif T in ('module', 'function', 'builtin'):
         content = '[{}]'.format(T)
-    elif T == 'str':
+    elif repr_str and T == 'str':
         content = repr(val.content)
     else:
         content = str(val.content)

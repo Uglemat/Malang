@@ -1,0 +1,47 @@
+Create := [
+  """
+  @ = Dict
+
+  Create an object out of `Dict`. An object is just a function.
+
+  You can \"send messages\" to it by calling it with a value;  
+  If it is a special type of message, then the object does some special
+  things, otherwise, it looks up the key in `Dict` which is equal to the
+  message, and returns the corresponding value.
+
+  If that corresponding value is a function, then you could think of that as
+  being a method. If you want to refer to the object itself inside such a method,
+  then you have to rely on an identifier binding to the object from a parent
+  environment. I'm not sure how serious of a flaw that is.
+  """.
+  Attrs := @.
+
+  [
+    case @ of
+      {set, K, V} -> Create (Dicts:Set {K, V, Attrs}).
+      show ->
+        Print "Object:\n",
+        #[(Print ~ Lists:Join)
+            #["  ", ToStr At, " -> ",
+              (ToStr ~ Lists:Tail ~ Dicts:Get) {At, Attrs},
+              "\n"] | At <- Dicts:Keys Attrs],
+        ok.
+      Attr -> {ok, Val} := Dicts:Get {Attr, Attrs},
+              Val.
+    end.
+  ].
+].
+
+
+Point := Create #[
+  {x, 10},
+  {y, 20},
+  {hello, [
+    Print ("Hi there, " + @ + "\n").
+  ]},
+  {tostr, [
+    Lists:Join #["x: ", (ToStr ~ Point) x, " y: ", (ToStr ~ Point) y].
+  ]}
+].
+
+-- (PrintLn ~ Point tostr) {}.

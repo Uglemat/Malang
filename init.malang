@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Require := Builtins:Require.
 Print   := Builtins:Print.
+PrintLn := [Print (@ + "\n").].
 Input   := Builtins:Input.
 ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
@@ -27,6 +28,7 @@ Lists   := Require "libs/lists.malang".
 Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
 Sorting := Require "libs/sorting.malang".
+Objects := Require "libs/objects.malang".
 
 """
 The environment of this file is accessible by all malang programs.

@@ -39,7 +39,7 @@ tokens = (
     'BIND',     'ARROW',
     'LEFTARROW','PIPE',
     'GT', 'LT', 'GE',  'LE', 'EQ', 'NE',
-    'COMMENT'
+    'COMMENT', 'TILDE'
 ) + tuple(keywords.values())
 
 states = (
@@ -80,6 +80,7 @@ t_LT = r'<'
 t_EQ = r'=='
 t_NE = r'!='
 t_STARTLIST = r'\#\['
+t_TILDE = r'~'
 
 def t_COMMENT(t):
     r'--(.*)'
@@ -293,8 +294,17 @@ def p_expression_mod(p):
     'expression : expression MODULO expression'
     p[0] = Node('modulo', (p[1], p[3]), infonode=p[1])
 
-def p_expression_fncall(p):
-    'expression : fncall'
+
+def p_expression_composition(p):
+    'expression : composition'
+    p[0] = p[1]
+
+def p_composition(p):
+    'composition : composition TILDE fncall'
+    p[0] = Node('composition', (p[1], p[3]), infonode=p[1])
+
+def p_composition_fncall(p):
+    'composition : fncall'
     p[0] = p[1]
 
 

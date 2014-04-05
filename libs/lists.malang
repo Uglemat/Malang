@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
-Join :=  [
+Joinwith :=  [
   """
   @ = {Str, List}
 
@@ -36,13 +36,24 @@ Join :=  [
   end.
 ].
 
+Join :=  [
+  """
+  @ = List
+
+  Return a str which is the string representation of all the elements of `List`
+  concatenated.
+  """.
+  Joinwith {"", @}.
+].
+
+
 ListToStr := [
   """
   @ = List
 
   Return the string representation for `List`.
   """.
-  "#[" + Join {", ", @} + "]".
+  "#[" + Joinwith {", ", @} + "]".
 ].
 
 Reverse := [

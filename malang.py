@@ -233,7 +233,7 @@ def maval(expr, env, filename):
     """
 
     T = expr._type
-    if T in ('number', 'str', 'atom'):
+    if T in ('number', 'str', 'atom', 'function', 'builtin'):
         return expr
 
     elif T == 'uminus':
@@ -300,7 +300,27 @@ def maval(expr, env, filename):
         assert module._type == 'module', "That's not a module"
         val = trampoline(expr.content[1], module.content, filename)
         return val
-        
+
+    elif T == 'composition':
+        f1, f2 = (trampoline(e, env, filename) for e in expr.content)
+        utils.assert_type(f1, ('builtin', 'function'), filename, expr)
+        utils.assert_type(f2, ('builtin', 'function'), filename, expr)
+
+        code = Node('program', [
+            Node('program', [
+                Node('fncall', (
+                    f1,
+                    Node('fncall', (f2, Node('id', '@'))))
+                 )
+            ])
+        ])
+
+        return Node('function', {
+            'code': code,
+            'filename': filename,
+            'docstring': None,
+            'parent_env': env
+        })
 
     elif T == 'fncall':
         func, arg = (trampoline(e, env, filename) for e in expr.content)
@@ -409,9 +429,11 @@ if __name__ == "__main__":
             if not inp:
                 continue
             try:
-                print(builtin_funcs.tostr(
-                    eval_malang(inp, 
-                                interpreter_env, "<REPL>"), None).content
+                print(
+                    builtin_funcs.tostr(
+                        eval_malang(inp, interpreter_env, "<REPL>"),
+                        repr_str=True
+                    ).content,
                 )
 
             except MalangError as e:

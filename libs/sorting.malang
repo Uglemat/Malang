@@ -1,0 +1,51 @@
+
+SelectPivot := [
+  """
+  The purpose of selecting a pivot randomly is to avoid worst-case
+  time complexity for already sorted lists. Maybe it's idiotic, I don't
+  know.
+  """.
+  {Seen, Unseen} :=
+    Lists:Partition_At {
+      Builtins:Random_Range {1, (Lists:Length @)+1},
+      @
+    }.
+
+  {Pivot, Rest} := Seen.
+
+  {Pivot, Lists:Concat {Rest, Unseen}}.
+].
+
+Sortwith := [
+  """
+  {Func, List} := @
+
+  Sort the list using `Func`, which is a function taking as
+  an argument a tuple of the form `{Val1, Val2}`, and should
+  return a truthy val if `Val1` should be to the left of `Val2`,
+  false otherwise.
+
+  This function makes no attempt at being fast or stable.
+  """.  {Func, L} := @.
+  case L of
+    #[ ] -> #[ ].
+    #[E] -> #[E].
+    List ->
+      {Pivot, Rest} := SelectPivot List,
+      {Less, Greater} :=
+        Lists:Separate {[Func {@, Pivot}.], Rest},
+      Lists:Concat {Sortwith {Func, Less},
+                   {Pivot, Sortwith {Func, Greater}}}.
+  end.
+].
+
+Sort := [
+  """
+  List := @
+
+  Sort the list in increasing order.
+
+  This function makes no attempt at being fast or stable.
+  """.
+  Sortwith {[{V1, V2} := @, V1 < V2.], @}.
+].
