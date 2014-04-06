@@ -84,3 +84,18 @@ Values := [
     [{K, V} := @, V.]
     , @}.
 ].
+
+Extend := [
+  """
+  @ = {Old, New}
+
+  Return a version of `Old` where every `{K, V}` pair in `New` is present,
+  overwriting any old values.
+  """.
+  {Old, New} := @.
+
+  case New of
+    nil -> Old.
+    {{K, V}, Tail} -> Extend {Set {K, V, Old}, Tail}.
+  end.
+].

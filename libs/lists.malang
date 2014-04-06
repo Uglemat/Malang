@@ -72,23 +72,6 @@ Reverse := [
   Helper {@, #[]}.
 ].
 
-Head := [
-  """
-  @ = List
-
-  Return the first element of `List`.
-  """.
-  {H, T} := @, H.
-].
-
-Tail := [
-  """
-  @ = List
-
-  Return `List` without its first element.
-  """.
-  {H, T} := @, T.
-].
 
 Map := [
   """
@@ -422,7 +405,7 @@ Take := [
 
   Return the first `N` elements of `List`.
   """.
-  Reverse (Head (Partition_At @)).
+  Reverse (Car (Partition_At @)).
 ].
 
 Drop := [
@@ -431,7 +414,7 @@ Drop := [
 
   Drop the first `N` element off of `List`, and return the resulting list.
   """.
-  Tail (Partition_At @).
+  Cdr (Partition_At @).
 ].
 
 

@@ -20,6 +20,22 @@ ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
 Help    := Builtins:Help.
 
+Car := [
+  """
+  @ = {Fst, Snd}
+
+  Returns `Fst`.
+  """.
+  {Fst, _} := @, Fst.
+].
+Cdr := [
+  """
+  @ = {Fst, Snd}
+
+  Returns `Snd`.
+  """.
+  {_, Snd} := @, Snd.
+].
 
 Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".

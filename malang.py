@@ -423,7 +423,7 @@ if __name__ == "__main__":
 
         color = lambda n: "\x1b[{}m".format(n)
         readlinecolor = lambda n: "\001{}\002".format(color(n))
-        color_prompt = "{}Malang {}> {}".format(readlinecolor(36), readlinecolor(31), readlinecolor(32))
+        color_prompt = "{}Malang {}> {}".format(readlinecolor(36), readlinecolor(33), readlinecolor(32))
 
         while True:
             try:

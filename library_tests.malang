@@ -27,6 +27,12 @@ nil := ToList {}.
                N < 2,
                M <- #[one, two]].
 
+
+
+1 := Car #[1, two, "three"].
+#[two, "three"] := Cdr #[1, two, "three"].
+
+
 """
         Bools Tests:
 """.
@@ -73,9 +79,6 @@ false := Bools:Xor {0, 0}.
 
 
 L := #[1, two, "three"].
-
-1 := Lists:Head L.
-#[two, "three"] := Lists:Tail L.
 
 #["three", two, 1] := Lists:Reverse L.
 #[]    := Lists:Reverse #[].
@@ -220,6 +223,10 @@ true := Lists:Member {2, Vals}.
 3 := Lists:Length Vals.
 3 := Lists:Length Keys.
 
+Ag := #[{peter, 23}, {dory, 91}].
+Ag2 := #[{harry, 83}, {dory, 11}].
+#[{dory, 11}, {harry, 83}, {peter, 23}] :=
+  Dicts:Extend {Ag, Ag2}.
 
 """
         Sorting Tests:
@@ -239,3 +246,35 @@ LenCmp := [  {L1, L2} := @.  Lists:Length L1 < Lists:Length L2.].
 #[#[], #[92], #[-23, 4]] := Sorting:Sortwith {LenCmp, #[#[-23, 4], #[], #[92]]}.
 
 Io:Print "All library tests passed.\n".
+
+
+"""
+        Objects Tests:
+""".
+
+Point := Objects:Create #[
+  {x, 10},
+  {y, 14},
+  {sum, [
+    {Self, _} := @.
+    (Self x) + (Self y).
+  ]}
+].
+
+10 := Point x.
+14 := Point y.
+24 := Point sum {}.
+
+NewPoint := Point extend #[
+  {x, 11},
+  {z, 17},
+  {newsum, [
+    {Self, Arg} := @.
+    (Self x) + (Self y) + (Self z) + Arg.
+  ]}
+].
+11 := NewPoint x.
+14 := NewPoint y.
+17 := NewPoint z.
+25 := NewPoint sum {}.
+39 := NewPoint newsum (-3).

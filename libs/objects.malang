@@ -30,26 +30,37 @@ Create := [
   is called a method, and the response is not the actual method, but a new function
   that will call that method with a tuple of the form `{Self, Arg}`, where `Self` is
   the object itself that you can send messages to, and where `Arg` is the actual argument.
+
+  `set`, `extend` and `show` are special messages.
+
+  Even though you can extend an object with the `extend` message, there's no such
+  thing as a parent object, all objects are flat, and attributes are simply overwritten.
   """.
-  Attrs := @.
+  Attributes := Dicts:Extend {@, #[
+    {set, [
+      {_, {K, V}}  := @.
+      (Create ~ Dicts:Set) {K, V, Attributes}.
+    ]},
+    {extend, [
+      {_, Newattrs} := @.
+      (Create ~ Dicts:Extend) {Attributes, Newattrs}.
+    ]},
+    {show, [
+      Io:Print "Object:\n".
+      #[(Io:Print ~ Lists:Join)
+        #["  ", ToStr At, " -> ",
+          (ToStr ~ Cdr ~ Dicts:Get) {At, Attributes}, "\n"]
+          | At <- Dicts:Keys Attributes],
+      ok.
+    ]}
+  ]}.
 
   Self := [
-    case @ of
-      {set, K, V} -> Create (Dicts:Set {K, V, Attrs}).
-      show ->
-        Io:Print "Object:\n",
-        #[(Io:Print ~ Lists:Join)
-            #["  ", ToStr At, " -> ",
-              (ToStr ~ Lists:Tail ~ Dicts:Get) {At, Attrs},
-              "\n"] | At <- Dicts:Keys Attrs],
-        ok.
-      Attr -> 
-        {ok, Val} := Dicts:Get {Attr, Attrs},
-        case Builtins:TypeOf Val of
-          "function" -> [Val {Self, @}.].
-          "builtin"  -> [Val {Self, @}.].
-          Else -> Val.
-        end.
+    {ok, Val} := Dicts:Get {@, Attributes},
+    case Builtins:TypeOf Val of
+      "function" -> [Val {Self, @}.].
+      "builtin"  -> [Val {Self, @}.].
+      Else       -> Val.
     end.
   ].
 ].
@@ -59,12 +70,22 @@ Point := Create #[
   {x, 10},
   {y, 20},
   {hello, [
-    Io:Print ("Hi there, " + Lists:Tail @ + "\n").
+    Io:Print ("Hi there, " + (Cdr @) + "\n").
   ]},
   {tostr, [
     {Self, _} := @.
     Lists:Join #["x: ", (ToStr ~ Self) x, " y: ", (ToStr ~ Self) y].
   ]}
 ].
+
+Thing := Point extend #[
+  {z, 30},
+  {tostr, [
+    {S, _} := @.
+    Lists:Join #["x: ", (ToStr ~ S) x, " y: ", (ToStr ~ S) y, " z: ", (ToStr ~ S) z].
+  ]}
+].
+
+--Thing tostr {}.
 
 -- (PrintLn ~ Point tostr) {}.
