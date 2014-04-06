@@ -16,8 +16,8 @@ Here's an example session:
     {one, {two, {three, nil}}}
     malang > Lists:Reverse List.
     {three, {two, {one, nil}}}
-    malang > Bools:And {true, false}.
-    false
+    malang > Bools:And {yeah, nope}.
+    nope
     malang > Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
     {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
     malang > Dicts:Get {george, Ages}.
@@ -122,8 +122,8 @@ hitting the recursion limit. Here's a tail recursive version:
       Helper := [
         {N, Acc} := @.
         case N <= 1 of
-          true  -> Acc.
-          false -> Helper {N-1, N * Acc}.
+          yeah -> Acc.
+          nope -> Helper {N-1, N * Acc}.
         end.
       ].
       Helper {@, 1}.

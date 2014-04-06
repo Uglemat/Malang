@@ -110,7 +110,7 @@ def eval_list_comprehension(env, expr, emitters, filename, acc):
 
     if emitter._type == 'filter':
         result = trampoline(emitter.content, env, filename)
-        if result._type == 'atom' and result.content == 'true':
+        if result._type == 'atom' and result.content == 'yeah':
             if last_emitter:
                 acc.append(trampoline(expr, env, filename))
             else:
@@ -262,14 +262,14 @@ def maval(expr, env, filename):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         if op1._type == op2._type and op1._type in ('number', 'str', 'tuple', 'atom'):
             return Node('atom',
-                        {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)],
+                        {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)],
                         infonode=expr
             )
         else:
             raise MalangError("Invalid comparison expression", filename, infonode=expr)
     elif T in ('eq', 'ne'):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
-        return Node('atom', {True: 'true', False: 'false'}[cmp_funcs[T](op1, op2)], infonode=expr)
+        return Node('atom', {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)], infonode=expr)
 
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
@@ -395,6 +395,12 @@ stdlib_location = path.join(path.dirname(path.abspath(__file__)), "init.malang")
 with open(stdlib_location) as f:
     with change_directory(path.dirname(path.abspath(__file__))):
         eval_malang(f.read(), main_env, stdlib_location)
+
+
+
+
+
+
 
 if __name__ == "__main__":
     interpreter_env = Env(parent=main_env)

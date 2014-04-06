@@ -19,18 +19,18 @@ Truthy := [
   """
   @ = Val
 
-  Returns `true` if `Val` is 'truthy', `false` otherwise.
+  Returns `yeah` if `Val` is 'truthy', `nope` otherwise.
 
-  These are the 'falsy' values: `{}`, `0`, `false`, `""` and `nil`.
+  These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `nil`.
   All other values are considered 'truthy'.
   """.
   case @ of
-    {}    -> false.
-    0     -> false.
-    false -> false.
-    ""    -> false.
-    nil   -> false.
-    _     -> true.
+    {}   -> nope.
+    0    -> nope.
+    nope -> nope.
+    ""   -> nope.
+    nil  -> nope.
+    _    -> yeah.
   end.
 ].
 
@@ -39,12 +39,12 @@ And := [
   """
   @ = {Val1, Val2}
 
-  Returns `true` if and only if both `Val1` and `Val2` are truthy, `false` otherwise.
+  Returns `yeah` if and only if both `Val1` and `Val2` are truthy, `nope` otherwise.
   """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
-    {true, true} -> true.
-    {_, _}       -> false.
+    {yeah, yeah} -> yeah.
+    {_, _}       -> nope.
   end.
 ].
 
@@ -52,12 +52,12 @@ Or := [
   """
   @ = {Val1, Val2}
 
-  Returns `true` if either `Val1` or `Val2` is truthy, `false` otherwise.
+  Returns `yeah` if either `Val1` or `Val2` is truthy, `nope` otherwise.
   """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
-    {false, false} -> false.
-    {_, _}         -> true.
+    {nope, nope} -> nope.
+    {_, _}       -> yeah.
   end.
 ].
 
@@ -65,12 +65,12 @@ Xor := [
   """
   @ = {Val1, Val2}
 
-  Returns `true` if exactly one of `Val1` and `Val2` is truthy, `false` otherwise.
+  Returns `yeah` if exactly one of `Val1` and `Val2` is truthy, `nope` otherwise.
   """.
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
-    {Same, Same} -> false.
-    {_, _}       -> true.
+    {Same, Same} -> nope.
+    {_, _}       -> yeah.
   end.
 ].
 
@@ -78,10 +78,10 @@ Not := [
   """
   @ = Val
 
-  Returns `false` if `Val` is truthy, `true` otherwise.
+  Returns `nope` if `Val` is truthy, `yeah` otherwise.
   """
   case Truthy @ of
-    true  -> false.
-    false -> true.
+    yeah -> nope.
+    nope -> yeah.
   end.
 ].

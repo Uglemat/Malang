@@ -133,13 +133,13 @@ Range := [
   Helper := [
     {N, Acc} := @.
     case N <= From of
-      true  -> {N, Acc}.
-      false -> Helper {N-1, {N, Acc}}.
+      yeah -> {N, Acc}.
+      nope -> Helper {N-1, {N, Acc}}.
     end.
   ].
   case To <= From of
-    true  -> #[].
-    false -> Helper {To-1, #[]}.
+    yeah -> #[].
+    nope -> Helper {To-1, #[]}.
   end.
 ].
 
@@ -152,8 +152,8 @@ Nth := [
   """.
   {N, {H, T}} := @.
   case N <= 1 of
-    true  -> H.
-    false -> Nth {N-1, T}.
+    yeah -> H.
+    nope -> Nth {N-1, T}.
   end.
 ].
 
@@ -188,18 +188,18 @@ Any := [
   """
   @ = {Func, List}
 
-  Returns `true` if any of the elements of `List` pass the predicate function `Func`.
+  Returns `yeah` if any of the elements of `List` pass the predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
-  is `true` or `false`.
+  is `yeah` or `nope`.
   """.
   {Func, List} := @.
   case List of
-    #[]    -> false.
+    #[]    -> nope.
     {H, T} ->
       case Bools:Truthy (Func H) of
-        true  -> true.
-        false -> Any {Func, T}.
+        yeah -> yeah.
+        nope -> Any {Func, T}.
       end.
   end.
 ].
@@ -208,18 +208,18 @@ All := [
   """
   @ = {Func, List}
 
-  Returns `true` if all the elements of `List` pass the predicate function `Func`.
+  Returns `yeah` if all the elements of `List` pass the predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
-  is `true` or `false`.
+  is `yeah` or `nope`.
   """.
   {Func, List} := @.
   case List of
-    #[]    -> true.
+    #[]    -> yeah.
     {H, T} ->
       case Bools:Truthy (Func H) of
-        false -> false.
-        true  -> All {Func, T}.
+        nope -> nope.
+        yeah -> All {Func, T}.
       end.
   end.
 ].
@@ -229,15 +229,15 @@ And := [
   """
   @ = List
 
-  Returns `true` if all of the elements of `List` are `true` according to
-  `Bools:Truthy`, false otherwise.
+  Returns `yeah` if all of the elements of `List` are `yeah` according to
+  `Bools:Truthy`, `nope` otherwise.
   """.
   case @ of
-    #[]    -> true.
+    #[]    -> yeah.
     {H, T} ->
       case Bools:Truthy H of
-        false -> false.
-        true  -> And T.
+        nope -> nope.
+        yeah -> And T.
       end.
   end.
 ].
@@ -246,15 +246,15 @@ Or := [
   """
   @ = List
 
-  Returns `true` if any of the elements of `List` are `true` according to
-  `Bools:Truthy`, false otherwise.
+  Returns `yeah` if any of the elements of `List` are `yeah` according to
+  `Bools:Truthy`, `nope` otherwise.
   """.
   case @ of
-    #[]    -> false.
+    #[]    -> nope.
     {H, T} ->
       case Bools:Truthy H of
-        true  -> true.
-        false -> Or T.
+        yeah -> yeah.
+        nope -> Or T.
       end.
   end.
 ].
@@ -264,7 +264,7 @@ Member := [
   """
   @ = {Val, List}
 
-  Returns `true` if `Val` is a member of the `List`, false otherwise.
+  Returns `yeah` if `Val` is a member of the `List`, `nope` otherwise.
   """.
   {Val, List} := @.
   Any {[@ == Val.], List}.
@@ -280,8 +280,8 @@ Repeat := [
   Helper := [
     {TimesLeft, Acc} := @.
     case TimesLeft <= 0 of
-      true  -> Acc.
-      false -> Helper {TimesLeft-1, {Elem, Acc}}.
+      yeah -> Acc.
+      nope -> Helper {TimesLeft-1, {Elem, Acc}}.
     end.
   ].
   Helper {Times, #[]}.
@@ -305,7 +305,7 @@ Filter := [
 
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
-  is `true` or `false`.
+  is `yeah` or `nope`.
   """.
   {F, List} := @.
   #[E | E <- List, Bools:Truthy(F E)].
@@ -328,8 +328,8 @@ Separate := [
       {nil, TrueBucket, FalseBucket} -> {TrueBucket, FalseBucket}.
       {{H, T}, TrueBucket, FalseBucket} ->
         case Bools:Truthy (Func H) of
-          true  -> Helper {T, {H, TrueBucket}, FalseBucket}.
-          false -> Helper {T, TrueBucket, {H, FalseBucket}}.
+          yeah -> Helper {T, {H, TrueBucket}, FalseBucket}.
+          nope -> Helper {T, TrueBucket, {H, FalseBucket}}.
         end.
     end.
   ].
@@ -394,8 +394,8 @@ Partition_At := [
     end.
   ].
   case N > 0 of
-    true  -> Helper {N, List, nil}.
-    false -> {#[], List}.
+    yeah -> Helper {N, List, nil}.
+    nope -> {#[], List}.
   end.
 ].
 
@@ -429,7 +429,7 @@ Takewhile := [
   predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
-  is `true` or `false`.
+  is `yeah` or `nope`.
   """.
   {F, List} := @.
   Helper := [
@@ -437,8 +437,8 @@ Takewhile := [
       {nil,    Acc} -> Acc.
       {{H, T}, Acc} ->
         case Bools:Truthy (F H) of
-          true  -> Helper {T, {H, Acc}}.
-          false -> Acc.
+          yeah -> Helper {T, {H, Acc}}.
+          nope -> Acc.
         end.
     end.
   ].
@@ -456,14 +456,14 @@ Dropwhile :=  [
   predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
-  is `true` or `false`.
+  is `yeah` or `nope`.
   """.
   case @ of
     {_, #[]}    -> #[].
     {F, {H, T}} ->
       case Bools:Truthy (F H) of
-        true  -> Dropwhile {F, T}.
-        false -> {H, T}.
+        yeah -> Dropwhile {F, T}.
+        nope -> {H, T}.
       end.
   end.
 ].
