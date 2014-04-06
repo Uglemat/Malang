@@ -26,14 +26,14 @@ Create := [
   things, otherwise, it looks up the key in `Dict` which is equal to the
   message, and returns the corresponding value.
 
-  If that corresponding value is a function, then you could think of that as
-  being a method. If you want to refer to the object itself inside such a method,
-  then you have to rely on an identifier binding to the object from a parent
-  environment. I'm not sure how serious of a flaw that is.
+  In the special case that that corresponding value is a function or builtin, then it
+  is called a method, and the response is not the actual method, but a new function
+  that will call that method with a tuple of the form `{Self, Arg}`, where `Self` is
+  the object itself that you can send messages to, and where `Arg` is the actual argument.
   """.
   Attrs := @.
 
-  [
+  Self := [
     case @ of
       {set, K, V} -> Create (Dicts:Set {K, V, Attrs}).
       show ->
@@ -45,7 +45,11 @@ Create := [
         ok.
       Attr -> 
         {ok, Val} := Dicts:Get {Attr, Attrs},
-        Val.
+        case Builtins:TypeOf Val of
+          "function" -> [Val {Self, @}.].
+          "builtin"  -> [Val {Self, @}.].
+          Else -> Val.
+        end.
     end.
   ].
 ].
@@ -55,10 +59,11 @@ Point := Create #[
   {x, 10},
   {y, 20},
   {hello, [
-    Io:Print ("Hi there, " + @ + "\n").
+    Io:Print ("Hi there, " + Lists:Tail @ + "\n").
   ]},
   {tostr, [
-    Lists:Join #["x: ", (ToStr ~ Point) x, " y: ", (ToStr ~ Point) y].
+    {Self, _} := @.
+    Lists:Join #["x: ", (ToStr ~ Self) x, " y: ", (ToStr ~ Self) y].
   ]}
 ].
 
