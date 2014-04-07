@@ -184,7 +184,8 @@ arithmetic_funcs = {
     'minus':  operator.sub,
     'divide': operator.floordiv,
     'times':  operator.mul,
-    'modulo': operator.mod
+    'modulo': operator.mod,
+    'pow': operator.pow
 }
 
 cmp_funcs = {
@@ -242,7 +243,7 @@ def maval(expr, env, filename):
             raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
         return Node('number', -op.content, infonode=expr)
 
-    elif T in ('plus', 'minus', 'divide', 'times', 'modulo'):
+    elif T in ('plus', 'minus', 'divide', 'times', 'modulo', 'pow'):
 
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         if op1._type == op2._type:

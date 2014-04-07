@@ -27,7 +27,7 @@ keywords = {kw: kw.upper()
             for kw in ['case', 'of', 'end']}
 
 tokens = (
-    'NUMBER',   'PLUS','MINUS','TIMES',
+    'NUMBER',   'PLUS','MINUS','TIMES', 'POW',
     'DIVIDE',   'MODULO',
     'LPAREN',   'RPAREN',
     'LBRACE',   'RBRACE',
@@ -50,6 +50,7 @@ states = (
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE', 'MODULO'),
+    ('right', 'POW'),
     ('right', 'UMINUS'),
 )
 
@@ -81,6 +82,7 @@ t_EQ = r'=='
 t_NE = r'!='
 t_STARTLIST = r'\#\['
 t_TILDE = r'~'
+t_POW = r'\*\*'
 
 def t_COMMENT(t):
     r'--(.*)'
@@ -293,6 +295,10 @@ def p_expression_div(p):
 def p_expression_mod(p):
     'expression : expression MODULO expression'
     p[0] = Node('modulo', (p[1], p[3]), infonode=p[1])
+
+def p_expression_pow(p):
+    'expression : expression POW expression'
+    p[0] = Node('pow', (p[1], p[3]), infonode=p[1])
 
 
 def p_expression_composition(p):
