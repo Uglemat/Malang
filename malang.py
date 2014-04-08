@@ -437,6 +437,7 @@ if __name__ == "__main__":
             try:
                 with utils.tab_completion():
                     inp = input(color_prompt)
+                    print(color(39), end="")
             except EOFError:
                 print(color(39))
                 break

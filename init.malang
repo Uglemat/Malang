@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
 Require := Builtins:Require.
-ToList  := Builtins:ToList.
 ToStr   := Builtins:ToStr.
 Help    := Builtins:Help.
 
@@ -39,6 +38,7 @@ Cdr := [
 
 Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".
+Tuples  := Require "libs/tuples.malang".
 Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
 Sorting := Require "libs/sorting.malang".

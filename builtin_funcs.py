@@ -231,6 +231,11 @@ def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
 
 @builtin("TupleNth")
 def tuplenth(arg, env, filename, infonode):
+    """
+    @ = {N, Tuple}
+
+    Returns the `N`th element of `Tuple`. (Starting from 1)
+    """
     assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
     N, actual_tuple = arg.content
     assert_type(N, 'number', filename, infonode)

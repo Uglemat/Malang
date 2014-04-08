@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
-nil := ToList {}.
 #[] := nil.
 {1, nil} := #[1].
 
@@ -286,7 +285,18 @@ NewPoint := Point extend #[
 39 := NewPoint newsum (-3).
 
 
+"""
+        Tuples Tests:
+""".
 
+nil := Tuples:ToList {}.
+#[1] := Tuples:ToList {1}.
+#[1, 2, 3] := Tuples:ToList {1, 2, 3}.
+
+omg  := Tuples:Nth {1, {omg, duh, hay}}.
+duh  := Tuples:Nth {2, {omg, duh, hay}}.
+hay  := Tuples:Nth {3, {omg, duh, hay}}.
+ello := Tuples:Nth {1, {ello}}.
 
 ---------------------------------------
 ---------------------------------------
