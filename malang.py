@@ -298,7 +298,8 @@ def maval(expr, env, filename):
 
     elif T == 'module_access':
         module = trampoline(expr.content[0], env, filename)
-        assert module._type == 'module', "That's not a module"
+        if module._type != 'module':
+            raise MalangError("You tried to use module access on something that wasn't a module", filename, infonode=expr)
         val = trampoline(expr.content[1], module.content, filename)
         return val
 

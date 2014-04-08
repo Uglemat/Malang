@@ -195,6 +195,12 @@ Add := [{N1, N2} := @.
 {#[3, 2, 1], #[]} := Lists:Partition_At {4, #[1, 2, 3]}.
 {#[], #[]} := Lists:Partition_At {2, #[]}.
 
+
+{} := Lists:ToTuple #[].
+{one} := Lists:ToTuple #[one].
+{1, two, 3} := Lists:ToTuple #[1, two, 3].
+
+
 """
         Dicts Tests:
 """.

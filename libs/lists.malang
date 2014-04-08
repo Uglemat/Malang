@@ -467,3 +467,21 @@ Dropwhile :=  [
       end.
   end.
 ].
+
+
+ToTuple := [
+  """
+  @ = List
+
+  Convert `List` into a tuple
+  """.
+  
+  Helper := [
+    case @ of
+      {#[],    Acc} -> Acc.
+      {{H, T}, Acc} -> Helper {T, Acc + {H}}.
+    end.
+  ].
+
+  Helper {@, {}}.
+].
