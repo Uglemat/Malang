@@ -228,3 +228,18 @@ def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
         content = str(val.content)
 
     return Node('str', content)
+
+@builtin("TupleNth")
+def tuplenth(arg, env, filename, infonode):
+    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    N, actual_tuple = arg.content
+    assert_type(N, 'number', filename, infonode)
+    assert_type(actual_tuple, 'tuple', filename, infonode)
+    
+    try:
+        idx = N.content-1
+        if idx < 0:
+            raise MalangError("Indices start at 1", filename, infonode)
+        return actual_tuple.content[idx]
+    except IndexError:
+        raise MalangError("Tuple index out of range", filename, infonode)
