@@ -485,3 +485,37 @@ ToTuple := [
 
   Helper {@, {}}.
 ].
+
+Sortwith := [
+  """
+  @ = {Func, List}
+
+  Sort `List` with the comparison function `Func`.
+
+  `Func` should take an argument of the form `{Val_1, Val_2}`, and return
+  `0` if they should be considered equal, `1` if `Val_1` should be
+  considered 'higher', and `-1` if `Val_1` should be considered 'lower'.
+  'higher' values goes to the end of the new list, 'lower' values go to
+  the beginning.
+  """.
+  {Func, List} := @.
+  (Tuples:ToList ~ Tuples:Sortwith) {Func, ToTuple List}.
+].
+
+Sort := [
+  """
+  @ = List
+
+  Return a new version of `List`, sorted from low to high.
+  """.
+  (Tuples:ToList ~ Tuples:Sort ~ ToTuple) @.
+].
+
+ReverseSort := [
+  """
+  @ = List
+
+  Return a new version of `List`, sorted from high to low.
+  """.
+  (Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple) @.
+].

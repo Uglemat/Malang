@@ -15,5 +15,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """.
 
-ToList := Builtins:ToList.
-Nth    := Builtins:TupleNth.
+ToList   := Builtins:ToList.
+Nth      := Builtins:TupleNth.
+Sortwith := Builtins:TupleSortwith.
+
+
+
+Sort := [
+  """
+  @ = Tuple
+
+  Return a new version of `Tuple`, sorted from low to high.
+  """.
+  Sortwith {Cmp, @}.
+].
+
+ReverseSort := [
+  """
+  @ = Tuple
+
+  Return a new version of `Tuple`, sorted from high to low.
+  """.
+  Sortwith {[ -(Cmp {Car @, Cdr @}). ], @}.
+].

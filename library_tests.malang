@@ -234,23 +234,73 @@ Ag2 := #[{harry, 83}, {dory, 11}].
   Dicts:Extend {Ag, Ag2}.
 
 """
-        Sorting Tests:
+        Sort Tests:
 """.
-#[] := Sorting:Sort #[].
-#["hay"] := Sorting:Sort #["hay"].
-#[1, 2, 3] := Sorting:Sort #[1, 2, 3].
-#[1, 2, 3] := Sorting:Sort #[2, 3, 1].
-#[1, 1, 3] := Sorting:Sort #[1, 3, 1].
-#["b", "h", "z"] := Sorting:Sort #["h", "z", "b"].
+#[] :=              Lists:Sort #[].
+#["hay"] :=         Lists:Sort #["hay"].
+#[1, 2, 3] :=       Lists:Sort #[1, 2, 3].
+#[1, 2, 3] :=       Lists:Sort #[2, 3, 1].
+#[1, 1, 3] :=       Lists:Sort #[1, 3, 1].
+#["b", "h", "z"] := Lists:Sort #["h", "z", "b"].
 
-LenCmp := [  {L1, L2} := @.  Lists:Length L1 < Lists:Length L2.].
+#[] :=              Lists:ReverseSort #[].
+#["hay"] :=         Lists:ReverseSort #["hay"].
+#[3, 2, 1] :=       Lists:ReverseSort #[1, 2, 3].
+#[3, 2, 1] :=       Lists:ReverseSort #[2, 3, 1].
+#[3, 1, 1] :=       Lists:ReverseSort #[1, 3, 1].
+#["z", "h", "b"] := Lists:ReverseSort #["h", "z", "b"].
 
-#[]         := Sorting:Sortwith {LenCmp, #[]}.
-#[#[], #[]] := Sorting:Sortwith {LenCmp, #[#[], #[]]}.
-#[#[], #["Hello"]]       := Sorting:Sortwith {LenCmp, #[#[], #["Hello"]]}.
-#[#[], #[92], #[-23, 4]] := Sorting:Sortwith {LenCmp, #[#[-23, 4], #[], #[92]]}.
+
+{} :=              Tuples:Sort {}.
+{"hay"} :=         Tuples:Sort {"hay"}.
+{1, 2, 3} :=       Tuples:Sort {1, 2, 3}.
+{1, 2, 3} :=       Tuples:Sort {2, 3, 1}.
+{1, 1, 3} :=       Tuples:Sort {1, 3, 1}.
+{"b", "h", "z"} := Tuples:Sort {"h", "z", "b"}.
+
+{} :=              Tuples:ReverseSort {}.
+{"hay"} :=         Tuples:ReverseSort {"hay"}.
+{3, 2, 1} :=       Tuples:ReverseSort {1, 2, 3}.
+{3, 2, 1} :=       Tuples:ReverseSort {2, 3, 1}.
+{3, 1, 1} :=       Tuples:ReverseSort {1, 3, 1}.
+{"z", "h", "b"} := Tuples:ReverseSort {"h", "z", "b"}.
+
+LenCmp := [
+  {L1, L2} := @.
+  Len1 := Lists:Length L1.
+  Len2 := Lists:Length L2.
+  case Len1 == Len2 of
+    yeah -> 0.
+    nope ->
+      case Len1 > Len2 of
+        yeah -> 1.
+        nope -> -1.
+      end.
+  end.
+].
+Reverse_LenCmp := [ -(LenCmp {Car @, Cdr @}).].
 
 
+#[]                      := Lists:Sortwith {LenCmp, #[]}.
+#[#[], #[]]              := Lists:Sortwith {LenCmp, #[#[], #[]]}.
+#[#[], #["Hello"]]       := Lists:Sortwith {LenCmp, #[#[], #["Hello"]]}.
+#[#[], #[92], #[-23, 4]] := Lists:Sortwith {LenCmp, #[#[-23, 4], #[], #[92]]}.
+
+#[]                      := Lists:Sortwith {Reverse_LenCmp, #[]}.
+#[#[], #[]]              := Lists:Sortwith {Reverse_LenCmp, #[#[], #[]]}.
+#[#["Hello"], #[]]       := Lists:Sortwith {Reverse_LenCmp, #[#[], #["Hello"]]}.
+#[#[-23, 4], #[92], #[]] := Lists:Sortwith {Reverse_LenCmp, #[#[-23, 4], #[], #[92]]}.
+
+
+{}                      := Tuples:Sortwith {LenCmp, {}}.
+{#[], #[]}              := Tuples:Sortwith {LenCmp, {#[], #[]}}.
+{#[], #["Hello"]}       := Tuples:Sortwith {LenCmp, {#[], #["Hello"]}}.
+{#[], #[92], #[-23, 4]} := Tuples:Sortwith {LenCmp, {#[-23, 4], #[], #[92]}}.
+
+{}                      := Tuples:Sortwith {Reverse_LenCmp, {}}.
+{#[], #[]}              := Tuples:Sortwith {Reverse_LenCmp, {#[], #[]}}.
+{#["Hello"], #[]}       := Tuples:Sortwith {Reverse_LenCmp, {#[], #["Hello"]}}.
+{#[-23, 4], #[92], #[]} := Tuples:Sortwith {Reverse_LenCmp, {#[-23, 4], #[], #[92]}}.
 
 
 """

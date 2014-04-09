@@ -14,7 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type, MalangError
+from utils import Node, assert_type, MalangError, cmp_to_key
+from evaluator import call_malang_func
 import time
 import random
 
@@ -248,3 +249,30 @@ def tuplenth(arg, env, filename, infonode):
         return actual_tuple.content[idx]
     except IndexError:
         raise MalangError("Tuple index out of range", filename, infonode)
+
+
+@builtin("TupleSortwith")
+def tuplesortwith(arg, env, filename, infonode):
+    """
+    @ = {Func, Tuple}
+
+    Sort `Tuple` with the comparison function `Func`.
+
+    `Func` should take an argument of the form `{Val_1, Val_2}`, and return
+    `0` if they should be considered equal, `1` if `Val_1` should be
+    considered 'higher', and `-1` if `Val_1` should be considered 'lower'.
+    'higher' values goes to the end of the new tuple, 'lower' values go to
+    the beginning.
+    """
+    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    func, tup = arg.content
+    assert_type(func, ('function', 'builtin'), filename, infonode)
+    assert_type(tup, 'tuple', filename, infonode)
+
+    def _cmp(val_1, val_2):
+        num = call_malang_func(func, Node('tuple', (val_1, val_2)),
+                               env, filename, infonode)
+        assert_type(num, 'number', filename, infonode)
+        return num.content
+
+    return Node('tuple', tuple(sorted(tup.content, key=cmp_to_key(_cmp))))

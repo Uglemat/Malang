@@ -36,12 +36,31 @@ Cdr := [
   {_, Snd} := @, Snd.
 ].
 
+Cmp := [
+  """
+  @ = {Val1, Val2}
+
+  Returns (1, 0, -1) if `Val1` is (greater than, equal to, less than)
+  `Val2`, respectively.
+
+  Used for sorting purposes.
+  """.
+  {Val1, Val2} := @.
+  case Val1 == Val2 of
+    yeah -> 0.
+    nope ->
+      case Val1 > Val2 of
+        yeah -> 1.
+        nope -> -1.
+      end.
+  end.
+].
+
 Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".
 Tuples  := Require "libs/tuples.malang".
 Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
-Sorting := Require "libs/sorting.malang".
 Objects := Require "libs/objects.malang".
 
 """
