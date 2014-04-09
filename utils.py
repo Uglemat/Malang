@@ -24,6 +24,55 @@ except ImportError:
     readline_imported = False
 
 
+
+def equal(val_1, val_2):
+    if val_1._type != val_2._type:
+        return False
+    T = val_1._type
+    if T == 'tuple':
+        return (len(val_1.content) == len(val_2.content) and
+                all(equal(v1, v2) for (v1, v2) in zip(val_1.content, val_2.content)))
+    else:
+        return val_1.content == val_2.content
+
+
+def greater_than(val_1, val_2):
+
+    # Assumes val_1 and val_2 are of the same _type
+    T = val_1._type
+
+    if T == 'tuple':
+        if len(val_1.content) == 0:
+            return False
+        elif len(val_2.content) == 0:
+            return True
+        else:
+            return (greater_than(val_1.content[0], val_2.content[0]) or
+                    greater_than(Node('tuple', val_1.content[1:]),
+                                 Node('tuple', val_2.content[1:])))
+    else:
+        return val_1.content > val_2.content
+
+
+def less_than(val_1, val_2):
+    # Assumes val_1 and val_2 are of the same _type
+    return not greater_than(val_1, val_2) and not equal(val_1, val_2)
+
+
+def greater_than_or_eq(val_1, val_2):
+    # Assumes val_1 and val_2 are of the same _type
+    return greater_than(val_1, val_2) or equal(val_1, val_2)
+
+
+def less_than_or_eq(val_1, val_2):
+    # Assumes val_1 and val_2 are of the same _type
+    return less_than(val_1, val_2) or equal(val_1, val_2)
+
+
+
+
+
+
 def get_lineno(infonode):
     if (hasattr(infonode, "lineno") and
         infonode.lineno is not None):
@@ -42,6 +91,20 @@ def AST_to_str(ast):
         return str(ast)
 
 
+
+def is_nil(v):
+    return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
+
+def generate_items(malang_list, filename):
+    """
+    A generator that yields all the elements of a malang list
+    """
+    while not is_nil(malang_list):
+        assert_type(malang_list, 'tuple', filename, infonode=malang_list, tuplelength=2)
+        head, malang_list = malang_list.content
+        yield head
+
+
 def python_list_to_malang_list(_list):
     acc = Node('atom', 'nil')
     while _list:
@@ -49,6 +112,15 @@ def python_list_to_malang_list(_list):
     
     return acc
 
+def transform_list_to_tuple(elems, infonode):
+    """
+    `elems` may or may not have been evaluated, this function should work either way
+    """
+    if len(elems) == 0:
+        return Node('atom', 'nil', infonode=infonode)
+    else:
+        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
+                    infonode=infonode)
 
 def assert_type(node, types, filename, infonode, tuplelength=None):
     if isinstance(types, str):

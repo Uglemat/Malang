@@ -28,70 +28,6 @@ sys.setrecursionlimit(5000)
     
 
 
-
-def equal(val_1, val_2):
-    if val_1._type != val_2._type:
-        return False
-    T = val_1._type
-    if T == 'tuple':
-        return (len(val_1.content) == len(val_2.content) and
-                all(equal(v1, v2) for (v1, v2) in zip(val_1.content, val_2.content)))
-    else:
-        return val_1.content == val_2.content
-
-def greater_than(val_1, val_2):
-
-    # Assumes val_1 and val_2 are of the same _type
-    T = val_1._type
-
-    if T == 'tuple':
-        if len(val_1.content) == 0:
-            return False
-        elif len(val_2.content) == 0:
-            return True
-        else:
-            return (greater_than(val_1.content[0], val_2.content[0]) or
-                    greater_than(Node('tuple', val_1.content[1:]),
-                                 Node('tuple', val_2.content[1:])))
-    else:
-        return val_1.content > val_2.content
-
-def less_than(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
-    return not greater_than(val_1, val_2) and not equal(val_1, val_2)
-
-def greater_than_or_eq(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
-    return greater_than(val_1, val_2) or equal(val_1, val_2)
-
-def less_than_or_eq(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
-    return less_than(val_1, val_2) or equal(val_1, val_2)
-
-
-def transform_list_to_tuple(elems, infonode):
-    """
-    `elems` may or may not have been evaluated, this function should work either way
-    """
-    if len(elems) == 0:
-        return Node('atom', 'nil', infonode=infonode)
-    else:
-        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
-                    infonode=infonode)
-
-
-def generate_items(malang_list, filename):
-    """
-    A generator that yields all the elements of a malang list
-    """
-    while not is_nil(malang_list):
-        utils.assert_type(malang_list, 'tuple', filename, infonode=malang_list, tuplelength=2)
-        head, malang_list = malang_list.content
-        yield head
-
-def is_nil(v):
-    return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
-
 def eval_list_comprehension(env, expr, emitters, filename, acc):
     """
     This evaluates the list comprehension, and mutates `acc`, which should be
@@ -122,12 +58,12 @@ def eval_list_comprehension(env, expr, emitters, filename, acc):
 
 
         if last_emitter:
-            for item in generate_items(malang_list, filename):
+            for item in utils.generate_items(malang_list, filename):
                 temp_env = env.shallow_copy()
                 patternmatch(pattern, item, temp_env, filename)
                 acc.append(trampoline(expr, temp_env, filename))
         else:
-            for item in generate_items(malang_list, filename):
+            for item in utils.generate_items(malang_list, filename):
                 temp_env = env.shallow_copy()
                 patternmatch(pattern, item, temp_env, filename)
                 eval_list_comprehension(temp_env, expr, emitters[1:], filename, acc=acc)
@@ -149,7 +85,7 @@ def patternmatch(pattern, expr, env, filename):
 
 
     if pattern._type == 'list':
-        return patternmatch(transform_list_to_tuple(pattern.content, infonode=pattern),
+        return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
                             expr, env, filename)
 
     elif env.is_unbound_identifier(pattern):
@@ -158,7 +94,7 @@ def patternmatch(pattern, expr, env, filename):
 
     elif pattern._type == 'id' and env.is_bound(pattern.content):
         val = env.get(pattern.content, filename, infonode=pattern)
-        if not equal(val, expr):
+        if not utils.equal(val, expr):
             raise exception
         return
 
@@ -185,16 +121,16 @@ arithmetic_funcs = {
     'divide': operator.floordiv,
     'times':  operator.mul,
     'modulo': operator.mod,
-    'pow': operator.pow
+    'pow':    operator.pow
 }
 
 cmp_funcs = {
-    'gt': greater_than,
-    'lt': less_than,
-    'ge': greater_than_or_eq,
-    'le': less_than_or_eq,
-    'eq': equal,
-    'ne': lambda op1, op2: not equal(op1, op2)
+    'gt': utils.greater_than,
+    'lt': utils.less_than,
+    'ge': utils.greater_than_or_eq,
+    'le': utils.less_than_or_eq,
+    'eq': utils.equal,
+    'ne': lambda op1, op2: not utils.equal(op1, op2)
 }
 
 def thunk(func, *args, **kwargs):
@@ -210,7 +146,7 @@ def trampoline(expr, env, filename):
     This trampoline function is necessary for the purpose of implementing tail call elimination.
     When `maval' is about to evaluate an expression in tail position, it returns a thunk
     instead of recursing deeper into itself, thus making sure that the python call stack
-    doesn't grow huge. So it's like `maval' is 'jumping' on this trampoline.
+    doesn't grow huge. So it's like `maval' is 'jumping' on this trampoline. I guess.
     """
     result = maval(expr, env, filename)
     while callable(result):
@@ -277,7 +213,7 @@ def maval(expr, env, filename):
 
     elif T == 'list':
         elems = tuple(trampoline(e, env, filename) for e in expr.content)
-        return transform_list_to_tuple(elems, expr)
+        return utils.transform_list_to_tuple(elems, expr)
 
     elif T == 'list_comprehension':
         result = []
@@ -429,17 +365,26 @@ if __name__ == "__main__":
 
     if interactive:
 
-        color = lambda n: "\x1b[{}m".format(n)
-        readlinecolor = lambda n: "\001{}\002".format(color(n))
-        color_prompt = "{}Malang {}> {}".format(readlinecolor(36), readlinecolor(33), readlinecolor(32))
+        ansicode          = lambda n: "\x1b[{}m".format(n)
+        
+        # The purpose of wrapping the ansi escape codes between \001 and \002
+        # in `readline_ansicode`is to make readline not count those characters.
+        # If I don't do that, things will go bad when the expression you write in
+        # the REPL gets so long that it needs a new line in the terminal, because
+        # readline will have an incorrect character count. Or something like that,
+        # I'm not really sure. I don't really know why it works. Just trust me. Please.
+        readline_ansicode = lambda n: "\001{}\002".format(ansicode(n))
+        color_prompt = "{}Malang{}> {}".format(readline_ansicode(36),
+                                               readline_ansicode(1)  + readline_ansicode(33),
+                                               readline_ansicode(22) + readline_ansicode(32))
 
         while True:
             try:
                 with utils.tab_completion():
                     inp = input(color_prompt)
-                    print(color(39), end="")
+                    print(ansicode(39), end="")
             except EOFError:
-                print(color(39))
+                print(ansicode(39))
                 break
             if not inp:
                 continue
@@ -451,6 +396,6 @@ if __name__ == "__main__":
                     ).content,
                 )
             except MalangError as e:
-                print("{}Error: {}".format(color(31), e))
+                print("{}Error: {}".format(ansicode(31), e))
             finally:
-                print(color(39), end="")
+                print(ansicode(39), end="")
