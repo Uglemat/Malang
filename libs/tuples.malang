@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ToList   := Builtins:ToList.
 Nth      := Builtins:TupleNth.
 Sortwith := Builtins:TupleSortwith.
-
+Length   := Builtins:TupleLength.
 
 
 Sort := [

@@ -276,3 +276,13 @@ def tuplesortwith(arg, env, filename, infonode):
         return num.content
 
     return Node('tuple', tuple(sorted(tup.content, key=cmp_to_key(_cmp))))
+
+@builtin("TupleLength")
+def tuplelength(tup, env, filename, infonode):
+    """
+    @ = Tuple
+    
+    Return the length of `Tuple`
+    """
+    assert_type(tup, 'tuple', filename, infonode)
+    return Node('number', len(tup.content))

@@ -348,6 +348,10 @@ duh  := Tuples:Nth {2, {omg, duh, hay}}.
 hay  := Tuples:Nth {3, {omg, duh, hay}}.
 ello := Tuples:Nth {1, {ello}}.
 
+0 := Tuples:Length {}.
+1 := Tuples:Length {one}.
+2 := Tuples:Length {one, two}.
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
