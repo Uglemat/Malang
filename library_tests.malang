@@ -366,6 +366,14 @@ ello := Tuples:Nth {1, {ello}}.
 "y" := Strings:Nth {3, "hay!"}.
 "!" := Strings:Nth {4, "hay!"}.
 
+"hay!" := Strings:Lower "hay!".
+"hay!" := Strings:Lower "Hay!".
+"hay!" := Strings:Lower "HAY!".
+
+"HAY!" := Strings:Upper "HAY!".
+"HAY!" := Strings:Upper "hAY!".
+"HAY!" := Strings:Upper "hay!".
+
 
 ---------------------------------------
 ---------------------------------------

@@ -317,3 +317,23 @@ def stringnth(tup, env, filename, infonode):
         return Node('str', string.content[idx])
     except IndexError:
         raise MalangError("String index out of range", filename, infonode)
+
+@builtin("StringUpper")
+def stringupper(st, env, filename, infonode):
+    """
+    @ = String
+    
+    Return a version of `String` with uppercase characters.
+    """
+    assert_type(st, 'str', filename, infonode)
+    return Node('str', st.content.upper())
+
+@builtin("StringLower")
+def stringlower(st, env, filename, infonode):
+    """
+    @ = String
+    
+    Return a version of `String` with lowercase characters.
+    """
+    assert_type(st, 'str', filename, infonode)
+    return Node('str', st.content.lower())
