@@ -72,10 +72,6 @@ with open(stdlib_location) as f:
 if __name__ == "__main__":
     interpreter_env = Env(parent=main_env)
 
-    if readline_imported:
-        import readline
-        readline.set_completer(utils.Completer(interpreter_env))
-
     if len(sys.argv) == 1:
         print("Usage: $ malang [-i] <file1> <file2> ... <fileN>")
         exit()
@@ -93,16 +89,20 @@ if __name__ == "__main__":
 
 
     if interactive:
-
         ansicode          = lambda n: "\x1b[{}m".format(n)
-        
-        # The purpose of wrapping the ansi escape codes between \001 and \002
-        # in `readline_ansicode`is to make readline not count those characters.
-        # If I don't do that, things will go bad when the expression you write in
-        # the REPL gets so long that it needs a new line in the terminal, because
-        # readline will have an incorrect character count. Or something like that,
-        # I'm not really sure. I don't really know why it works. Just trust me. Please.
-        readline_ansicode = lambda n: "\001{}\002".format(ansicode(n))
+        readline_ansicode = ansicode
+        if readline_imported:
+            import readline
+            readline.set_completer(utils.Completer(interpreter_env))
+
+            # The purpose of wrapping the ansi escape codes between \001 and \002
+            # in `readline_ansicode`is to make readline not count those characters.
+            # If I don't do that, things will go bad when the expression you write in
+            # the REPL gets so long that it needs a new line in the terminal, because
+            # readline will have an incorrect character count. Or something like that,
+            # I'm not really sure. I don't really know why it works. Just trust me. Please.
+            readline_ansicode = lambda n: "\001{}\002".format(ansicode(n))
+
         color_prompt = "{}Malang{}> {}".format(readline_ansicode(36),
                                                readline_ansicode(1)  + readline_ansicode(33),
                                                readline_ansicode(22) + readline_ansicode(32))
