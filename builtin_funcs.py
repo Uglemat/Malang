@@ -337,3 +337,25 @@ def stringlower(st, env, filename, infonode):
     """
     assert_type(st, 'str', filename, infonode)
     return Node('str', st.content.lower())
+
+
+@builtin("StringFind")
+def stringFind(tup, env, filename, infonode):
+    """
+    @ = {String1, String2}
+    
+    Finds the first occurrence of `String1` in `String2`, and returns
+    the index of that occurrence in `String2`.
+
+    If no occurrence is found, it returns `sorry`.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    s1, s2 = tup.content
+    assert_type(s1, 'str', filename, infonode)
+    assert_type(s2, 'str', filename, infonode)
+
+    result = s2.content.find(s1.content)
+    if result == -1:
+        return Node('atom', 'sorry')
+    else:
+        return Node('number', result + 1)

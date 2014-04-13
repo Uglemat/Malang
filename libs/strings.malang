@@ -19,3 +19,4 @@ Length := Builtins:StringLength.
 Nth    := Builtins:StringNth.
 Upper  := Builtins:StringUpper.
 Lower  := Builtins:StringLower.
+Find   := Builtins:StringFind.

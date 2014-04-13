@@ -374,6 +374,10 @@ ello := Tuples:Nth {1, {ello}}.
 "HAY!" := Strings:Upper "hAY!".
 "HAY!" := Strings:Upper "hay!".
 
+8     := Strings:Find {"hello", "Hello, hello!"}.
+1     := Strings:Find {"hello", "hello, hello!"}.
+sorry := Strings:Find {"hello", "ello, hEllo!"}.
+sorry := Strings:Find {"hello", ""}.
 
 ---------------------------------------
 ---------------------------------------
