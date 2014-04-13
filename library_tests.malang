@@ -352,6 +352,21 @@ ello := Tuples:Nth {1, {ello}}.
 1 := Tuples:Length {one}.
 2 := Tuples:Length {one, two}.
 
+
+"""
+        Strings Tests:
+""".
+
+0  := Strings:Length "".
+1  := Strings:Length "-".
+12 := Strings:Length "Hello, world".
+
+"h" := Strings:Nth {1, "hay!"}.
+"a" := Strings:Nth {2, "hay!"}.
+"y" := Strings:Nth {3, "hay!"}.
+"!" := Strings:Nth {4, "hay!"}.
+
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------

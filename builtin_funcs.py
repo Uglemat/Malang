@@ -286,3 +286,34 @@ def tuplelength(tup, env, filename, infonode):
     """
     assert_type(tup, 'tuple', filename, infonode)
     return Node('number', len(tup.content))
+
+@builtin("StringLength")
+def stringlength(st, env, filename, infonode):
+    """
+    @ = String
+    
+    Return the length of `String`
+    """
+    assert_type(st, 'str', filename, infonode)
+    return Node('number', len(st.content))
+
+@builtin("StringNth")
+def stringnth(tup, env, filename, infonode):
+    """
+    @ = {N, String}
+    
+    Return the the `N`th character of `String`.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    N, string = tup.content
+    assert_type(N, 'number', filename, infonode)
+    assert_type(string, 'str', filename, infonode)
+
+
+    try:
+        idx = N.content-1
+        if idx < 0:
+            raise MalangError("Indices start at 1", filename, infonode)
+        return Node('str', string.content[idx])
+    except IndexError:
+        raise MalangError("String index out of range", filename, infonode)

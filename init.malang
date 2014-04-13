@@ -61,6 +61,7 @@ Lists   := Require "libs/lists.malang".
 Tuples  := Require "libs/tuples.malang".
 Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
+Strings := Require "libs/strings.malang".
 Objects := Require "libs/objects.malang".
 
 """
