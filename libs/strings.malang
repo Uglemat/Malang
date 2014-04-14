@@ -20,3 +20,4 @@ Nth    := Builtins:StringNth.
 Upper  := Builtins:StringUpper.
 Lower  := Builtins:StringLower.
 Find   := Builtins:StringFind.
+Slice  := Builtins:StringSlice.

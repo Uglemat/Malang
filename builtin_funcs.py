@@ -359,3 +359,42 @@ def stringFind(tup, env, filename, infonode):
         return Node('atom', 'sorry')
     else:
         return Node('number', result + 1)
+
+
+@builtin("StringSlice")
+def stringslice(tup, env, filename, infonode):
+    """
+    @ = {Start, Stop, String}
+    
+    Returns a substring of `String` starting at index `Start` (inclusive),
+    ending at index `Stop` (exclusive).
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=3)
+    start, stop, string = tup.content
+    assert_type(start,  'number', filename, infonode)
+    assert_type(stop,   'number', filename, infonode)
+    assert_type(string, 'str', filename, infonode)
+
+    if start.content < 1 or stop.content < 1:
+        raise MalangError("Indices start at 1", filename, infonode)
+
+    return Node('str', string.content[start.content-1:stop.content-1])
+
+@builtin("TupleSlice")
+def tupleslice(tup, env, filename, infonode):
+    """
+    @ = {Start, Stop, Tuple}
+    
+    Returns a subtuple of `Tuple` starting at index `Start` (inclusive),
+    ending at index `Stop` (exclusive).
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=3)
+    start, stop, actual_tuple = tup.content
+    assert_type(start,  'number', filename, infonode)
+    assert_type(stop,   'number', filename, infonode)
+    assert_type(actual_tuple, 'tuple',  filename, infonode)
+
+    if start.content < 1 or stop.content < 1:
+        raise MalangError("Indices start at 1", filename, infonode)
+
+    return Node('tuple', actual_tuple.content[start.content-1:stop.content-1])

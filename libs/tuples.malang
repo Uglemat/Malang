@@ -19,7 +19,7 @@ ToList   := Builtins:ToList.
 Nth      := Builtins:TupleNth.
 Sortwith := Builtins:TupleSortwith.
 Length   := Builtins:TupleLength.
-
+Slice    := Builtins:TupleSlice.
 
 Sort := [
   """
