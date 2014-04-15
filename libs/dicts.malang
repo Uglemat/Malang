@@ -19,7 +19,7 @@ Get := [
   """
   @ = {Key, Dict}
 
-  Finds the first `{K, V}` pair where `K` == `Key` in the list `Dict` and returns
+  Finds the first `{K, V}` pair where `K` = `Key` in the list `Dict` and returns
   `{ok, V}` if the search is successful, and `sorry` otherwise.
   """.
   {Key, D} := @.
@@ -34,7 +34,7 @@ Remove := [
   """
   @ = {Key, Dict}
 
-  Return a new `Dict` with all `{K, V}` pairs where `K` == `Key` removed.
+  Return a new `Dict` with all `{K, V}` pairs where `K` = `Key` removed.
   """.
   {Key, D} := @.
   #[{K, V} | {K, V} <- D, K != Key].
@@ -45,7 +45,7 @@ Set := [
   @ = {Key, Val, Dict}
 
   Return a new `Dict` with the pair `{Key, Val}` inserted, and all `{K, V}` pairs
-  where `K` == `Key` removed.
+  where `K` = `Key` removed.
   """.
   {K, V, D} := @.
   {{K, V}, Remove {K, D}}.
@@ -55,11 +55,11 @@ Member := [
   """
   @ = {Key, Dict}
 
-  Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` == `Key`.
+  Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` = `Key`.
   """.
   {Key, Dict} := @.
   Lists:Any {
-    [{K, _} := @, K == Key.]
+    [{K, _} := @, K = Key.]
     , Dict }.
 ].
 

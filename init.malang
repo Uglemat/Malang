@@ -47,7 +47,7 @@ Cmp := [
   Used for sorting purposes.
   """.
   {Val1, Val2} := @.
-  case Val1 == Val2 of
+  case Val1 = Val2 of
     yeah -> 0.
     nope ->
       case Val1 > Val2 of

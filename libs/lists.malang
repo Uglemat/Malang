@@ -272,7 +272,7 @@ Member := [
   Returns `yeah` if `Val` is a member of the `List`, `nope` otherwise.
   """.
   {Val, List} := @.
-  Any {[@ == Val.], List}.
+  Any {[@ = Val.], List}.
 ].
 
 Repeat := [
