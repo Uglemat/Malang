@@ -459,3 +459,21 @@ def stringsplit(tup, env, filename, infonode):
     return python_list_to_malang_list(
         list(map(lambda s: Node('str', s), string.content.split(sep.content)))
     )
+
+@builtin("Exit")
+def exit_malang(_arg, env, filename, infonode):
+    """
+    @ = <whatever>
+
+    Exit the interpreter.
+    """
+    exit()
+
+@builtin("Error")
+def error(arg, env, filename, infonode):
+    """
+    @ = Reason
+
+    Stop executing because of `Reason`.
+    """
+    raise MalangError(tostr(arg).content, filename, infonode)
