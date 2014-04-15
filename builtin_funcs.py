@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type, MalangError, cmp_to_key
+from utils import Node, assert_type, MalangError, cmp_to_key, python_list_to_malang_list
 from evaluator import call_malang_func
 import time
 import random
@@ -212,23 +212,37 @@ def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
     """
     @ = Val
 
-    Returns a string representation of `Val`.
+    Convert `Val` to a string. Won't go deeper than ~50 for nested tuples.
+    If `Val` already is a string, this does nothing.
     """
     T = val._type
     if T == 'tuple' and depth > 50:
         content = "{...}"
     elif T == 'tuple':
         content = "{" + ", ".join(tostr(elem, env, filename, infonode,
-                                        depth=depth+1, repr_str=repr_str).content
+                                        depth=depth+1, repr_str=True).content
                                   for elem in val.content) + "}"
     elif T in ('module', 'function', 'builtin'):
         content = '[{}]'.format(T)
     elif repr_str and T == 'str':
-        content = repr(val.content)
+        content = stringrepr(val, env, filename, infonode).content
     else:
         content = str(val.content)
 
     return Node('str', content)
+
+@builtin("StringRepr")
+def stringrepr(string, env, filename, infonode):
+    """
+    @ = String
+
+    Replaces tabs with \\t, newlines with \\n, backslashes with \\\\
+    and double-quotes with \\\" in `String`, wraps that in double-quotes
+    and returns the result.
+    """
+    assert_type(string, 'str', filename, infonode)
+    return Node('str', '"{}"'.format(
+        string.content.replace('\\', r'\\').replace('"', r'\"').replace('\t', r'\t').replace('\n', r'\n')))
 
 @builtin("TupleNth")
 def tuplenth(arg, env, filename, infonode):
@@ -426,3 +440,22 @@ def stringlstrip(tup, env, filename, infonode):
     assert_type(string, 'str', filename, infonode)
 
     return Node('str', string.content.lstrip(chars.content))
+
+@builtin("StringSplit")
+def stringsplit(tup, env, filename, infonode):
+    """
+    @ = {Sep, String}
+    
+    Splits `String` into a list of strings, using the non-empty string `Sep` as the delimiter.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    sep, string = tup.content
+    assert_type(sep,    'str', filename, infonode)
+    assert_type(string, 'str', filename, infonode)
+
+    if sep.content == "":
+        raise MalangError("The separator cannot be the empty string", filename, infonode)
+
+    return python_list_to_malang_list(
+        list(map(lambda s: Node('str', s), string.content.split(sep.content)))
+    )

@@ -57,7 +57,7 @@ Create := [
 
   Self := [
     {ok, Val} := Dicts:Get {@, Attributes},
-    case Builtins:TypeOf Val of
+    case TypeOf Val of
       "function" -> [Val {Self, @}.].
       "builtin"  -> [Val {Self, @}.].
       Else       -> Val.

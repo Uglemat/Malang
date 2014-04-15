@@ -18,8 +18,10 @@ from ply import lex, yacc
 import re
 from utils import Node, MalangError
 
-
 def unescape_str(s):
+    if r'\\' in s:
+        return '\\'.join(map(unescape_str, s.split(r'\\')))
+
     s = s.replace(r'\n', '\n').replace(r'\t', '\t')
     return re.sub(r'\\(.)', r'\1', s)
 
@@ -344,7 +346,7 @@ def p_item_num(p):
 
 
 def p_item_expr(p):
-    'item : LPAREN expression RPAREN'
+    'item : LPAREN match_expr RPAREN'
     p[0] = p[2]
 
 def p_func_def(p):
@@ -359,11 +361,11 @@ def p_case_of(p):
     )
 
 def p_arrow_list(p):
-    'arrow_list : arrow_list expression ARROW compound_expr'
+    'arrow_list : arrow_list item ARROW compound_expr'
     p[0] = p[1] + [{'pattern': p[2], 'expr': p[4]}]
 
 def p_arrow_list_single(p):
-    'arrow_list : expression ARROW compound_expr'
+    'arrow_list : item ARROW compound_expr'
     p[0] = [{'pattern': p[1], 'expr': p[3]}]
 
 def p_tuple(p):

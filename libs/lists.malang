@@ -53,7 +53,12 @@ ListToStr := [
 
   Return the string representation for `List`.
   """.
-  "#[" + Joinwith {", ", @} + "]".
+  Repr_Strings := Map {[
+    case TypeOf @ of
+      "str" -> Strings:Repr @.
+      _     -> @.
+    end. ], @}.
+  "#[" + Joinwith {", ", Repr_Strings} + "]".
 ].
 
 Reverse := [

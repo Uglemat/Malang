@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Require := Builtins:Require.
 ToStr   := Builtins:ToStr.
+TypeOf  := Builtins:TypeOf.
 Help    := Builtins:Help.
 
 Car := [
