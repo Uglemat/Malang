@@ -392,6 +392,14 @@ sorry := Strings:Find {"hello", ""}.
 "Hel"  := Strings:Slice {1, 4, "Hello"}.
 "Hell" := Strings:Slice {1, 5, "Hello"}.
 
+"" := Strings:Rstrip {"", ""}.
+"" := Strings:Lstrip {"", ""}.
+"" := Strings:Strip  {"", ""}.
+
+" - hay" := Strings:Rstrip {" -", " - hay - "}.
+"hay - " := Strings:Lstrip {" -", " - hay - "}.
+"hay"    := Strings:Strip  {" -", " - hay - "}.
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------

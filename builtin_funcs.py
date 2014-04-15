@@ -398,3 +398,31 @@ def tupleslice(tup, env, filename, infonode):
         raise MalangError("Indices start at 1", filename, infonode)
 
     return Node('tuple', actual_tuple.content[start.content-1:stop.content-1])
+
+@builtin("StringRstrip")
+def stringrstrip(tup, env, filename, infonode):
+    """
+    @ = {Chars, String}
+    
+    Return `String` with all trailing characters that appear in the string `Chars` removed.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    chars, string = tup.content
+    assert_type(chars,  'str', filename, infonode)
+    assert_type(string, 'str', filename, infonode)
+
+    return Node('str', string.content.rstrip(chars.content))
+
+@builtin("StringLstrip")
+def stringlstrip(tup, env, filename, infonode):
+    """
+    @ = {Chars, String}
+    
+    Return `String` with all leading characters that appear in the string `Chars` removed.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    chars, string = tup.content
+    assert_type(chars,  'str', filename, infonode)
+    assert_type(string, 'str', filename, infonode)
+
+    return Node('str', string.content.lstrip(chars.content))

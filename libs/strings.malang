@@ -21,3 +21,15 @@ Upper  := Builtins:StringUpper.
 Lower  := Builtins:StringLower.
 Find   := Builtins:StringFind.
 Slice  := Builtins:StringSlice.
+Rstrip := Builtins:StringRstrip.
+Lstrip := Builtins:StringLstrip.
+Strip  := [
+  """
+  @ = {Chars, String}
+
+  Return `String` with all leading and trailing characters that appear
+  in the string `Chars` removed.
+  """.
+  {Chars, String} := @.
+  Lstrip {Chars, Rstrip {Chars, String}}.
+].
