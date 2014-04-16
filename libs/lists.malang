@@ -524,3 +524,17 @@ ReverseSort := [
   """.
   (Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple) @.
 ].
+
+Slice := [
+  """
+  @ = {Start, Stop, List}
+    
+  Returns a sublist of `List` starting at index `Start` (inclusive),
+  ending at index `Stop` (exclusive).
+  """.
+  {Start, Stop, List} := @.
+  Take {
+    Stop-Start,
+    Drop {Start-1, List}
+  }.
+].

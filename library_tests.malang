@@ -204,10 +204,16 @@ Add := [{N1, N2} := @.
 {#[], #[]}        := Lists:Partition_At {2, #[]}.
 
 
-{} := Lists:ToTuple #[].
-{one} := Lists:ToTuple #[one].
+{}          := Lists:ToTuple #[].
+{one}       := Lists:ToTuple #[one].
 {1, two, 3} := Lists:ToTuple #[1, two, 3].
 
+Li := #[one, two, 333, "hay"].
+
+#[]                := Lists:Slice {1, 1, Li}.
+#[one, two]        := Lists:Slice {1, 3, Li}.
+#[two, 333, "hay"] := Lists:Slice {2, 5, Li}.
+Li                 := Lists:Slice {1, 5, Li}.
 
 """
         Dicts Tests:
@@ -234,10 +240,11 @@ nope := Lists:Member {one, Vals}.
 nope := Lists:Member {three, Keys}.
 yeah := Lists:Member {"three", Keys}.
 yeah := Lists:Member {2, Vals}.
+
 3 := Lists:Length Vals.
 3 := Lists:Length Keys.
 
-Ag := #[{peter, 23}, {dory, 91}].
+Ag  := #[{peter, 23}, {dory, 91}].
 Ag2 := #[{harry, 83}, {dory, 11}].
 #[{dory, 11}, {harry, 83}, {peter, 23}] :=
   Dicts:Extend {Ag, Ag2}.
@@ -414,7 +421,7 @@ sorry := Strings:Find {"hello", ""}.
 #["hey ho", "lets go"] := Strings:Split {", ", "hey ho, lets go"}.
 #["1", "2", "3", ""]   := Strings:Split {"|", "1|2|3|"}.
 
-"\"\"" := Strings:Repr "".
+"\"\""     := Strings:Repr "".
 "\"hay\""  := Strings:Repr "hay".
 "\" \\n hay \\t \"" := Strings:Repr " \n hay \t ".
 "\"\\\\\"" := Strings:Repr "\\".
