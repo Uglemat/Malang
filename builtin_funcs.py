@@ -104,10 +104,9 @@ def _help(fun, env, filename, infonode):
     if fun._type == 'module':
         mod_env = fun.content
         print("Functions in module:")
-        for ident, val in mod_env.bindings.items():
+        for ident, val in sorted(mod_env.bindings.items()):
             if val._type in ('function', 'builtin'):
-                print("\nHelp for function bound to the name {!r}:".format(ident))
-                _help(val, env, filename, infonode)
+                print("  ", ident)
     elif fun._type in ('builtin', 'function'):
         print_docstring(fun)
 
@@ -474,6 +473,6 @@ def error(arg, env, filename, infonode):
     """
     @ = Reason
 
-    Stop executing because of `Reason`.
+    Stop executing because of `Reason`. `Reason` can be any type.
     """
     raise MalangError(tostr(arg).content, filename, infonode)
