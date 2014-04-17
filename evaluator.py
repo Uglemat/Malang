@@ -155,9 +155,6 @@ def maval(expr, env, filename):
     (2) A thunk (i.e. a function meant to be called later, delaying some computation).
     This is used to implement tail call elimination; `maval' can't just naively recurse deeper because python
     itself has no tail call elimination, and python's call stack would explode.
-
-    Don't call `maval' directly, call `eval_malang' instead (because `eval_malang' never returns a thunk,
-    only Node() values).
     """
 
     T = expr._type
@@ -182,6 +179,13 @@ def maval(expr, env, filename):
                 return Node('str', op1.content + op2.content, infonode=expr)
             elif _type == 'tuple' and T == 'plus':
                 return Node('tuple', op1.content + op2.content, infonode=expr)
+
+        elif {op1._type, op2._type} == {'number', 'str'}:
+            return Node('str', op1.content * op2.content)
+
+        elif {op1._type, op2._type} == {'number', 'tuple'}:
+            return Node('tuple', op1.content * op2.content)
+
         else:
             raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
 

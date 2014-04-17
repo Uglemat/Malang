@@ -211,6 +211,7 @@ Add := [{N1, N2} := @.
 Li := #[one, two, 333, "hay"].
 
 #[]                := Lists:Slice {1, 1, Li}.
+#[]                := Lists:Slice {2, 2, Li}.
 #[one, two]        := Lists:Slice {1, 3, Li}.
 #[two, 333, "hay"] := Lists:Slice {2, 5, Li}.
 Li                 := Lists:Slice {1, 5, Li}.

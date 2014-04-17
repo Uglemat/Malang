@@ -30,7 +30,16 @@ sys.setrecursionlimit(5000)
 
 
 def eval_malang(code, env, filename):
+    """
+    (code: str, env: utils.Env, filename: str) -> (result: utils.Node)
+
+    Evaluate `code` in the environment `env`.
+
+    `filename` is used for reporting errors, it doesn't have to refer to an actual file.
+    """
     return evaluator.trampoline(parse(code, filename), env, filename)
+
+
 
 # The reason I don't define `require` in the builtin_funcs module is that I need access to
 # `main_env` inside `require`.
