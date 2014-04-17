@@ -1,4 +1,4 @@
-"""
+"
 Copyright (C) 2014 Mattias Ugelvik
 
 This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-""".
+".
 
 Require := Builtins:Require.
 ToStr   := Builtins:ToStr.
@@ -23,31 +23,31 @@ Exit    := Builtins:Exit.
 Error   := Builtins:Error.
 
 Car := [
-  """
+  "
   @ = {Fst, Snd}
 
   Returns `Fst`.
-  """.
+  ".
   {Fst, _} := @, Fst.
 ].
 Cdr := [
-  """
+  "
   @ = {Fst, Snd}
 
   Returns `Snd`.
-  """.
+  ".
   {_, Snd} := @, Snd.
 ].
 
 Cmp := [
-  """
+  "
   @ = {Val1, Val2}
 
   Returns (1, 0, -1) if `Val1` is (greater than, equal to, less than)
   `Val2`, respectively.
 
   Used for sorting purposes.
-  """.
+  ".
   {Val1, Val2} := @.
   case Val1 = Val2 of
     yeah -> 0.
@@ -67,16 +67,16 @@ Dicts   := Require "libs/dicts.malang".
 Strings := Require "libs/strings.malang".
 Objects := Require "libs/objects.malang".
 
-"""
+"
 The environment of this file is accessible by all malang programs.
 They don't share it directly, exactly, but their environment 'inherits' from this environment,
 in the same sense that a function inherits the environment of where it was created.
 
 So any identifiers in this file will be available in all malang programs.
-""".
+".
 
 
-Io:Print """
+Io:Print "
     * Welcome   *
     * To Malang *
     * The Best  *
@@ -87,4 +87,4 @@ Io:Print """
    Even though I'm paid to say this, I have to say, this product rocks!\"
      - Gus (23)
 
-""".
+".

@@ -1,4 +1,4 @@
-"""
+"
 Copyright (C) 2014 Mattias Ugelvik
 
 This program is free software: you can redistribute it and/or modify
@@ -13,10 +13,10 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-""".
+".
 
 Create := [
-  """
+  "
   @ = Dict
 
   Create an object out of `Dict`. An object is just a function.
@@ -35,7 +35,7 @@ Create := [
 
   Even though you can extend an object with the `extend` message, there's no such
   thing as a parent object, all objects are flat, and attributes are simply overwritten.
-  """.
+  ".
   Attributes := Dicts:Extend {@, #[
     {set, [
       {_, {K, V}}  := @.

@@ -1,4 +1,4 @@
-"""
+"
 Copyright (C) 2014 Mattias Ugelvik
 
 This program is free software: you can redistribute it and/or modify
@@ -13,17 +13,17 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-""".
+".
 
 Truthy := [
-  """
+  "
   @ = Val
 
   Returns `yeah` if `Val` is 'truthy', `nope` otherwise.
 
-  These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `nil`.
+  These are the 'falsy' values: `{}`, `0`, `nope`, `\"\"` and `nil`.
   All other values are considered 'truthy'.
-  """.
+  ".
   case @ of
     {}   -> nope.
     0    -> nope.
@@ -36,11 +36,11 @@ Truthy := [
 
 
 And := [
-  """
+  "
   @ = {Val1, Val2}
 
   Returns `yeah` if and only if both `Val1` and `Val2` are truthy, `nope` otherwise.
-  """.
+  ".
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {yeah, yeah} -> yeah.
@@ -49,11 +49,11 @@ And := [
 ].
 
 Or := [
-  """
+  "
   @ = {Val1, Val2}
 
   Returns `yeah` if either `Val1` or `Val2` is truthy, `nope` otherwise.
-  """.
+  ".
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {nope, nope} -> nope.
@@ -62,11 +62,11 @@ Or := [
 ].
 
 Xor := [
-  """
+  "
   @ = {Val1, Val2}
 
   Returns `yeah` if exactly one of `Val1` and `Val2` is truthy, `nope` otherwise.
-  """.
+  ".
   {A1, A2} := @.
   case {Truthy A1, Truthy A2} of
     {Same, Same} -> nope.
@@ -75,11 +75,11 @@ Xor := [
 ].
 
 Not := [
-  """
+  "
   @ = Val
 
   Returns `nope` if `Val` is truthy, `yeah` otherwise.
-  """
+  "
   case Truthy @ of
     yeah -> nope.
     nope -> yeah.

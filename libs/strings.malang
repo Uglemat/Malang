@@ -1,4 +1,4 @@
-"""
+"
 Copyright (C) 2014 Mattias Ugelvik
 
 This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-""".
+".
 
 Repr   := Builtins:StringRepr.
 
@@ -31,12 +31,12 @@ Split  := Builtins:StringSplit.
 Rstrip := Builtins:StringRstrip.
 Lstrip := Builtins:StringLstrip.
 Strip  := [
-  """
+  "
   @ = {Chars, String}
 
   Return `String` with all leading and trailing characters that appear
   in the string `Chars` removed.
-  """.
+  ".
   {Chars, String} := @.
   Lstrip {Chars, Rstrip {Chars, String}}.
 ].

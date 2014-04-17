@@ -1,4 +1,4 @@
-"""
+"
 Copyright (C) 2014 Mattias Ugelvik
 
 This program is free software: you can redistribute it and/or modify
@@ -13,15 +13,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-""".
+".
 
 Joinwith :=  [
-  """
+  "
   @ = {Str, List}
 
   Return a str which is the string representation of all the elements of `List`
   separated by `Str` concatenated.
-  """.
+  ".
   {Str, List} := @.
   Helper := [
     {Current, Acc} := @.
@@ -37,22 +37,22 @@ Joinwith :=  [
 ].
 
 Join :=  [
-  """
+  "
   @ = List
 
   Return a str which is the string representation of all the elements of `List`
   concatenated.
-  """.
+  ".
   Joinwith {"", @}.
 ].
 
 
 ListToStr := [
-  """
+  "
   @ = List
 
   Return the string representation for `List`.
-  """.
+  ".
   Repr_Strings := Map {[
     case TypeOf @ of
       "str" -> Strings:Repr @.
@@ -62,11 +62,11 @@ ListToStr := [
 ].
 
 Reverse := [
-  """
+  "
   @ = List
 
   Return `List` in reverse order.
-  """.
+  ".
   Helper := [
     {List, Acc} := @.
     case List of
@@ -79,24 +79,24 @@ Reverse := [
 
 
 Map := [
-  """
+  "
   @ = {Func, List}
 
   Applies `Func` to every elemement of `List` are returns the result.
-  """.
+  ".
   {Func, List} := @.
   #[Func E | E <- List].
 ].
 
 Foldl := [
-  """
+  "
   @ = {Func, Acc, List}
 
   Fold from left to right of `List`, starting with `Acc` as the initial value.
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
   and E`lem` is the current element of the list being folded.
-  """.
+  ".
   case @ of
     {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> Foldl {F, F {Acc, H}, T}.
@@ -104,14 +104,14 @@ Foldl := [
 ].
 
 Foldr := [
-  """
+  "
   @ = {Func, Acc, List}
 
   Fold from right to left of `List`, starting with `Acc` as the initial value.
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
   and `Elem` is the current element of the list being folded.
-  """.
+  ".
   case @ of
     {F, Acc, #[]}    -> Acc.
     {F, Acc, {H, T}} -> F {Foldr {F, Acc, T}, H}.
@@ -119,21 +119,21 @@ Foldr := [
 ].
 
 Length := [
-  """
+  "
   @ = List
 
   Returns the length of `List`.
-  """.
+  ".
   Foldl {[{Acc, _} := @, Acc+1.], 0, @}.
 ].
 
 
 Range := [
-  """
+  "
   @ = {From, To}
 
   Returns a list of integers ranging from `From` (inclusive), to `To` (exclusive).
-  """.
+  ".
   {From, To} := @.
   Helper := [
     {N, Acc} := @.
@@ -149,12 +149,12 @@ Range := [
 ].
 
 Nth := [
-  """
+  "
   @ = {N, List}
 
   Returns the Nth element of `List`. The list must
   be long enough.
-  """.
+  ".
   {N, {H, T}} := @.
   case N <= 1 of
     yeah -> H.
@@ -163,21 +163,21 @@ Nth := [
 ].
 
 Random_Choice := [
-  """
+  "
   @ = List
 
   Returns a random element of `List`.
-  """.
+  ".
   Nth {Builtins:Random_Range {1, Length @ + 1}
       , @}.
 ].
 
 Concat := [
-  """
+  "
   @ = {List1, List2}
 
   Concatenates two lists.
-  """.
+  ".
   {L1, L2} := @.
   Helper := [
     {Elems_Left, Result} := @.
@@ -190,14 +190,14 @@ Concat := [
 ].
 
 Any := [
-  """
+  "
   @ = {Func, List}
 
   Returns `yeah` if any of the elements of `List` pass the predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
   is `yeah` or `nope`.
-  """.
+  ".
   {Func, List} := @.
   case List of
     #[]    -> nope.
@@ -210,14 +210,14 @@ Any := [
 ].
 
 All := [
-  """
+  "
   @ = {Func, List}
 
   Returns `yeah` if all the elements of `List` pass the predicate function `Func`.
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
   is `yeah` or `nope`.
-  """.
+  ".
   {Func, List} := @.
   case List of
     #[]    -> yeah.
@@ -231,12 +231,12 @@ All := [
 
 
 And := [
-  """
+  "
   @ = List
 
   Returns `yeah` if all of the elements of `List` are `yeah` according to
   `Bools:Truthy`, `nope` otherwise.
-  """.
+  ".
   case @ of
     #[]    -> yeah.
     {H, T} ->
@@ -248,12 +248,12 @@ And := [
 ].
 
 Or := [
-  """
+  "
   @ = List
 
   Returns `yeah` if any of the elements of `List` are `yeah` according to
   `Bools:Truthy`, `nope` otherwise.
-  """.
+  ".
   case @ of
     #[]    -> nope.
     {H, T} ->
@@ -266,21 +266,21 @@ Or := [
 
 
 Member := [
-  """
+  "
   @ = {Val, List}
 
   Returns `yeah` if `Val` is a member of the `List`, `nope` otherwise.
-  """.
+  ".
   {Val, List} := @.
   Any {[@ = Val.], List}.
 ].
 
 Repeat := [
-  """
+  "
   @ = {N, Elem}
 
   Return a list of `N` `Elem`s.
-  """.
+  ".
   {Times, Elem} := @.
   Helper := [
     {TimesLeft, Acc} := @.
@@ -293,17 +293,17 @@ Repeat := [
 ].
 
 Remove := [
-  """
+  "
   @ = {Elem, List}
 
   Return a list with all elements that are equal to `Elem` removed.
-  """.
+  ".
   {Elem, List} := @.
   #[E | E <- List, E != Elem].
 ].
 
 Filter := [
-  """
+  "
   @ = {Func, List}
 
   Return a list only with elements that pass the predicate function `Func`.
@@ -311,13 +311,13 @@ Filter := [
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
   is `yeah` or `nope`.
-  """.
+  ".
   {F, List} := @.
   #[E | E <- List, Bools:Truthy(F E)].
 ].
 
 Separate := [
-  """
+  "
   @ = {Func, List}.
 
   Returns a tuble of the form `{TrueBucket, FalseBucket}` where `TrueBucket`
@@ -326,7 +326,7 @@ Separate := [
   to `Func`.
   
   The elements of the bucket have no guaranteed ordering.
-  """.
+  ".
   {Func, List} := @.
   Helper := [
     case @ of
@@ -343,11 +343,11 @@ Separate := [
 ].
 
 Zip := [
-  """
+  "
   @ = {List1, List2}
 
   Zip two lists together. Returns a list of tuples.
-  """.
+  ".
   {L1, L2} := @.
   Helper := [
     case @ of
@@ -360,7 +360,7 @@ Zip := [
 ].
 
 Zipwith := [
-  """
+  "
   @ = {Func, L1, L2}
 
   Zip two lists together using the function `Func`.
@@ -368,7 +368,7 @@ Zipwith := [
   `Func` is called with the argument `{Elem1, Elem2}`, where `Elem1`
   is an element from `L1`, and `Elem2` is the corresponding element
   from `L2`.
-  """.
+  ".
   {F, L1, L2} := @.
   Helper := [
     case @ of
@@ -380,7 +380,7 @@ Zipwith := [
   Reverse (Helper {L1, L2, #[]}).].
 
 Partition_At := [
-  """
+  "
   {N, List} := @
 
   Return a tuple of the form `{Seen, Unseen}`
@@ -388,7 +388,7 @@ Partition_At := [
   of `List`, and `Unseen` are the rest. `Seen` IS REVERSED. The reason
   `Seen` is reversed is that I want to implement other functions in terms
   of this function, and don't want unnecessary overhead.
-  """.
+  ".
   {N, List} := @.
   Helper := [
     case @ of
@@ -405,26 +405,26 @@ Partition_At := [
 ].
 
 Take := [
-  """
+  "
   @ = {N, List}
 
   Return the first `N` elements of `List`.
-  """.
+  ".
   Reverse (Car (Partition_At @)).
 ].
 
 Drop := [
-  """
+  "
   @ = {N, List}
 
   Drop the first `N` element off of `List`, and return the resulting list.
-  """.
+  ".
   Cdr (Partition_At @).
 ].
 
 
 Takewhile := [
-  """
+  "
   @ = {Func, List}
 
   Takes elements from `List` as long as they pass the predicate
@@ -435,7 +435,7 @@ Takewhile := [
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
   is `yeah` or `nope`.
-  """.
+  ".
   {F, List} := @.
   Helper := [
     case @ of
@@ -451,7 +451,7 @@ Takewhile := [
 ].
 
 Dropwhile :=  [
-  """
+  "
   @ = {Func, List}
 
   Drops elements from `List` as long as they pass the predicate
@@ -462,7 +462,7 @@ Dropwhile :=  [
 
   The return value of `Func` is passed into `Bools:Truthy` before checking if it
   is `yeah` or `nope`.
-  """.
+  ".
   case @ of
     {_, #[]}    -> #[].
     {F, {H, T}} ->
@@ -475,11 +475,11 @@ Dropwhile :=  [
 
 
 ToTuple := [
-  """
+  "
   @ = List
 
   Convert `List` into a tuple
-  """.
+  ".
   
   Helper := [
     case @ of
@@ -492,7 +492,7 @@ ToTuple := [
 ].
 
 Sortwith := [
-  """
+  "
   @ = {Func, List}
 
   Sort `List` with the comparison function `Func`.
@@ -502,36 +502,36 @@ Sortwith := [
   considered 'higher', and `-1` if `Val_1` should be considered 'lower'.
   'higher' values goes to the end of the new list, 'lower' values go to
   the beginning.
-  """.
+  ".
   {Func, List} := @.
   (Tuples:ToList ~ Tuples:Sortwith) {Func, ToTuple List}.
 ].
 
 Sort := [
-  """
+  "
   @ = List
 
   Return a new version of `List`, sorted from low to high.
-  """.
+  ".
   (Tuples:ToList ~ Tuples:Sort ~ ToTuple) @.
 ].
 
 ReverseSort := [
-  """
+  "
   @ = List
 
   Return a new version of `List`, sorted from high to low.
-  """.
+  ".
   (Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple) @.
 ].
 
 Slice := [
-  """
+  "
   @ = {Start, Stop, List}
     
   Returns a sublist of `List` starting at index `Start` (inclusive),
   ending at index `Stop` (exclusive).
-  """.
+  ".
   {Start, Stop, List} := @.
   Take {
     Stop-Start,
