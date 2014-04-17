@@ -50,15 +50,19 @@ There are 6 types of values: numbers (only integers), strings, atoms, tuples, fu
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
 of the form `{<key>, <val>}`.
 
-numbers are what you would expect, strings are also what you'd expect, like `"string with \" < quote "`, and also like `"""And then I just
-"Helloo!, and then she said ... \n\n \t\t """` in triple quotes. In my code, I escape quotes inside triple quotes, just because the malang-mode for emacs doesn't understand triple quotes (it thinks it is 3 different strings). Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`,
-and are just values that you can use in your programs (in tuples, et cetera). Identifiers are names which
+Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary)
+to 16 (for hexadecimal), and base defaults to 10 (decimal). 
+Strings are what you'd expect, like `"string with \" < quote and \\ < backslash "`.
+Any character following a backslash is escaped, even if it doesn't have a special meaning like \n and \t,
+so "\hay" is the same string as just "hay".
+Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
+in your programs (in tuples, et cetera). Identifiers are names which
 are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
 
 Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
 Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just syntactic sugar.
-`#[1, 2, 3]` translates into `{1, {2, {3, nil}}}`.
+`#[1, 2, 3]` translates into `{1, {2, {3, nil}}}` (where `nil` is an atom).
 
 A Malang program is a list of compound expressions.
 

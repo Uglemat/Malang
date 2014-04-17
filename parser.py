@@ -34,7 +34,7 @@ tokens = (
     'LPAREN',   'RPAREN',
     'LBRACE',   'RBRACE',
     'LBRACKET', 'RBRACKET',
-    'STR',      'LONGSTR',
+    'STR',
     'DOT',      'ID',
     'COLON',    'STARTLIST',
     'COMMA',    'ATOM',
@@ -45,7 +45,6 @@ tokens = (
 ) + tuple(keywords.values())
 
 states = (
-  ('longstr','exclusive'),
   ('str','exclusive'),
 )
 
@@ -104,30 +103,6 @@ def t_ID(t):
     t.value = Node('id', t.value, lineno=t.lineno)
     return t
 
-def t_longstr(t):
-    r'"""'
-    t.lexer.longstr_start = t.lexer.lexpos
-    t.lexer.longstr_lineno = t.lineno
-    t.lexer.begin("longstr")
-
-
-def t_longstr_esc(t):
-    r'\\.'
-
-def t_longstr_LONGSTR(t):
-    r'"""'
-    t.value = Node('str',
-                   unescape_str(t.lexer.lexdata[t.lexer.longstr_start:t.lexer.lexpos-3]),
-                   lineno=t.lexer.longstr_lineno)
-    t.lexer.begin("INITIAL")
-    return t
-
-def t_longstr_fill(t):
-    r'.'
-
-def t_longstr_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
 
 
 def t_str(t):
@@ -180,14 +155,10 @@ def t_newline(t):
 
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
-t_longstr_ignore = ''
 t_str_ignore = ''
 
 
 def t_error(t):
-    print("Illegal character '{}'".format(t.value[0]))
-    t.lexer.skip(1)
-def t_longstr_error(t):
     print("Illegal character '{}'".format(t.value[0]))
     t.lexer.skip(1)
 
@@ -335,7 +306,6 @@ def p_module_access_item(p):
 def p_item_num(p):
     '''item : NUMBER 
             | STR 
-            | LONGSTR
             | tuple
             | list
             | ATOM

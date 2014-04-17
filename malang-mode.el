@@ -15,15 +15,6 @@
 
 
 
-
-;;
-;; A problem with this mode is that it doesn't understand triple quotes, so
-;; if there are quotes in triple quotes it'll mess up the syntax highlighting,
-;; even though it's completely valid malang code. This mode thinks triple quotes
-;; are 3 different strings. I'd fix it if I knew how, I'm just not proficient 
-;; enough with emacs. I'm considering making it stop highlighting comments.
-;;
-
 (defun insert-func ()
   (interactive)
   (beginning-of-line)
