@@ -241,9 +241,9 @@ def maval(expr, env, filename):
 
         code = Node('program', [
             Node('program', [
-                Node('fncall', (
-                    f1,
-                    Node('fncall', (f2, Node('id', '@'))))
+                Node('fncall', (f1,
+                                Node('fncall', (f2, Node('id', '@')), infonode=expr)),
+                     infonode=expr
                  )
             ])
         ])

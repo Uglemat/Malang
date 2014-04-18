@@ -43,6 +43,7 @@ def eval_malang(code, env, filename):
 
 # The reason I don't define `require` in the builtin_funcs module is that I need access to
 # `main_env` inside `require`.
+# same with `exhibit`, I need to access `REPL_env` and `original_REPL_env`.
 def require(filename_to_open, env, filename, infonode):
     """
     @ = Filename
@@ -50,24 +51,56 @@ def require(filename_to_open, env, filename, infonode):
     Evaluate the program in the file `Filename`, and return a module.
     """
     utils.assert_type(filename_to_open, 'str', filename, infonode)
-    with open(filename_to_open.content) as f:
-        code = f.read()
+
+    try:
+        with open(filename_to_open.content) as f:
+            code = f.read()
+    except IOError as e:
+        raise MalangError(e.args[1], filename, infonode)
+
     module_env = Env(parent=main_env)
     eval_malang(code, module_env, filename_to_open.content)
     return Node('module', module_env)
+
+def exhibit(module, env, filename, infonode):
+    """
+    @ = Module | exit
+
+    Change the REPL environment to be the same as the environment in `Module`.
+
+    if the argument is `exit`, then it will exit the exhibit and change back to the
+    original REPL environment.
+    
+    This builtin only has an effect in the REPL, it makes no sense elsewhere.
+    """
+    global REPL_env
+
+    if module._type == 'atom' and module.content == 'exit':
+        REPL_env = original_REPL_env
+    else:
+        utils.assert_type(module, 'module', filename, infonode)
+        REPL_env = module.content
+
+    if readline_imported:
+        readline.set_completer(utils.Completer(REPL_env))
+
+    return Node('atom', 'ok')
+
 
 
 builtins_module = Node('module',
                       Env(bindings={name: node for name, node
                                     in builtin_funcs.builtins.items()}))
 builtins_module.content.bind('Require', Node('builtin', require))
-builtins_module.content.bind('Exhibit', Node('builtin', require))
+builtins_module.content.bind('Exhibit', Node('builtin', exhibit))
 
 # The main environment which all environments inherits from, with the "Builtins" module already present.
 main_env = Env(bindings={'Builtins': builtins_module})
 
 # The env in which expressions in the REPL is evaluated.
-REPL_env = Env(parent=main_env)
+# the value of the variable `REPL_env` might be changed by the `Exhibit` builtin func (above),
+# `original_REPL_env` is needed for `Exhibit` to remember the original REPL environment.
+original_REPL_env = REPL_env = Env(parent=main_env)
 
 
 

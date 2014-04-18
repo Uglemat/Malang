@@ -16,11 +16,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
 Require := Builtins:Require.
+Exhibit := Builtins:Exhibit.
 ToStr   := Builtins:ToStr.
 TypeOf  := Builtins:TypeOf.
 Help    := Builtins:Help.
 Exit    := Builtins:Exit.
 Error   := Builtins:Error.
+ListEnv := Builtins:ListEnv.
+
+Try := [
+  "
+  @ = Filename
+
+  Just a shorthand for `(Exhibit ~ Require) Filename`.
+  ".
+  (Exhibit ~ Require) @.
+].
 
 Car := [
   "
