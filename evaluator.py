@@ -40,7 +40,7 @@ def eval_list_comprehension(env, expr, emitters, filename, acc):
 
     if emitter._type == 'filter':
         result = trampoline(emitter.content, env, filename)
-        if result._type == 'atom' and result.content == 'yeah':
+        if utils.truthy(result):
             if last_emitter:
                 acc.append(trampoline(expr, env, filename))
             else:

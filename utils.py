@@ -23,6 +23,15 @@ try:
 except ImportError:
     readline_imported = False
 
+def truthy(val):
+    if val._type in ('tuple', 'str'):
+        return len(val.content) != 0
+    elif val._type == 'number':
+        return val.content != 0
+    elif val._type == 'atom' and val.content in ('nil', 'nope'):
+        return False
+    else:
+        return True
 
 
 def equal(val_1, val_2):
