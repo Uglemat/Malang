@@ -61,15 +61,20 @@ builtins_module = Node('module',
                       Env(bindings={name: node for name, node
                                     in builtin_funcs.builtins.items()}))
 builtins_module.content.bind('Require', Node('builtin', require))
+builtins_module.content.bind('Exhibit', Node('builtin', require))
 
-# The main environment, with the "Builtins" module already present.
+# The main environment which all environments inherits from, with the "Builtins" module already present.
 main_env = Env(bindings={'Builtins': builtins_module})
+
+# The env in which expressions in the REPL is evaluated.
+REPL_env = Env(parent=main_env)
 
 
 
 stdlib_location = path.join(path.dirname(path.abspath(__file__)), "init.malang")
 with open(stdlib_location) as f:
     with change_directory(path.dirname(path.abspath(__file__))):
+        # Evaluates the init file in the main environment, thus filling it with the basic bindings
         eval_malang(f.read(), main_env, stdlib_location)
 
 
@@ -79,7 +84,6 @@ with open(stdlib_location) as f:
 
 
 if __name__ == "__main__":
-    interpreter_env = Env(parent=main_env)
 
     if len(sys.argv) == 1:
         print("Usage: $ malang [-i] <file1> <file2> ... <fileN>")
@@ -92,9 +96,10 @@ if __name__ == "__main__":
 
 
     for filename in sys.argv[1:]:
+        temp_env = Env(parent=main_env)
         with open(filename) as f:
             with change_directory(path.dirname(path.abspath(filename))):
-                eval_malang(f.read(), interpreter_env, filename)
+                eval_malang(f.read(), temp_env, filename)
 
 
     if interactive:
@@ -102,7 +107,7 @@ if __name__ == "__main__":
         readline_ansicode = ansicode
         if readline_imported:
             import readline
-            readline.set_completer(utils.Completer(interpreter_env))
+            readline.set_completer(utils.Completer(REPL_env))
 
             # The purpose of wrapping the ansi escape codes between \001 and \002
             # in `readline_ansicode`is to make readline not count those characters.
@@ -129,7 +134,7 @@ if __name__ == "__main__":
             try:
                 print(
                     builtin_funcs.tostr(
-                        eval_malang(inp, interpreter_env, "<REPL>"),
+                        eval_malang(inp, REPL_env, "<REPL>"),
                         repr_str=True
                     ).content,
                 )
