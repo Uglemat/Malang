@@ -209,6 +209,7 @@ Any := [
   end.
 ].
 
+
 All := [
   "
   @ = {Func, List}
@@ -313,7 +314,7 @@ Filter := [
   is `yeah` or `nope`.
   ".
   {F, List} := @.
-  #[E | E <- List, Bools:Truthy(F E)].
+  #[E | E <- List, F E].
 ].
 
 Separate := [
@@ -537,4 +538,40 @@ Slice := [
     Stop-Start,
     Drop {Start-1, List}
   }.
+].
+
+Max := [
+  "
+  @ = List
+
+  Returns the biggest element in `List`.
+  ".
+  case @ of
+    #[E]   -> E.
+    {H, T} ->
+      TailMax := Max T,
+      case H > TailMax of
+        yeah -> H.
+        nope -> TailMax.
+      end.
+    #[] -> Error "Max called with empty list".
+  end.
+].
+
+Min := [
+  "
+  @ = List
+
+  Returns the smallest element in `List`.
+  ".
+  case @ of
+    #[E]   -> E.
+    {H, T} ->
+      TailMin := Min T,
+      case H < TailMin of
+        yeah -> H.
+        nope -> TailMin.
+      end.
+    #[] -> Error "Min called with empty list".
+  end.
 ].

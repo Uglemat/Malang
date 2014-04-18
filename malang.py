@@ -59,7 +59,8 @@ def require(filename_to_open, env, filename, infonode):
         raise MalangError(e.args[1], filename, infonode)
 
     module_env = Env(parent=main_env)
-    eval_malang(code, module_env, filename_to_open.content)
+    with change_directory(path.dirname(path.abspath(filename_to_open.content))):
+        eval_malang(code, module_env, filename_to_open.content)
     return Node('module', module_env)
 
 def exhibit(module, env, filename, infonode):

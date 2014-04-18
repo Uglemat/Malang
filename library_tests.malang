@@ -216,6 +216,14 @@ Li := #[one, two, 333, "hay"].
 #[two, 333, "hay"] := Lists:Slice {2, 5, Li}.
 Li                 := Lists:Slice {1, 5, Li}.
 
+3 := Lists:Max #[3].
+3 := Lists:Max #[3, 3].
+3 := Lists:Max #[1, 3, 2].
+
+3 := Lists:Min #[3].
+3 := Lists:Min #[3, 3].
+1 := Lists:Min #[1, 3, 2].
+
 "
         Dicts Tests:
 ".
