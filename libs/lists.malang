@@ -547,14 +547,14 @@ Max := [
   Returns the biggest element in `List`.
   ".
   case @ of
-    #[E]   -> E.
-    {H, T} ->
-      TailMax := Max T,
-      case H > TailMax of
-        yeah -> H.
-        nope -> TailMax.
-      end.
-    #[] -> Error "Max called with empty list".
+    #[]    -> Error "Max called with empty list".
+    {H, T} -> Foldl {[
+        {Acc, Elem} := @.
+        case Acc > Elem of
+          yeah -> Acc.
+          nope -> Elem. 
+        end.
+      ], H, T}.
   end.
 ].
 
@@ -565,13 +565,13 @@ Min := [
   Returns the smallest element in `List`.
   ".
   case @ of
-    #[E]   -> E.
-    {H, T} ->
-      TailMin := Min T,
-      case H < TailMin of
-        yeah -> H.
-        nope -> TailMin.
-      end.
-    #[] -> Error "Min called with empty list".
+    #[]    -> Error "Min called with empty list".
+    {H, T} -> Foldl {[
+        {Acc, Elem} := @.
+        case Acc < Elem of
+          yeah -> Acc.
+          nope -> Elem. 
+        end.
+      ], H, T}.
   end.
 ].
