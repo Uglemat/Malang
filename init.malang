@@ -70,6 +70,15 @@ Cmp := [
   end.
 ].
 
+YesOrNo := [
+  case (Strings:Lower ~ Io:Input) "[y/n]? " of
+    "y" -> yean.
+    "n" -> nope.
+    _   -> Io:PrintLn "Incorrect input, try again.",
+           YesOrNo {}.
+  end.
+].
+
 Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".
 Tuples  := Require "libs/tuples.malang".

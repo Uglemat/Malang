@@ -295,6 +295,13 @@ def maval(expr, env, filename):
             return thunk(maval, arrow['expr'], env_copy, filename)
         raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
 
+    elif T == 'if':
+        test_expr, if_true, if_false = expr.content
+        if utils.truthy(trampoline(test_expr, env, filename)):
+            return thunk(maval, if_true,  env, filename)
+        else:
+            return thunk(maval, if_false, env, filename)
+
     raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), filename, infonode=expr)
 
 

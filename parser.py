@@ -26,7 +26,7 @@ def unescape_str(s):
     return re.sub(r'\\(.)', r'\1', s)
 
 keywords = {kw: kw.upper()
-            for kw in ['case', 'of', 'end']}
+            for kw in ['case', 'of', 'if', 'then', 'else', 'end']}
 
 tokens = (
     'NUMBER',   'PLUS','MINUS','TIMES', 'POW',
@@ -311,9 +311,13 @@ def p_item_num(p):
             | ATOM
             | ID
             | func_def
-            | case_of'''
+            | case_of
+            | if'''
     p[0] = p[1]
 
+def p_if(p):
+    'if : IF match_expr THEN compound_expr ELSE compound_expr END'
+    p[0] = Node('if', (p[2], p[4], p[6]), lineno=p.lineno(1))
 
 def p_item_expr(p):
     'item : LPAREN match_expr RPAREN'

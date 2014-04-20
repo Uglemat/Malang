@@ -24,14 +24,7 @@ Truthy := [
   These are the 'falsy' values: `{}`, `0`, `nope`, `\"\"` and `nil`.
   All other values are considered 'truthy'.
   ".
-  case @ of
-    {}   -> nope.
-    0    -> nope.
-    nope -> nope.
-    ""   -> nope.
-    nil  -> nope.
-    _    -> yeah.
-  end.
+  if @ then yeah. else nope. end.
 ].
 
 
@@ -80,8 +73,5 @@ Not := [
 
   Returns `nope` if `Val` is truthy, `yeah` otherwise.
   "
-  case Truthy @ of
-    yeah -> nope.
-    nope -> yeah.
-  end.
+  if @ then nope. else yeah. end.
 ].
