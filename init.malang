@@ -60,13 +60,12 @@ Cmp := [
   Used for sorting purposes.
   ".
   {Val1, Val2} := @.
-  case Val1 = Val2 of
-    yeah -> 0.
-    nope ->
-      case Val1 > Val2 of
-        yeah -> 1.
-        nope -> -1.
-      end.
+  if Val1 = Val2
+    then 0.
+    else if Val1 > Val2
+      then 1.
+      else -1.
+    end.
   end.
 ].
 
