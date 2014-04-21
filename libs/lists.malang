@@ -360,7 +360,7 @@ Partition_At := [
   where `Seen` are elements before and including the `N`th element
   of `List`, and `Unseen` are the rest. `Seen` IS REVERSED. The reason
   `Seen` is reversed is that I want to implement other functions in terms
-  of this function, and don't want unnecessary overhead.
+  of this function (namely `Take` and `Drop`),  and don't want unnecessary overhead.
   ".
   {N, List} := @.
   Helper := [

@@ -174,7 +174,10 @@ def maval(expr, env, filename):
             _type = op1._type
 
             if _type == 'number':
-                return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
+                if T in ('modulo', 'divide') and op2.content == 0:
+                    raise MalangError("Division or modulo by zero", filename, infonode=expr)
+                else:
+                    return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
             elif _type == 'str' and T == 'plus':
                 return Node('str', op1.content + op2.content, infonode=expr)
             elif _type == 'tuple' and T == 'plus':
