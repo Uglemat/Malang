@@ -214,68 +214,68 @@ def p_match_cmp_expr(p):
 
 
 def p_cmp_expr_gt(p):
-    'cmp_expr : cmp_expr GT expression'
+    'cmp_expr : cmp_expr GT arith_expr'
     p[0] = Node('gt', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_lt(p):
-    'cmp_expr : cmp_expr LT expression'
+    'cmp_expr : cmp_expr LT arith_expr'
     p[0] = Node('lt', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_ge(p):
-    'cmp_expr : cmp_expr GE expression'
+    'cmp_expr : cmp_expr GE arith_expr'
     p[0] = Node('ge', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_le(p):
-    'cmp_expr : cmp_expr LE expression'
+    'cmp_expr : cmp_expr LE arith_expr'
     p[0] = Node('le', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_eq(p):
-    'cmp_expr : cmp_expr EQ expression'
+    'cmp_expr : cmp_expr EQ arith_expr'
     p[0] = Node('eq', (p[1], p[3]), infonode=p[1])
 
 def p_cmp_expr_ne(p):
-    'cmp_expr : cmp_expr NE expression'
+    'cmp_expr : cmp_expr NE arith_expr'
     p[0] = Node('ne', (p[1], p[3]), infonode=p[1])
 
 
 def p_cmp_expr_expr(p):
-    'cmp_expr : expression'
+    'cmp_expr : arith_expr'
     p[0] = p[1]
 
-def p_expression_plus(p):
-    'expression : expression PLUS expression'
+def p_arith_expr_plus(p):
+    'arith_expr : arith_expr PLUS arith_expr'
     p[0] = Node('plus', (p[1], p[3]), infonode=p[1])
 
 
-def p_expression_minus(p):
-    'expression : expression MINUS expression'
+def p_arith_expr_minus(p):
+    'arith_expr : arith_expr MINUS arith_expr'
     p[0] = Node('minus', (p[1], p[3]), infonode=p[1])
 
 
-def p_expression_uminus(p):
-    'expression : MINUS expression %prec UMINUS'
+def p_arith_expr_uminus(p):
+    'arith_expr : MINUS arith_expr %prec UMINUS'
     p[0] = Node('uminus', p[2], infonode=p[1])
 
 
-def p_expression_times(p):
-    'expression : expression TIMES expression'
+def p_arith_expr_times(p):
+    'arith_expr : arith_expr TIMES arith_expr'
     p[0] = Node('times', (p[1], p[3]), infonode=p[1])
 
-def p_expression_div(p):
-    'expression : expression DIVIDE expression'
+def p_arith_expr_div(p):
+    'arith_expr : arith_expr DIVIDE arith_expr'
     p[0] = Node('divide', (p[1], p[3]), infonode=p[1])
 
-def p_expression_mod(p):
-    'expression : expression MODULO expression'
+def p_arith_expr_mod(p):
+    'arith_expr : arith_expr MODULO arith_expr'
     p[0] = Node('modulo', (p[1], p[3]), infonode=p[1])
 
-def p_expression_pow(p):
-    'expression : expression POW expression'
+def p_arith_expr_pow(p):
+    'arith_expr : arith_expr POW arith_expr'
     p[0] = Node('pow', (p[1], p[3]), infonode=p[1])
 
 
-def p_expression_composition(p):
-    'expression : composition'
+def p_arith_expr_composition(p):
+    'arith_expr : composition'
     p[0] = p[1]
 
 def p_composition(p):
