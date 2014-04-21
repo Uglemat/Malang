@@ -305,6 +305,14 @@ def maval(expr, env, filename):
         else:
             return thunk(maval, if_false, env, filename)
 
+    elif T == 'catch':
+        try:
+            result = trampoline(expr.content, env, filename)
+        except MalangError as e:
+            return e.args[0]
+
+        return Node('tuple', (Node('atom', 'no_error'), result))
+
     raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), filename, infonode=expr)
 
 

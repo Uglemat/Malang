@@ -155,7 +155,9 @@ class MalangError(Exception):
             append = " at line #{}".format(get_lineno(infonode))
         append += " in file {!r}".format(filename)
 
-        Exception.__init__(self, text + append)
+        value = Node('tuple', (Node('atom', 'error'), Node('str', text + append)))
+
+        Exception.__init__(self, value)
 
 class UnboundIdentifier(MalangError):
     pass
@@ -173,6 +175,17 @@ class Node(object):
         self.lineno = lineno
         if self.lineno is None:
             self.lineno = get_lineno(infonode)
+
+    def __str__(self, recursed=False):
+        if self._type in ('number', 'str'):
+            return repr(self.content)
+        elif self._type == 'atom':
+            return self.content
+        elif self._type == 'tuple':
+            if recursed:
+                return "{...}"
+            else:
+                return "{" + ", ".join(v.__str__(recursed=True) for v in self.content) + "}"
 
 class Env(object):
     def __init__(self, parent=None, bindings=None):

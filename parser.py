@@ -26,7 +26,7 @@ def unescape_str(s):
     return re.sub(r'\\(.)', r'\1', s)
 
 keywords = {kw: kw.upper()
-            for kw in ['case', 'of', 'if', 'then', 'else', 'end']}
+            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch']}
 
 tokens = (
     'NUMBER',   'PLUS','MINUS','TIMES', 'POW',
@@ -144,7 +144,7 @@ def t_NUMBER(t):
         integer = int(val, radix)
     except ValueError:
         raise MalangError("Invalid number {!r}".format(t.value),
-                          file_name, Node("dummynode", "", lineno=t.lineno))
+                          file_name, Node("dummy", None, lineno=t.lineno))
 
     t.value = Node('number', integer, lineno=t.lineno)
     return t
@@ -206,10 +206,18 @@ def p_compound_expression_list_single(p):
 
 
 def p_expression(p):
-    'expression : match_expr'
+    'expression : catch'
     p[0] = p[1]
 
 
+
+def p_catch(p):
+    'catch : CATCH expression'
+    p[0] = Node('catch', p[2])
+
+def p_catch_match_expr(p):
+    'catch : match_expr'
+    p[0] = p[1]
 
 
 def p_match_expr_bind(p):
@@ -404,27 +412,27 @@ def p_expr_list_single(p):
 def p_error(p):
     lexer.begin("INITIAL")
     if p is None:
-        raise SyntaxError("Syntax error (probably somewhere near the end)")
+        raise MalangError("Syntax error (probably somewhere near the end)", file_name)
     else:
-        raise SyntaxError("Syntax error at line #{}".format(p.lineno))
+        raise MalangError("Syntax error", file_name, infonode=Node("dummy", None, lineno=p.lineno))
 
 lexer  = lex.lex()
 parser = yacc.yacc()
 
 file_name = ""
-def parse(s, filename):
+
+def parse(s, fname_):
     global file_name
-    file_name = filename
+    file_name = fname_
     """
     I can't think of something much better than using a global variable here.
     I need function definitions to know which files they are in, to correctly
     report which file an error has occured in, when I'm in the evaluation function `maval`.
     By using the global variable `file_name`, I can store the file name a function definition
     was parsed in together with the code (look in the function `p_func_def` above to see).
+
+    I also use `file_name` for raising MalangError a couple of places.
     """
 
     lexer.lineno = 1
-    try:
-        return parser.parse(s, lexer=lexer)
-    except SyntaxError as e:
-        raise MalangError(e.args[0], filename)
+    return parser.parse(s, lexer=lexer)

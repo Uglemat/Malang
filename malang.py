@@ -173,6 +173,6 @@ if __name__ == "__main__":
                     ).content,
                 )
             except MalangError as e:
-                print("{}Error: {}".format(ansicode(31), e))
+                print("{}Error: {}".format(ansicode(31), e.args[0]))
             finally:
                 print(ansicode(39), end="")

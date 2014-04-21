@@ -36,6 +36,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "{\"Hay\", hay, 3}" := ToStr {"Hay", hay, 3}.
 
 
+yeah := case catch 100 / 0 of
+  {error, _} -> yeah.
+  _          -> nope.
+end.
+
+nope := case catch 100 / 2 of
+  {error, _} -> yeah.
+  _          -> nope.
+end.
 "
         Bools Tests:
 ".
