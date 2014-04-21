@@ -182,25 +182,34 @@ def t_str_error(t):
 
 
 def p_program(p):
-    'program : program compound_expr'
+    'program : program compound_expression'
     p[0] = Node('program', p[1].content + [p[2]], infonode=p[1])
 
 def p_program_single(p):
-    'program : compound_expr'
+    'program : compound_expression'
     p[0] = Node('program', [p[1]], infonode=p[1])
 
 
-def p_compound_expr(p):
-    'compound_expr : compound_expr_list DOT'
+def p_compound_expression(p):
+    'compound_expression : compound_expression_list DOT'
     p[0] = p[1]
 
-def p_compound_expr_list(p):
-    'compound_expr_list : compound_expr_list COMMA match_expr'
+def p_compound_expression_list(p):
+    'compound_expression_list : compound_expression_list COMMA expression'
     p[0] = Node('program', p[1].content + [p[3]], infonode=p[1])
 
-def p_compound_expr_list_single(p):
-    'compound_expr_list : match_expr'
+def p_compound_expression_list_single(p):
+    'compound_expression_list : expression'
     p[0] = Node('program', [p[1]], infonode=p[1])
+
+
+
+
+def p_expression(p):
+    'expression : match_expr'
+    p[0] = p[1]
+
+
 
 
 def p_match_expr_bind(p):
@@ -315,31 +324,33 @@ def p_item_num(p):
             | if'''
     p[0] = p[1]
 
+def p_item_expr(p):
+    'item : LPAREN expression RPAREN'
+    p[0] = p[2]
+
+
 def p_if(p):
-    'if : IF match_expr THEN compound_expr ELSE compound_expr END'
+    'if : IF expression THEN compound_expression ELSE compound_expression END'
     p[0] = Node('if', (p[2], p[4], p[6]), lineno=p.lineno(1))
 
-def p_item_expr(p):
-    'item : LPAREN match_expr RPAREN'
-    p[0] = p[2]
 
 def p_func_def(p):
     'func_def : LBRACKET program RBRACKET'
     p[0] = Node('func_def', (p[2], file_name), lineno=p.lineno(1))
 
 def p_case_of(p):
-    'case_of : CASE match_expr OF arrow_list END'
+    'case_of : CASE expression OF arrow_list END'
     p[0] = Node('case_of', {'matched_expr': p[2],
                             'arrow_list':    p[4]},
                 lineno=p.lineno(1)
     )
 
 def p_arrow_list(p):
-    'arrow_list : arrow_list item ARROW compound_expr'
+    'arrow_list : arrow_list item ARROW compound_expression'
     p[0] = p[1] + [{'pattern': p[2], 'expr': p[4]}]
 
 def p_arrow_list_single(p):
-    'arrow_list : item ARROW compound_expr'
+    'arrow_list : item ARROW compound_expression'
     p[0] = [{'pattern': p[1], 'expr': p[3]}]
 
 def p_tuple(p):
@@ -351,23 +362,23 @@ def p_tuple_empty(p):
     p[0] = Node('tuple', (), lineno=p.lineno(1))
 
 def p_list_comprehension(p):
-    'list : STARTLIST match_expr PIPE comprehension_list RBRACKET'
+    'list : STARTLIST expression PIPE comprehension_list RBRACKET'
     p[0] = Node('list_comprehension', (p[2], p[4]), lineno=p.lineno(1))
 
 def p_comprehension_list(p):
-    'comprehension_list : match_expr LEFTARROW match_expr COMMA comprehension_list'
+    'comprehension_list : expression LEFTARROW expression COMMA comprehension_list'
     p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}, infonode=p[1]),) + p[5]
 
 def p_comprehension_list_single(p):
-    'comprehension_list : match_expr LEFTARROW match_expr'
+    'comprehension_list : expression LEFTARROW expression'
     p[0] = (Node('emitter', {'pattern': p[1], 'expr': p[3]}, infonode=p[1]),)
 
 def p_comprehension_list_filter(p):
-    'comprehension_list : match_expr COMMA comprehension_list'
+    'comprehension_list : expression COMMA comprehension_list'
     p[0] = (Node('filter', p[1], infonode=p[1]),) + p[3]
 
 def p_comprehension_list_filter_single(p):
-    'comprehension_list : match_expr'
+    'comprehension_list : expression'
     p[0] = (Node('filter', p[1], infonode=p[1]),)
 
 
@@ -381,11 +392,11 @@ def p_list_empty(p):
 
 
 def p_expr_list(p):
-    'expr_list : expr_list COMMA match_expr'
+    'expr_list : expr_list COMMA expression'
     p[0] = p[1] + (p[3],)
 
 def p_expr_list_single(p):
-    'expr_list : match_expr'
+    'expr_list : expression'
     p[0] = (p[1],)
 
 
