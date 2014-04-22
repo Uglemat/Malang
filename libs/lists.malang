@@ -541,3 +541,23 @@ Min := [
       ], H, T}.
   end.
 ].
+
+Equal := [
+  "
+  @ = {List1, List2}
+
+  Return `yeah` if `List1` is equal to `List2`.
+
+  The builtin `=` operator doesn't work for very long lists, because python
+  hits the recursion limit. This version doesn't have that problem.
+  ".
+  case @ of
+    {#[], #[]} -> yeah.
+    {{H1, T1}, {H2, T2}} ->
+      if H1 = H2
+        then Equal {T1, T2}.
+        else nope.
+      end.
+    {_, _} -> nope.
+  end.
+].
