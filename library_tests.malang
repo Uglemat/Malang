@@ -45,6 +45,23 @@ nope := case catch 100 / 2 of
   {no_error, _} -> nope.
   {error, _}    -> yeah.
 end.
+
+
+yeah := 10 = 10.
+yeah := 10 >= 10.
+yeah := 10 <= 10.
+nope := 10 > 10.
+nope := 10 < 10.
+yeah := 11 > 10.
+yeah := 10 < 11.
+nope :=  9 > 10.
+nope := 10 < 9.
+nope := 10 <= 9.
+yeah := 10 >= 9.
+nope := 10 = 11.
+
+yeah := {23, {1}} <  {23, {1, 0}}.
+nope := {23, {1}} >= {23, {1, 0}}.
 "
         Bools Tests:
 ".
@@ -224,6 +241,7 @@ Li := #[one, two, 333, "hay"].
 #[two, 333, "hay"] := Lists:Slice {2, 5, Li}.
 Li                 := Lists:Slice {1, 5, Li}.
 
+
 3 := Lists:Max #[3].
 3 := Lists:Max #[3, 3].
 3 := Lists:Max #[1, 3, 2].
@@ -231,6 +249,16 @@ Li                 := Lists:Slice {1, 5, Li}.
 3 := Lists:Min #[3].
 3 := Lists:Min #[3, 3].
 1 := Lists:Min #[1, 3, 2].
+
+
+yeah := Lists:Equal {#[], #[]}.
+nope := Lists:Equal {#[one], #[]}.
+nope := Lists:Equal {#[], #[one]}.
+yeah := Lists:Equal {#[one], #[one]}.
+yeah := Lists:Equal {Lists:Range {0,100}, Lists:Range {0, 100}}.
+
+
+
 
 "
         Dicts Tests:

@@ -35,17 +35,15 @@ Here's an example session:
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
-Everything is an expression in Malang. Absolutely everything.
+All functions take exactly 1 argument.
 
-All functions take exactly 1 argument. No more, no less.
-
-All functions are anonymous. Functions/closures are values, and can be bound to a name.
+All functions are anonymous. Functions are values, and can be bound to a name.
 
 Pattern matching is the only way to bind identifiers to values. You can't 'rebind' an
 identifier, once you've said that A := 3, you can't change it. A is 3 always.
 
 The only way to loop is to use recursion and with list comprehensions. The control flow
-constructs are 'case of' and 'if then else' (plus the filters in list comprehensions).
+constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in list comprehensions).
 
 There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples

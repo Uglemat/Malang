@@ -153,6 +153,10 @@ class MalangError(Exception):
 
         Exception.__init__(self, value)
 
+class Throw(MalangError):
+    def __init__(self, value):
+        Exception.__init__(self, value)
+
 class UnboundIdentifier(MalangError):
     pass
 

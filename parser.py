@@ -25,8 +25,13 @@ def unescape_str(s):
     s = s.replace(r'\n', '\n').replace(r'\t', '\t')
     return re.sub(r'\\(.)', r'\1', s)
 
+
+
+
 keywords = {kw: kw.upper()
-            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch']}
+            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch', 'throw']}
+
+
 
 tokens = (
     'NUMBER',   'PLUS','MINUS','TIMES', 'POW',
@@ -215,9 +220,18 @@ def p_catch(p):
     'catch : CATCH expression'
     p[0] = Node('catch', p[2])
 
-def p_catch_match_expr(p):
-    'catch : match_expr'
+def p_catch_throw(p):
+    'catch : throw'
     p[0] = p[1]
+
+def p_throw(p):
+    'throw : THROW expression'
+    p[0] = Node('throw', p[2])
+
+def p_throw_match_expr(p):
+    'throw : match_expr'
+    p[0] = p[1]
+
 
 
 def p_match_expr_bind(p):

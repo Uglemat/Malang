@@ -304,6 +304,10 @@ def maval(expr, env, filename):
 
         return Node('tuple', (Node('atom', 'no_error'), result))
 
+    elif T == 'throw':
+        value = trampoline(expr.content, env, filename)
+        raise utils.Throw(value)
+
     raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), filename, infonode=expr)
 
 
