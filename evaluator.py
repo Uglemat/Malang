@@ -193,16 +193,7 @@ def maval(expr, env, filename):
             raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
 
 
-    elif T in ('gt', 'lt', 'ge', 'le'):
-        op1, op2 = (trampoline(op, env, filename) for op in expr.content)
-        if op1._type == op2._type and op1._type in ('number', 'str', 'tuple', 'atom'):
-            return Node('atom',
-                        {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)],
-                        infonode=expr
-            )
-        else:
-            raise MalangError("Invalid comparison expression", filename, infonode=expr)
-    elif T in ('eq', 'ne'):
+    elif T in ('eq', 'ne', 'gt', 'lt', 'ge', 'le'):
         op1, op2 = (trampoline(op, env, filename) for op in expr.content)
         return Node('atom', {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)], infonode=expr)
 

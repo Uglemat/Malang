@@ -37,13 +37,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 yeah := case catch 100 / 0 of
-  {error, _} -> yeah.
-  _          -> nope.
+  {no_error, _} -> nope.
+  {error, _}    -> yeah.
 end.
 
 nope := case catch 100 / 2 of
-  {error, _} -> yeah.
-  _          -> nope.
+  {no_error, _} -> nope.
+  {error, _}    -> yeah.
 end.
 "
         Bools Tests:
@@ -75,7 +75,6 @@ yeah := Bools:Xor {0, yeah}.
 yeah := Bools:Xor {yeah, nope}.
 nope := Bools:Xor {yeah, yeah}.
 nope := Bools:Xor {0, 0}.
-
 
 
 "

@@ -46,11 +46,10 @@ def equal(val_1, val_2):
 
 
 def greater_than(val_1, val_2):
+    if val_1._type != val_2._type:
+        return val_1._type > val_2._type
 
-    # Assumes val_1 and val_2 are of the same _type
-    T = val_1._type
-
-    if T == 'tuple':
+    elif val_1._type == 'tuple':
         if len(val_1.content) == 0:
             return False
         elif len(val_2.content) == 0:
@@ -64,20 +63,15 @@ def greater_than(val_1, val_2):
 
 
 def less_than(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
     return not greater_than(val_1, val_2) and not equal(val_1, val_2)
 
 
 def greater_than_or_eq(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
     return greater_than(val_1, val_2) or equal(val_1, val_2)
 
 
 def less_than_or_eq(val_1, val_2):
-    # Assumes val_1 and val_2 are of the same _type
-    return less_than(val_1, val_2) or equal(val_1, val_2)
-
-
+    return not greater_than(val_1, val_2)
 
 
 
