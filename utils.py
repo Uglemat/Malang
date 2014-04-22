@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import os
+import itertools
 
 
 try:
@@ -22,6 +23,8 @@ try:
     import readline
 except ImportError:
     readline_imported = False
+
+        
 
 def truthy(val):
     if val._type in ('tuple', 'str'):
@@ -34,13 +37,59 @@ def truthy(val):
         return True
 
 
+
+def zip_tuples(tuple1, tuple2):
+    len1 = len(tuple1.content)
+    len2 = len(tuple2.content)
+    for i in range(max(len1, len2)):
+        fst = None if i >= len1 else tuple1.content[i]
+        snd = None if i >= len2 else tuple2.content[i]
+
+        yield (fst, snd)
+
+def flat_zip_malang_tuples(tuple1, tuple2):
+    """
+    tries to flatten the malang tuples completely
+    and zip their values together, Padding with None
+    when one tuple is shorter than another, and only
+    flattening if *both* values are tuples. If a value
+    is a tuple, and the corresponding value is not a tuple
+    then those will just be zipped together, no more flattening.
+    """
+    pending = iter([  (tuple1, tuple2)  ])
+    while True:
+        current1, current2 = next(pending) # <- that might raise StopIteration, that is ok.
+        if None in (current1, current2):
+            yield (current1, current2)
+        elif current1._type == current2._type == 'tuple':
+            pending = itertools.chain(zip_tuples(current1, current2), pending)
+        else:
+            yield (current1, current2)
+
+
+"""
+
+The reason that I go through all the truble of defining the generators `zip_tuples` and
+`flat_zip_malang_tuples` is that I want the comparison functions below to be able to
+work on malang lists that are very long (like 10k in length). I cannot write the functions
+recursive if I want to do that, because of python's recursion limit. So I need the
+`flat_zip_malang_tuples` to flatten tuples that can be very deep 'trees' of tuples.
+
+I used `None` in the generators above for padding, when one tuple is shorter than another.
+
+"""
+
 def equal(val_1, val_2):
     if val_1._type != val_2._type:
         return False
     T = val_1._type
     if T == 'tuple':
-        return (len(val_1.content) == len(val_2.content) and
-                all(equal(v1, v2) for (v1, v2) in zip(val_1.content, val_2.content)))
+        for fst, snd in flat_zip_malang_tuples(val_1, val_2):
+            if None in (fst, snd):
+                return False
+            elif not fst.content == snd.content:
+                return False
+        return True
     else:
         return val_1.content == val_2.content
 
@@ -55,9 +104,16 @@ def greater_than(val_1, val_2):
         elif len(val_2.content) == 0:
             return True
         else:
-            return (greater_than(val_1.content[0], val_2.content[0]) or
-                    greater_than(Node('tuple', val_1.content[1:]),
-                                 Node('tuple', val_2.content[1:])))
+            for fst, snd in flat_zip_malang_tuples(val_1, val_2):
+                if None in (fst, snd):
+                    return snd is None # both cannot be None, only one
+                elif fst._type != snd._type:
+                    return fst._type > snd._type
+                elif fst.content > snd.content:
+                    return True
+                elif fst.content < snd.content:
+                    return False
+            return False
     else:
         return val_1.content > val_2.content
 
