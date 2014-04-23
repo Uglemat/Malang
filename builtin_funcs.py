@@ -167,15 +167,25 @@ def list_env(arg, env, filename, infonode):
     """
     if arg is not None:
         if arg._type == 'module':
-            print("Identifier bindings in module environment:\n")
+            print("\tIdentifier bindings in module environment:")
             return list_env(None, arg.content, filename, infonode)
         else:
-            print("Identifier bindings in current environment:\n")
+            print("\tIdentifier bindings in current environment:")
 
-    for k, v in env.bindings.items():
-        print("{:<15} => {}".format(k, tostr(v, env).content))
+    if not len(env.bindings.keys()):
+        print("No bindings in module", end="")
+    else:
+        for num, (identifier, value) in enumerate(env.bindings.items()):
+            valstr = tostr(value, env, repr_str=True).content
+            if len(valstr) > 15:
+                valstr = valstr[:15] + "..."
+            print("{:<40}".format(
+                "{:<15} => {} ".format(identifier, valstr)
+            ), end="\n" if num % 2 == 1 else "")
+    print()
+
     if not env.parent is None:
-        print("Showing bindings for parent environment below:\n")
+        print("\tShowing bindings for parent environment below:")
         return list_env(None, env.parent, filename, infonode)
     return Node('atom', 'ok')
 
