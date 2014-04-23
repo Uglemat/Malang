@@ -235,7 +235,7 @@ def p_throw_match_expr(p):
 
 
 def p_match_expr_bind(p):
-    'match_expr : cmp_expr BIND match_expr'
+    'match_expr : arith_expr BIND match_expr'
     p[0] = Node('bind', (p[1], p[3]), infonode=p[1])
 
 
@@ -368,11 +368,11 @@ def p_case_of(p):
     )
 
 def p_arrow_list(p):
-    'arrow_list : arrow_list item ARROW compound_expression'
+    'arrow_list : arrow_list arith_expr ARROW compound_expression'
     p[0] = p[1] + [{'pattern': p[2], 'expr': p[4]}]
 
 def p_arrow_list_single(p):
-    'arrow_list : item ARROW compound_expression'
+    'arrow_list : arith_expr ARROW compound_expression'
     p[0] = [{'pattern': p[1], 'expr': p[3]}]
 
 def p_tuple(p):
