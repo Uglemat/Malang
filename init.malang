@@ -22,9 +22,10 @@ TypeOf  := Builtins:TypeOf.
 Help    := Builtins:Help.
 Exit    := Builtins:Exit.
 Error   := Builtins:Error.
-ListEnv := Builtins:ListEnv.
+Env     := Builtins:Env.
+Fmt     := Builtins:Fmt.
 
-Try := [
+Use := [
   "
   @ = Filename
 
@@ -69,14 +70,6 @@ Cmp := [
   end.
 ].
 
-YesOrNo := [
-  case (Strings:Lower ~ Io:Input) "[y/n]? " of
-    "y" -> yean.
-    "n" -> nope.
-    _   -> Io:PrintLn "Incorrect input, try again.",
-           YesOrNo {}.
-  end.
-].
 
 Io      := Require "libs/io.malang".
 Lists   := Require "libs/lists.malang".

@@ -47,6 +47,11 @@ nope := case catch 100 / 2 of
 end.
 
 
+-3 := case -2 of
+   -2 -> -3.
+end.
+-10 := -10.
+
 yeah := 10 = 10.
 yeah := 10 >= 10.
 yeah := 10 <= 10.
@@ -70,6 +75,23 @@ nope := #[1, #[2, #[3, 1]], 4, 5] = #[1, #[2, #[3]], 4, 5].
 
 nope := {0,2,3, 4} > {1,2,3}.
 yeah := {0,2, 3} < {1,2,3, 4}.
+
+Str := "{Str}".
+
+""     := Fmt "".
+"test" := Fmt "test".
+
+"{Str}"    := Fmt "{Str}".
+"---{Str}" := Fmt "{Str|->8}".
+"   {Str}" := Fmt "{Str| >8}".
+"{Str}---" := Fmt "{Str|-<8}".
+"{Str}   " := Fmt "{Str| <8}".
+"{Str}"    := Fmt "{Str| <2}".
+"{Str}"    := Fmt "{Str|!>2}".
+
+N := 32.
+"00032$" := Fmt "{N|0>5}$".
+
 "
         Bools Tests:
 ".

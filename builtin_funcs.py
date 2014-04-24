@@ -18,6 +18,7 @@ from utils import Node, assert_type, MalangError, cmp_to_key, python_list_to_mal
 from evaluator import call_malang_func
 import time
 import random
+import re
 
 def print_docstring(fun):
     if fun._type == 'function':
@@ -41,6 +42,41 @@ def builtin(name):
         return func
     return _f
 
+
+@builtin("Fmt")
+def fmt(s, env, filename, infonode):
+    """
+    @ = String
+
+    Format `String`. It will search for identifiers between curly
+    braces in `String`, lookup the value in the environment of the caller
+    (it can do that because it's a builtin function) and replace it with a
+    string representation of the value.
+
+    So `S := "test", Fmt "{S} hay"` should return "test hay"
+
+    You can optionally put "|<fillchar><direction><width>" at the end of the
+    identifier in the curly braces, where `width` will set a minimum width,
+    `direction` must be either "<" or ">" to specify which way to justify
+    the value when `width` is longer than the value, and `fillchar` specifies
+    what character to pad with then `width` is longer than the value.
+
+    So `N := 32, Fmt "{N|0>5}$"` should return "00032$".
+
+    You can not nest these things.
+    """
+    assert_type(s, 'str', filename, infonode)
+    def subfun(match):
+        string = tostr(env.get(match.group('id').strip(), filename, infonode)).content
+
+        if match.group('configs'):
+            just = {'<': str.ljust, '>': str.rjust}[match.group('direction')]
+            string = just(string, int(match.group('width')), match.group('fillchar'))
+        return string
+
+    pattern = (r"\{(?P<id>[^|{}]+)"
+               r"(?P<configs>\|(?P<fillchar>.)(?P<direction>[<>])(?P<width>[0-9]+))?\}")
+    return Node('str', re.sub(pattern, subfun, s.content))
 
 @builtin("Print")
 def _print(s, env, filename, infonode):
@@ -155,7 +191,7 @@ def random_range(tup, env, filename, infonode):
     assert_type(num2, 'number', filename, infonode)
     return Node('number', random.randrange(num1.content,num2.content))
 
-@builtin("ListEnv")
+@builtin("Env")
 def list_env(arg, env, filename, infonode):
     """
     @ = Arg
