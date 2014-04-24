@@ -493,6 +493,19 @@ sorry := Strings:Find {"hello", ""}.
 "\" \\n hay \\t \"" := Strings:Repr " \n hay \t ".
 "\"\\\\\"" := Strings:Repr "\\".
 
+"
+        Funcs Tests:
+".
+
+sorry := Funcs:GetDocstring [hello. 21.].
+"hay" := Funcs:GetDocstring ["hay". hello.].
+
+"haya" := (Funcs:GetDocstring ~ Funcs:SetDocstring) {"haya", Lists:Map}.
+nope   := Funcs:GetDocstring Lists:Map = "haya".
+
+#[2,4,6] := Funcs:SetDocstring {"haya", Lists:Map} {[@*2.], #[1,2,3]}.
+
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------

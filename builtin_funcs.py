@@ -45,6 +45,11 @@ def builtin(name):
 
 @builtin("FuncsGetDocstring")
 def getdocstring(func, env, filename, infonode):
+    """
+    @ = Function
+
+    Return the docstring for `Function`, or `sorry` if there is no docstring for `Function`.
+    """
     assert_type(func, ('builtin', 'function'), filename, infonode)
 
     docstring = func.content.__doc__ if func._type == 'builtin' else func.content['docstring'] 
@@ -53,6 +58,28 @@ def getdocstring(func, env, filename, infonode):
         return Node('atom', 'sorry')
     else:
         return Node('str', docstring)
+
+@builtin("FuncsSetDocstring")
+def setdocstring(tup, env, filename, infonode):
+    """
+    @ = {Docstring, Function}
+
+    Return a new version of `Function` where the docstring is `Docstring`. It
+    does not mutate `Function`. `Function` must be a malang function, it cannot
+    be a builtin function.
+    """
+    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+
+    new_docstring, func = tup.content
+
+    assert_type(new_docstring, 'str', filename, infonode)
+    assert_type(func, 'function', filename, infonode)
+
+
+    function_content = func.content.copy()
+    function_content['docstring'] = new_docstring.content
+    return Node('function', function_content)
+
 
 @builtin("Fmt")
 def fmt(s, env, filename, infonode):
