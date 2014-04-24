@@ -78,6 +78,7 @@ Bools   := Require "libs/bools.malang".
 Dicts   := Require "libs/dicts.malang".
 Strings := Require "libs/strings.malang".
 Objects := Require "libs/objects.malang".
+Funcs   := Require "libs/funcs.malang".
 
 "
 The environment of this file is accessible by all malang programs.

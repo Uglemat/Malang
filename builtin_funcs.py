@@ -43,6 +43,17 @@ def builtin(name):
     return _f
 
 
+@builtin("FuncsGetDocstring")
+def getdocstring(func, env, filename, infonode):
+    assert_type(func, ('builtin', 'function'), filename, infonode)
+
+    docstring = func.content.__doc__ if func._type == 'builtin' else func.content['docstring'] 
+
+    if docstring is None:
+        return Node('atom', 'sorry')
+    else:
+        return Node('str', docstring)
+
 @builtin("Fmt")
 def fmt(s, env, filename, infonode):
     """
