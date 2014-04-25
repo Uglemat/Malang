@@ -17,3 +17,57 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GetDocstring := Builtins:FuncsGetDocstring.
 SetDocstring := Builtins:FuncsSetDocstring.
+
+
+Curry := [
+
+  _Curry := [
+    "
+    @ = NumArgs Func
+
+    Transform the function `Func` (which must be a function taking as argument
+    a tuple of length `NumArgs`) into a \"chain\" of functions, each taking one
+    argument, and at the end of that chain is the function which will call `Func`
+    with the accumulated arguments.
+    
+    This function was called on itself to create a curried version of itself. Neat. 
+    ".
+    {N, Func} := @.
+    
+    Helper := [
+      ArgsLeft := @.
+      case ArgsLeft of
+        1 -> [Func @.].
+        _ -> Next := Helper (ArgsLeft-1),
+             [Tuple := @. [NewArg := @. Next (Tuple + {NewArg}).].].
+      end.
+    ].
+
+    -- 
+    -- The output of `Helper` is a function `F0` taking a tuple as an argument.
+    -- That tuple is the accumulated arguments to `Func`.
+    -- The output of `F0` is either:
+    -- 
+    -- (1) The result of calling `Func` with `F0`s argument (a tuple).
+    -- (2) A function `F1` of one argument, which will remember in its closure
+    --     the tuple passed to `F0`, and when called will create a new tuple 
+    --     of its argument together with `F0`s argument and call `Next` with
+    --     that argument, where `Next` is the result of a recursive call to
+    --     `Helper`, and should be a function taking as argument a tuple, just
+    --     like `F0`.
+    -- 
+
+    if N < 1
+      then Error "NumArgs must be at least 1".
+      else Result := Helper N,
+           Curried := [Result {@}.],
+           Doc := GetDocstring Func,
+           case Doc of
+             sorry -> Curried.
+             _     -> SetDocstring {Doc, Curried}.
+           end.
+    end.
+  ].
+
+  _Curry {2, _Curry}.
+] {}.

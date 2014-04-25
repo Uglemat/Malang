@@ -20,7 +20,8 @@
   (beginning-of-line)
   (let ((indentation (skip-chars-forward " \t")))
     (end-of-line)
-    (insert " [\n")
+    (just-one-space)
+    (insert ":= [\n")
     (indent-to (+ indentation 2))
     (save-excursion
       (insert "\n")

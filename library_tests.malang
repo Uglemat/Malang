@@ -506,6 +506,18 @@ nope   := Funcs:GetDocstring Lists:Map = "haya".
 #[2,4,6] := Funcs:SetDocstring {"haya", Lists:Map} {[@*2.], #[1,2,3]}.
 
 
+Pluser := [ {A1, A2, A3, A4} := @,
+            A1 + A2 + A3 + A4. ].
+
+Curried_Pluser := Funcs:Curry 4 Pluser.
+
+7 := Pluser {3, 1, 2, 1}.
+7 := Curried_Pluser 3 1 2 1.
+"Hello" := Curried_Pluser "H" "e" "ll" "o".
+
+Add10 := Curried_Pluser 1 3 6.
+22 := Add10 12.
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
@@ -513,3 +525,4 @@ Io:Print "All library tests passed.\n".
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
+
