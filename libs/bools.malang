@@ -28,9 +28,9 @@ Truthy := [
 ].
 
 
-And := [
+And := Funcs:Curry 2 [
   "
-  @ = {Val1, Val2}
+  @ = Val1 Val2
 
   Returns `yeah` if and only if both `Val1` and `Val2` are truthy, `nope` otherwise.
   ".
@@ -41,9 +41,9 @@ And := [
   end.
 ].
 
-Or := [
+Or := Funcs:Curry 2 [
   "
-  @ = {Val1, Val2}
+  @ = Val1 Val2
 
   Returns `yeah` if either `Val1` or `Val2` is truthy, `nope` otherwise.
   ".
@@ -54,9 +54,9 @@ Or := [
   end.
 ].
 
-Xor := [
+Xor := Funcs:Curry 2 [
   "
-  @ = {Val1, Val2}
+  @ = Val1 Val2
 
   Returns `yeah` if exactly one of `Val1` and `Val2` is truthy, `nope` otherwise.
   ".

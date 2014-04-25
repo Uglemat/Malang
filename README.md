@@ -16,7 +16,7 @@ Here's an example session:
     {one, {two, {three, nil}}}
     Malang> Lists:Reverse List.
     {three, {two, {one, nil}}}
-    Malang> Bools:And {yeah, nope}.
+    Malang> Bools:And yeah nope.
     nope
     Malang> Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
     {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}

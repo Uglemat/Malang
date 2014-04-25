@@ -106,22 +106,22 @@ yeah  := Bools:Truthy 23.
 yeah  := Bools:Truthy {nope}.
 
 
-yeah  := Bools:And {1, 2}.
-yeah  := Bools:And {yeah, yeah}.
+yeah  := Bools:And 1 2.
+yeah  := Bools:And yeah yeah.
 
-nope := Bools:And {nope, nope}.
-nope := Bools:And {yeah, nope}.
-
-
-yeah := Bools:Or {"3", nope}.
-yeah := Bools:Or {0, 1}.
-nope := Bools:Or {nope, ""}.
+nope := Bools:And nope nope.
+nope := Bools:And yeah nope.
 
 
-yeah := Bools:Xor {0, yeah}.
-yeah := Bools:Xor {yeah, nope}.
-nope := Bools:Xor {yeah, yeah}.
-nope := Bools:Xor {0, 0}.
+yeah := Bools:Or "3"  nope.
+yeah := Bools:Or 0    1.
+nope := Bools:Or nope "".
+
+
+yeah := Bools:Xor 0    yeah.
+yeah := Bools:Xor yeah nope.
+nope := Bools:Xor yeah yeah.
+nope := Bools:Xor 0    0.
 
 
 "
