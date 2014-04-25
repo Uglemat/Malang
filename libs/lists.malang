@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-Joinwith :=  [
+Joinwith := Funcs:Curry 2 [
   "
-  @ = {Str, List}
+  @ = Str List
 
   Return a str which is the string representation of all the elements of `List`
   separated by `Str` concatenated.
@@ -43,7 +43,7 @@ Join :=  [
   Return a str which is the string representation of all the elements of `List`
   concatenated.
   ".
-  Joinwith {"", @}.
+  Joinwith "" @.
 ].
 
 
@@ -53,12 +53,12 @@ ListToStr := [
 
   Return the string representation for `List`.
   ".
-  Repr_Strings := Map {[
+  Repr_Strings := Map [
     case TypeOf @ of
       "str" -> Strings:Repr @.
       _     -> @.
-    end. ], @}.
-  "#[" + Joinwith {", ", Repr_Strings} + "]".
+    end.] @.
+  "#[" + Joinwith ", " Repr_Strings + "]".
 ].
 
 Reverse := [
@@ -78,9 +78,9 @@ Reverse := [
 ].
 
 
-Map := [
+Map := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Applies `Func` to every elemement of `List` are returns the result.
   ".
@@ -88,24 +88,24 @@ Map := [
   #[Func E | E <- List].
 ].
 
-Foldl := [
+Foldl := Funcs:Curry 3 [
   "
-  @ = {Func, Acc, List}
+  @ = Func Acc List
 
   Fold from left to right of `List`, starting with `Acc` as the initial value.
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
-  and E`lem` is the current element of the list being folded.
+  and `Elem` is the current element of the list being folded.
   ".
   case @ of
     {F, Acc, #[]}    -> Acc.
-    {F, Acc, {H, T}} -> Foldl {F, F {Acc, H}, T}.
+    {F, Acc, {H, T}} -> Foldl F (F {Acc, H}) T.
   end.
 ].
 
-Foldr := [
+Foldr := Funcs:Curry 3 [
   "
-  @ = {Func, Acc, List}
+  @ = Func Acc List
 
   Fold from right to left of `List`, starting with `Acc` as the initial value.
 
@@ -114,7 +114,7 @@ Foldr := [
   ".
   case @ of
     {F, Acc, #[]}    -> Acc.
-    {F, Acc, {H, T}} -> F {Foldr {F, Acc, T}, H}.
+    {F, Acc, {H, T}} -> F {Foldr F Acc T, H}.
   end.
 ].
 
@@ -124,13 +124,13 @@ Length := [
 
   Returns the length of `List`.
   ".
-  Foldl {[{Acc, _} := @, Acc+1.], 0, @}.
+  Foldl [{Acc, _} := @, Acc+1.] 0 @.
 ].
 
 
-Range := [
+Range := Funcs:Curry 2 [
   "
-  @ = {From, To}
+  @ = From To
 
   Returns a list of integers ranging from `From` (inclusive), to `To` (exclusive).
   ".
@@ -148,9 +148,9 @@ Range := [
   end.
 ].
 
-Nth := [
+Nth := Funcs:Curry 2 [
   "
-  @ = {N, List}
+  @ = N List
 
   Returns the Nth element of `List`. The list must
   be long enough.
@@ -158,7 +158,7 @@ Nth := [
   {N, {H, T}} := @.
   if N <= 1
     then H.
-    else Nth {N-1, T}.
+    else Nth (N-1) T.
   end.
 ].
 
@@ -168,13 +168,12 @@ Random_Choice := [
 
   Returns a random element of `List`.
   ".
-  Nth {Builtins:Random_Range {1, Length @ + 1}
-      , @}.
+  Nth (Builtins:Random_Range {1, Length @ + 1}) @.
 ].
 
-Concat := [
+Concat := Funcs:Curry 2 [
   "
-  @ = {List1, List2}
+  @ = List1 List2
 
   Concatenates two lists.
   ".
@@ -189,16 +188,16 @@ Concat := [
   Helper {Reverse L1, L2}.
 ].
 
-Any := [
+Any := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Returns `yeah` if any of the elements of `List` pass the predicate function `Func`.
   ".
   {Func, List} := @.
   case List of
     #[]    -> nope.
-    {H, T} -> if Func H then yeah. else Any {Func, T}. end.
+    {H, T} -> if Func H then yeah. else Any Func T. end.
   end.
 ].
 
@@ -242,19 +241,19 @@ Or := [
 ].
 
 
-Member := [
+Member := Funcs:Curry 2 [
   "
-  @ = {Val, List}
+  @ = Val List
 
   Returns `yeah` if `Val` is a member of the `List`, `nope` otherwise.
   ".
   {Val, List} := @.
-  Any {[@ = Val.], List}.
+  Any [@ = Val.] List.
 ].
 
-Repeat := [
+Repeat := Funcs:Curry 2 [
   "
-  @ = {N, Elem}
+  @ = N Elem
 
   Return a list of `N` `Elem`s.
   ".
@@ -269,9 +268,9 @@ Repeat := [
   Helper {Times, #[]}.
 ].
 
-Remove := [
+Remove := Funcs:Curry 2 [
   "
-  @ = {Elem, List}
+  @ = Elem List
 
   Return a list with all elements that are equal to `Elem` removed.
   ".
@@ -279,9 +278,9 @@ Remove := [
   #[E | E <- List, E != Elem].
 ].
 
-Filter := [
+Filter := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Return a list only with elements that pass the predicate function `Func`.
   ".
@@ -289,35 +288,10 @@ Filter := [
   #[E | E <- List, F E].
 ].
 
-Separate := [
+
+Zip := Funcs:Curry 2 [
   "
-  @ = {Func, List}.
-
-  Returns a tuble of the form `{TrueBucket, FalseBucket}` where `TrueBucket`
-  are a list of elements from `List` that are truthy according to `Func`, and
-  where `FalseBucket` are a list of elements from `List` that are falsy according
-  to `Func`.
-  
-  The elements of the buckets have no guaranteed ordering.
-  ".
-  {Func, List} := @.
-  Helper := [
-    case @ of
-      {nil, TrueBucket, FalseBucket} -> {TrueBucket, FalseBucket}.
-      {{H, T}, TrueBucket, FalseBucket} ->
-        if Func H
-          then Helper {T, {H, TrueBucket}, FalseBucket}.
-          else Helper {T, TrueBucket, {H, FalseBucket}}.
-        end.
-    end.
-  ].
-
-  Helper {List, nil, nil}.
-].
-
-Zip := [
-  "
-  @ = {List1, List2}
+  @ = List1 List2
 
   Zip two lists together. Returns a list of tuples.
   ".
@@ -332,15 +306,15 @@ Zip := [
   Reverse (Helper {L1, L2, #[]}).
 ].
 
-Zipwith := [
+Zipwith := Funcs:Curry 3 [
   "
-  @ = {Func, L1, L2}
+  @ = Func List1 List2
 
   Zip two lists together using the function `Func`.
 
   `Func` is called with the argument `{Elem1, Elem2}`, where `Elem1`
-  is an element from `L1`, and `Elem2` is the corresponding element
-  from `L2`.
+  is an element from `List1`, and `Elem2` is the corresponding element
+  from `List2`.
   ".
   {F, L1, L2} := @.
   Helper := [
@@ -352,9 +326,9 @@ Zipwith := [
   ].
   Reverse (Helper {L1, L2, #[]}).].
 
-Partition_At := [
+Partition_At := Funcs:Curry 2 [
   "
-  {N, List} := @
+  @ = N List
 
   Return a tuple of the form `{Seen, Unseen}`
   where `Seen` are elements before and including the `N`th element
@@ -377,28 +351,30 @@ Partition_At := [
   end.
 ].
 
-Take := [
+Take := Funcs:Curry 2 [
   "
-  @ = {N, List}
+  @ = N List
 
   Return the first `N` elements of `List`.
   ".
-  Reverse (Car (Partition_At @)).
+  {N, List} := @.
+  Reverse (Car (Partition_At N List)).
 ].
 
-Drop := [
+Drop := Funcs:Curry 2 [
   "
-  @ = {N, List}
+  @ = N  List
 
   Drop the first `N` element off of `List`, and return the resulting list.
   ".
-  Cdr (Partition_At @).
+  {N, List} := @.
+  Cdr (Partition_At N List).
 ].
 
 
-Takewhile := [
+Takewhile := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Takes elements from `List` as long as they pass the predicate
   function `Func`, and returns the resulting list.
@@ -420,9 +396,9 @@ Takewhile := [
   Reverse (Helper {List, nil}).
 ].
 
-Dropwhile :=  [
+Dropwhile := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Drops elements from `List` as long as they pass the predicate
   function `Func`, and returns the resulting list.
@@ -434,7 +410,7 @@ Dropwhile :=  [
     {_, #[]}    -> #[].
     {F, {H, T}} ->
       if F H
-        then Dropwhile {F, T}.
+        then Dropwhile F T.
         else {H, T}.
       end.
   end.
@@ -458,9 +434,9 @@ ToTuple := [
   Helper {@, {}}.
 ].
 
-Sortwith := [
+Sortwith := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Sort `List` with the comparison function `Func`.
 
@@ -492,18 +468,15 @@ ReverseSort := [
   (Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple) @.
 ].
 
-Slice := [
+Slice := Funcs:Curry 3 [
   "
-  @ = {Start, Stop, List}
+  @ = Start Stop List
     
   Returns a sublist of `List` starting at index `Start` (inclusive),
   ending at index `Stop` (exclusive).
   ".
   {Start, Stop, List} := @.
-  Take {
-    Stop-Start,
-    Drop {Start-1, List}
-  }.
+  (Take (Stop-Start) ~ Drop (Start-1)) List.
 ].
 
 Max := [
@@ -514,13 +487,13 @@ Max := [
   ".
   case @ of
     #[]    -> Error "Max called with empty list".
-    {H, T} -> Foldl {[
+    {H, T} -> Foldl [
         {Acc, Elem} := @.
         if Acc > Elem
           then Acc.
           else Elem. 
         end.
-      ], H, T}.
+      ] H T.
   end.
 ].
 
@@ -532,12 +505,12 @@ Min := [
   ".
   case @ of
     #[]    -> Error "Min called with empty list".
-    {H, T} -> Foldl {[
+    {H, T} -> Foldl [
         {Acc, Elem} := @.
         if Acc < Elem
           then Acc.
           else Elem. 
         end.
-      ], H, T}.
+      ] H T.
   end.
 ].

@@ -128,9 +128,9 @@ nope := Bools:Xor {0, 0}.
         Lists Tests:
 ".
 
-"" := Lists:Joinwith {" -=- ", #[]}.
-"1|3|9" := Lists:Joinwith {"|", #[1, 3, 9]}.
-"1|3|9" := Lists:Joinwith {"|", #["1", "3", "9"]}.
+"" := Lists:Joinwith " -=- " #[].
+"1|3|9" := Lists:Joinwith "|" #[1, 3, 9].
+"1|3|9" := Lists:Joinwith "|" #["1", "3", "9"].
 
 "onetwo\"three\"" := Lists:Join #["one", "two", "\"three\""].
 
@@ -150,33 +150,33 @@ L := #[1, two, "three"].
 Double := [ @ * 2. ].
 Nums := #[1,2,3].
 
-#[2, 4, 6] := Lists:Map {Double, Nums}.
-#[] := Lists:Map {Double, nil}.
+#[2, 4, 6] := Lists:Map Double Nums.
+#[] := Lists:Map Double nil.
 
 StrConcat := [{Acc, Elem} := @. Acc + Elem.].
-"123" := Lists:Foldl {StrConcat, "", #["1", "2", "3"]}.
-"321" := Lists:Foldr {StrConcat, "", #["1", "2", "3"]}.
+"123" := Lists:Foldl StrConcat "" #["1", "2", "3"].
+"321" := Lists:Foldr StrConcat "" #["1", "2", "3"].
 
-"" := Lists:Foldl {StrConcat, "", nil}.
-"" := Lists:Foldr {StrConcat, "", nil}.
+"" := Lists:Foldl StrConcat "" nil.
+"" := Lists:Foldr StrConcat "" nil.
 
 0 := Lists:Length nil.
 1 := Lists:Length #[one].
 2 := Lists:Length #[one, two].
 
-nil := Lists:Range {10, 10}.
-#[10, 11, 12] := Lists:Range {10, 13}.
+nil := Lists:Range 10 10.
+#[10, 11, 12] := Lists:Range 10 13.
 
-first  := Lists:Nth {1, #[first]}.
-second := Lists:Nth {2, #[first, second]}.
+first  := Lists:Nth 1 #[first].
+second := Lists:Nth 2 #[first, second].
 
-#[1] := Lists:Concat {#[ ], #[1]}.
-#[2] := Lists:Concat {#[2], #[ ]}.
-#[1, 2, 3, 4] := Lists:Concat {#[1, 2], #[3, 4]}.
+#[1] := Lists:Concat #[ ] #[1].
+#[2] := Lists:Concat #[2] #[ ].
+#[1, 2, 3, 4] := Lists:Concat #[1, 2] #[3, 4].
 
 
-yeah := Lists:Any {[@ = 2.], #[1, 2, 3]}.
-nope := Lists:Any {[@ = 2.], #[1, 3]}.
+yeah := Lists:Any [@ = 2.] #[1, 2, 3].
+nope := Lists:Any [@ = 2.] #[1, 3].
 
 yeah := Lists:All {[@ = 4.], #[4, 4, 4, 4]}.
 yeah := Lists:All {[@ = 4.], #[]}.
@@ -195,68 +195,65 @@ yeah := Lists:Or #[0, nope, nil, "", {}, "Hello"].
 yeah := Lists:Or #[yeah, 1].
 
 
-yeah := Lists:Member {"str", #[one, 2, "str"]}.
-nope := Lists:Member {str,   #[one, 2, "Str"]}.
+yeah := Lists:Member "str" #[one, 2, "str"].
+nope := Lists:Member str   #[one, 2, "Str"].
 
-#[] := Lists:Repeat {0, hello}.
-#[hello, hello, hello] := Lists:Repeat {3, hello}.
+#[] := Lists:Repeat 0 hello.
+#[hello, hello, hello] := Lists:Repeat 3 hello.
 
-#[] := Lists:Remove #[hay].
+#[] := Lists:Remove hay #[hay].
 
 Nums    := #[1, 2, 3].
-Nums    := Lists:Remove {4, Nums}.
-#[1, 3] := Lists:Remove {2, Nums}.
+Nums    := Lists:Remove 4 Nums.
+#[1, 3] := Lists:Remove 2 Nums.
 
-#[]     := Lists:Filter {[@=5.], Nums}.
-#[]     := Lists:Filter {[@=5.], #[]}.
-#[1, 2] := Lists:Filter {[@ <= 2.], Nums}.
+#[]     := Lists:Filter [@ = 5.]  Nums.
+#[]     := Lists:Filter [@ = 5.]  #[].
+#[1, 2] := Lists:Filter [@ <= 2.] Nums.
 
-#[] := Lists:Zip {#[], #[]}.
-#[] := Lists:Zip {#[1,2,3], #[]}.
-#[] := Lists:Zip {#[], #[1,2,3]}.
-#[{1, one}, {2, two}] := Lists:Zip {#[1,2], #[one, two]}.
-#[{1, one}] := Lists:Zip {#[1], #[one, two]}.
-#[{1, one}] := Lists:Zip {#[1, 2], #[one]}.
+#[] := Lists:Zip #[]      #[].
+#[] := Lists:Zip #[1,2,3] #[].
+#[] := Lists:Zip #[]      #[1,2,3].
+#[{1, one}, {2, two}] := Lists:Zip #[1,2]  #[one, two].
+#[{1, one}]           := Lists:Zip #[1]    #[one, two].
+#[{1, one}]           := Lists:Zip #[1, 2] #[one].
 
 Add := [{N1, N2} := @.
         N1 + N2.].
 
-#[]  := Lists:Zipwith {Add, #[], #[]}.
-#[]  := Lists:Zipwith {Add, #[1, 2], #[]}.
-#[]  := Lists:Zipwith {Add, #[], #[1, 2, 4]}.
-#[4] := Lists:Zipwith {Add, #[1, 2], #[3]}.
-#[4, 5, 6] := Lists:Zipwith {Add, #[1, 2, 3], #[3, 3, 3]}.
+#[]        := Lists:Zipwith Add #[]        #[].
+#[]        := Lists:Zipwith Add #[1, 2]    #[].
+#[]        := Lists:Zipwith Add #[]        #[1, 2, 4].
+#[4]       := Lists:Zipwith Add #[1, 2]    #[3].
+#[4, 5, 6] := Lists:Zipwith Add #[1, 2, 3] #[3, 3, 3].
 
 
-#[]    := Lists:Take {0, Nums}.
-#[one] := Lists:Take {1, #[one, two, three]}.
-#[one, two, three] := Lists:Take {50, #[one, two, three]}.
+#[]    := Lists:Take 0 Nums.
+#[one] := Lists:Take 1 #[one, two, three].
+#[one, two, three] := Lists:Take 50 #[one, two, three].
 
-#[1,2,3] := Lists:Drop {0, Nums}.
-#[2,3]   := Lists:Drop {1, Nums}.
-#[3]     := Lists:Drop {2, Nums}.
-#[]      := Lists:Drop {3, Nums}.
-#[]      := Lists:Drop {4, Nums}.
+#[1,2,3] := Lists:Drop 0 Nums.
+#[2,3]   := Lists:Drop 1 Nums.
+#[3]     := Lists:Drop 2 Nums.
+#[]      := Lists:Drop 3 Nums.
+#[]      := Lists:Drop 4 Nums.
 
-#[8]       := Lists:Takewhile {[@ > 3.], #[8, 2, 10, 3]}.
-#[1, 2, 3] := Lists:Takewhile {[@ < 4.], #[1, 2, 3, 4, 5, 6]}.
-#[]        := Lists:Takewhile {[@ != "hay".], #[]}.
+#[8]       := Lists:Takewhile [@ > 3.]      #[8, 2, 10, 3].
+#[1, 2, 3] := Lists:Takewhile [@ < 4.]      #[1, 2, 3, 4, 5, 6].
+#[]        := Lists:Takewhile [@ != "hay".] #[].
 
-#[]              := Lists:Dropwhile {[@ > 0.], #[1, 2, 3]}.
-#[]              := Lists:Dropwhile {[@ > 0.], #[]}.
-#[1, 2, 3, 4, 5] := Lists:Dropwhile {[@ > 4.], #[1, 2, 3, 4, 5]}.
-#[2, 1]          := Lists:Dropwhile {[@ > 2.], #[4, 3, 2, 1]}.
+#[]              := Lists:Dropwhile [@ > 0.] #[1, 2, 3].
+#[]              := Lists:Dropwhile [@ > 0.] #[].
+#[1, 2, 3, 4, 5] := Lists:Dropwhile [@ > 4.] #[1, 2, 3, 4, 5].
+#[2, 1]          := Lists:Dropwhile [@ > 2.] #[4, 3, 2, 1].
 
-{#["hay"], #["ey"]} := Lists:Separate {[@ = "hay".], #["hay", "ey"]}.
-{#["hay"], #[]}     := Lists:Separate {[@ = "hay".], #["hay"]}.
-{#[], #["ey"]}      := Lists:Separate {[@ = "hay".], #["ey"]}.
 
-{#[], #[1, 2, 3]} := Lists:Partition_At {0, #[1, 2, 3]}.
-{#[1], #[2, 3]}   := Lists:Partition_At {1, #[1, 2, 3]}.
-{#[2, 1], #[3]}   := Lists:Partition_At {2, #[1, 2, 3]}.
-{#[3, 2, 1], #[]} := Lists:Partition_At {3, #[1, 2, 3]}.
-{#[3, 2, 1], #[]} := Lists:Partition_At {4, #[1, 2, 3]}.
-{#[], #[]}        := Lists:Partition_At {2, #[]}.
+{#[], #[1, 2, 3]} := Lists:Partition_At 0 #[1, 2, 3].
+{#[1], #[2, 3]}   := Lists:Partition_At 1 #[1, 2, 3].
+{#[2, 1], #[3]}   := Lists:Partition_At 2 #[1, 2, 3].
+{#[3, 2, 1], #[]} := Lists:Partition_At 3 #[1, 2, 3].
+{#[3, 2, 1], #[]} := Lists:Partition_At 4 #[1, 2, 3].
+{#[], #[]}        := Lists:Partition_At 2 #[].
 
 
 {}          := Lists:ToTuple #[].
@@ -265,11 +262,11 @@ Add := [{N1, N2} := @.
 
 Li := #[one, two, 333, "hay"].
 
-#[]                := Lists:Slice {1, 1, Li}.
-#[]                := Lists:Slice {2, 2, Li}.
-#[one, two]        := Lists:Slice {1, 3, Li}.
-#[two, 333, "hay"] := Lists:Slice {2, 5, Li}.
-Li                 := Lists:Slice {1, 5, Li}.
+#[]                := Lists:Slice 1 1 Li.
+#[]                := Lists:Slice 2 2 Li.
+#[one, two]        := Lists:Slice 1 3 Li.
+#[two, 333, "hay"] := Lists:Slice 2 5 Li.
+Li                 := Lists:Slice 1 5 Li.
 
 
 3 := Lists:Max #[3].
@@ -304,10 +301,10 @@ yeah := Dicts:Member {4, Dicts:Set {4, four, D}}.
 
 Vals := Dicts:Values D.
 Keys := Dicts:Keys D.
-nope := Lists:Member {one, Vals}.
-nope := Lists:Member {three, Keys}.
-yeah := Lists:Member {"three", Keys}.
-yeah := Lists:Member {2, Vals}.
+nope := Lists:Member one     Vals.
+nope := Lists:Member three   Keys.
+yeah := Lists:Member "three" Keys.
+yeah := Lists:Member 2       Vals.
 
 3 := Lists:Length Vals.
 3 := Lists:Length Keys.
@@ -364,15 +361,15 @@ LenCmp := [
 Reverse_LenCmp := [ -(LenCmp {Car @, Cdr @}).].
 
 
-#[]                      := Lists:Sortwith {LenCmp, #[]}.
-#[#[], #[]]              := Lists:Sortwith {LenCmp, #[#[], #[]]}.
-#[#[], #["Hello"]]       := Lists:Sortwith {LenCmp, #[#[], #["Hello"]]}.
-#[#[], #[92], #[-23, 4]] := Lists:Sortwith {LenCmp, #[#[-23, 4], #[], #[92]]}.
+#[]                      := Lists:Sortwith LenCmp #[].
+#[#[], #[]]              := Lists:Sortwith LenCmp #[#[], #[]].
+#[#[], #["Hello"]]       := Lists:Sortwith LenCmp #[#[], #["Hello"]].
+#[#[], #[92], #[-23, 4]] := Lists:Sortwith LenCmp #[#[-23, 4], #[], #[92]].
 
-#[]                      := Lists:Sortwith {Reverse_LenCmp, #[]}.
-#[#[], #[]]              := Lists:Sortwith {Reverse_LenCmp, #[#[], #[]]}.
-#[#["Hello"], #[]]       := Lists:Sortwith {Reverse_LenCmp, #[#[], #["Hello"]]}.
-#[#[-23, 4], #[92], #[]] := Lists:Sortwith {Reverse_LenCmp, #[#[-23, 4], #[], #[92]]}.
+#[]                      := Lists:Sortwith Reverse_LenCmp #[].
+#[#[], #[]]              := Lists:Sortwith Reverse_LenCmp #[#[], #[]].
+#[#["Hello"], #[]]       := Lists:Sortwith Reverse_LenCmp #[#[], #["Hello"]].
+#[#[-23, 4], #[92], #[]] := Lists:Sortwith Reverse_LenCmp #[#[-23, 4], #[], #[92]].
 
 
 {}                      := Tuples:Sortwith {LenCmp, {}}.
@@ -503,7 +500,7 @@ sorry := Funcs:GetDocstring [hello. 21.].
 "haya" := (Funcs:GetDocstring ~ Funcs:SetDocstring) {"haya", Lists:Map}.
 nope   := Funcs:GetDocstring Lists:Map = "haya".
 
-#[2,4,6] := Funcs:SetDocstring {"haya", Lists:Map} {[@*2.], #[1,2,3]}.
+#[2,4,6] := Funcs:SetDocstring {"haya", Lists:Map} [@*2.] #[1,2,3].
 
 
 Pluser := [ {A1, A2, A3, A4} := @,

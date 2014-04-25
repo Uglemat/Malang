@@ -58,9 +58,7 @@ Member := [
   Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` = `Key`.
   ".
   {Key, Dict} := @.
-  Lists:Any {
-    [{K, _} := @, K = Key.]
-    , Dict }.
+  Lists:Any [{K, _} := @, K = Key.] Dict.
 ].
 
 Keys := [
@@ -69,9 +67,7 @@ Keys := [
 
   Returns a list of all the keys in Dict.
   ".
-  Lists:Map {
-    [{K, V} := @, K.]
-    , @}.
+  Lists:Map [{K, V} := @, K.]  @.
 ].
 
 Values := [
@@ -80,9 +76,7 @@ Values := [
 
   Returns a list of all the values in Dict.
   ".
-  Lists:Map {
-    [{K, V} := @, V.]
-    , @}.
+  Lists:Map [{K, V} := @, V.]  @.
 ].
 
 Extend := [
