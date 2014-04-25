@@ -162,13 +162,13 @@ Nth := Funcs:Curry 2 [
   end.
 ].
 
-Random_Choice := [
+RandomChoice := [
   "
   @ = List
 
   Returns a random element of `List`.
   ".
-  Nth (Builtins:Random_Range {1, Length @ + 1}) @.
+  Nth (Numbers:RandRange 1 (Length @ + 1)) @.
 ].
 
 Concat := Funcs:Curry 2 [
@@ -202,16 +202,16 @@ Any := Funcs:Curry 2 [
 ].
 
 
-All := [
+All := Funcs:Curry 2 [
   "
-  @ = {Func, List}
+  @ = Func List
 
   Returns `yeah` if all the elements of `List` pass the predicate function `Func`.
   ".
   {Func, List} := @.
   case List of
     #[]    -> yeah.
-    {H, T} -> if Func H then All {Func, T}. else nope. end.
+    {H, T} -> if Func H then All Func T. else nope. end.
   end.
 ].
 
@@ -447,7 +447,7 @@ Sortwith := Funcs:Curry 2 [
   the beginning.
   ".
   {Func, List} := @.
-  (Tuples:ToList ~ Tuples:Sortwith) {Func, ToTuple List}.
+  (Tuples:ToList ~ Tuples:Sortwith Func ~ ToTuple) List.
 ].
 
 Sort := [

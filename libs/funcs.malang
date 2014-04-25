@@ -16,8 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
 GetDocstring := Builtins:FuncsGetDocstring.
-SetDocstring := Builtins:FuncsSetDocstring.
-
+SetDocstring := [Doc := @, [Builtins:FuncsSetDocstring {Doc, @}.].].
+-- Manual currying ^
 
 Curry := [
 
@@ -64,7 +64,7 @@ Curry := [
            Doc := GetDocstring Func,
            case Doc of
              sorry -> Curried.
-             _     -> SetDocstring {Doc, Curried}.
+             _     -> SetDocstring Doc Curried.
            end.
     end.
   ].

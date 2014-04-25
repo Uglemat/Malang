@@ -72,6 +72,6 @@ Not := [
   @ = Val
 
   Returns `nope` if `Val` is truthy, `yeah` otherwise.
-  "
+  ".
   if @ then nope. else yeah. end.
 ].

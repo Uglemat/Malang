@@ -66,26 +66,22 @@ Create := [
 ].
 
 
-Point := Create #[
-  {x, 10},
-  {y, 20},
-  {hello, [
-    Io:Print ("Hi there, " + (Cdr @) + "\n").
-  ]},
-  {tostr, [
-    {Self, _} := @.
-    Lists:Join #["x: ", (ToStr ~ Self) x, " y: ", (ToStr ~ Self) y].
-  ]}
-].
-
-Thing := Point extend #[
-  {z, 30},
-  {tostr, [
-    {S, _} := @.
-    Lists:Join #["x: ", (ToStr ~ S) x, " y: ", (ToStr ~ S) y, " z: ", (ToStr ~ S) z].
-  ]}
-].
-
---Thing tostr {}.
-
--- (PrintLn ~ Point tostr) {}.
+--  Point := Create #[
+--    {x, 10},
+--    {y, 20},
+--    {hello, [
+--      Io:Print ("Hi there, " + (Cdr @) + "\n").
+--    ]},
+--    {tostr, [
+--      {Self, _} := @.
+--      Lists:Join #["x: ", (ToStr ~ Self) x, " y: ", (ToStr ~ Self) y].
+--    ]}
+--  ].
+--  
+--  Thing := Point extend #[
+--    {z, 30},
+--    {tostr, [
+--      {S, _} := @.
+--      Lists:Join #["x: ", (ToStr ~ S) x, " y: ", (ToStr ~ S) y, " z: ", (ToStr ~ S) z].
+--    ]}
+--  ].

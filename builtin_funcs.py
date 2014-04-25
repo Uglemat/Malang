@@ -67,7 +67,7 @@ def getdocstring(func, env, filename, infonode):
 @builtin("FuncsSetDocstring")
 def setdocstring(tup, env, filename, infonode):
     """
-    @ = {Docstring, Function}
+    @ = Docstring Function
 
     Return a new version of `Function` where the docstring is `Docstring`. It
     does not mutate `Function`. `Function` must be a malang function, it cannot
@@ -221,10 +221,10 @@ def sleep(amount, env, filename, infonode):
     time.sleep(amount.content/1000.0)
     return Node('atom', 'ok')
 
-@builtin("Random_Range")
-def random_range(tup, env, filename, infonode):
+@builtin("RandRange")
+def randrange(tup, env, filename, infonode):
     """
-    @ = {Start, Stop}
+    @ = Start Stop
 
     Returns a random integer between `Start` (inclusive) and `Stop` (exclusive).
     """
@@ -335,7 +335,7 @@ def stringrepr(string, env, filename, infonode):
 @builtin("TupleNth")
 def tuplenth(arg, env, filename, infonode):
     """
-    @ = {N, Tuple}
+    @ = N Tuple
 
     Returns the `N`th element of `Tuple`. (Starting from 1)
     """
@@ -356,7 +356,7 @@ def tuplenth(arg, env, filename, infonode):
 @builtin("TupleSortwith")
 def tuplesortwith(arg, env, filename, infonode):
     """
-    @ = {Func, Tuple}
+    @ = Func Tuple
 
     Sort `Tuple` with the comparison function `Func`.
 
@@ -485,7 +485,7 @@ def stringslice(tup, env, filename, infonode):
 @builtin("TupleSlice")
 def tupleslice(tup, env, filename, infonode):
     """
-    @ = {Start, Stop, Tuple}
+    @ = Start Stop Tuple
     
     Returns a subtuple of `Tuple` starting at index `Start` (inclusive),
     ending at index `Stop` (exclusive).

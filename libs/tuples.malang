@@ -16,10 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
 ToList   := Builtins:ToList.
-Nth      := Builtins:TupleNth.
-Sortwith := Builtins:TupleSortwith.
+Nth      := Funcs:Curry 2 Builtins:TupleNth.
+Sortwith := Funcs:Curry 2 Builtins:TupleSortwith.
 Length   := Builtins:TupleLength.
-Slice    := Builtins:TupleSlice.
+Slice    := Funcs:Curry 3 Builtins:TupleSlice.
 
 Sort := [
   "
@@ -27,7 +27,7 @@ Sort := [
 
   Return a new version of `Tuple`, sorted from low to high.
   ".
-  Sortwith {Cmp, @}.
+  Sortwith Cmp @.
 ].
 
 ReverseSort := [
@@ -36,5 +36,5 @@ ReverseSort := [
 
   Return a new version of `Tuple`, sorted from high to low.
   ".
-  Sortwith {[ -(Cmp {Car @, Cdr @}). ], @}.
+  Sortwith [-(Cmp {Car @, Cdr @}).] @.
 ].
