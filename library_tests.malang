@@ -448,10 +448,10 @@ ello := Tuples:Nth {1, {ello}}.
 1  := Strings:Length "-".
 12 := Strings:Length "Hello, world".
 
-"h" := Strings:Nth {1, "hay!"}.
-"a" := Strings:Nth {2, "hay!"}.
-"y" := Strings:Nth {3, "hay!"}.
-"!" := Strings:Nth {4, "hay!"}.
+"h" := Strings:Nth 1 "hay!".
+"a" := Strings:Nth 2 "hay!".
+"y" := Strings:Nth 3 "hay!".
+"!" := Strings:Nth 4 "hay!".
 
 "hay!" := Strings:Lower "hay!".
 "hay!" := Strings:Lower "Hay!".
@@ -461,30 +461,30 @@ ello := Tuples:Nth {1, {ello}}.
 "HAY!" := Strings:Upper "hAY!".
 "HAY!" := Strings:Upper "hay!".
 
-8     := Strings:Find {"hello", "Hello, hello!"}.
-1     := Strings:Find {"hello", "hello, hello!"}.
-sorry := Strings:Find {"hello", "ello, hEllo!"}.
-sorry := Strings:Find {"hello", ""}.
+8     := Strings:Find "hello" "Hello, hello!".
+1     := Strings:Find "hello" "hello, hello!".
+sorry := Strings:Find "hello" "ello, hEllo!".
+sorry := Strings:Find "hello" "".
 
 
-""     := Strings:Slice {1, 1, ""}.
-""     := Strings:Slice {2, 2, "Hello"}.
-"el"   := Strings:Slice {2, 4, "Hello"}.
-"Hel"  := Strings:Slice {1, 4, "Hello"}.
-"Hell" := Strings:Slice {1, 5, "Hello"}.
+""     := Strings:Slice 1 1 "".
+""     := Strings:Slice 2 2 "Hello".
+"el"   := Strings:Slice 2 4 "Hello".
+"Hel"  := Strings:Slice 1 4 "Hello".
+"Hell" := Strings:Slice 1 5 "Hello".
 
-"" := Strings:Rstrip {"", ""}.
-"" := Strings:Lstrip {"", ""}.
-"" := Strings:Strip  {"", ""}.
+"" := Strings:Rstrip "" "".
+"" := Strings:Lstrip "" "".
+"" := Strings:Strip  "" "".
 
-" - hay" := Strings:Rstrip {" -", " - hay - "}.
-"hay - " := Strings:Lstrip {" -", " - hay - "}.
-"hay"    := Strings:Strip  {" -", " - hay - "}.
+" - hay" := Strings:Rstrip " -" " - hay - ".
+"hay - " := Strings:Lstrip " -" " - hay - ".
+"hay"    := Strings:Strip  " -" " - hay - ".
 
-#[""]      := Strings:Split {", ", ""}.
-#[",hay,"] := Strings:Split {", ", ",hay,"}.
-#["hey ho", "lets go"] := Strings:Split {", ", "hey ho, lets go"}.
-#["1", "2", "3", ""]   := Strings:Split {"|", "1|2|3|"}.
+#[""]      := Strings:Split ", "  "".
+#[",hay,"] := Strings:Split ", "  ",hay,".
+#["hey ho", "lets go"] := Strings:Split ", " "hey ho, lets go".
+#["1", "2", "3", ""]   := Strings:Split "|"  "1|2|3|".
 
 "\"\""     := Strings:Repr "".
 "\"hay\""  := Strings:Repr "hay".

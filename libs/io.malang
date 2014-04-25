@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
 Readfile  := Builtins:Readfile.
-Writefile := Builtins:Writefile.
+Writefile := Funcs:Curry 2 Builtins:Writefile.
 Print     := Builtins:Print.
-PrintLn   := [Print (@ + "\n").].
+PrintLn   := [Print (ToStr @ + "\n").].
 Input     := Builtins:Input.

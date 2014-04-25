@@ -18,25 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Repr   := Builtins:StringRepr.
 
 Length := Builtins:StringLength.
-Nth    := Builtins:StringNth.
+Nth    := Funcs:Curry 2 Builtins:StringNth.
 
 Upper  := Builtins:StringUpper.
 Lower  := Builtins:StringLower.
 
-Find   := Builtins:StringFind.
+Find   := Funcs:Curry 2 Builtins:StringFind.
 
-Slice  := Builtins:StringSlice.
-Split  := Builtins:StringSplit.
+Slice  := Funcs:Curry 3 Builtins:StringSlice.
+Split  := Funcs:Curry 2 Builtins:StringSplit.
 
-Rstrip := Builtins:StringRstrip.
-Lstrip := Builtins:StringLstrip.
-Strip  := [
+Rstrip := Funcs:Curry 2 Builtins:StringRstrip.
+Lstrip := Funcs:Curry 2 Builtins:StringLstrip.
+Strip  := Funcs:Curry 2 [
   "
-  @ = {Chars, String}
+  @ = Chars String
 
   Return `String` with all leading and trailing characters that appear
   in the string `Chars` removed.
   ".
   {Chars, String} := @.
-  Lstrip {Chars, Rstrip {Chars, String}}.
+  Lstrip Chars (Rstrip Chars String).
 ].

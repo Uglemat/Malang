@@ -20,6 +20,11 @@ import time
 import random
 import re
 
+"""
+Some of the builtin funcs are curried when they are placed in
+modules, so the docstring might reflect that.
+"""
+
 def print_docstring(fun):
     if fun._type == 'function':
         print("Function was defined in the file {!r}".format(fun.content['filename']))
@@ -131,7 +136,7 @@ def _print(s, env, filename, infonode):
 @builtin("Writefile")
 def writefile(arg, env, filename, infonode):
     """
-    @ = {Str, Filename}
+    @ = Str Filename
 
     Overwrite the contents of `Filename` to be `Str`.
     """
@@ -397,7 +402,7 @@ def stringlength(st, env, filename, infonode):
 @builtin("StringNth")
 def stringnth(tup, env, filename, infonode):
     """
-    @ = {N, String}
+    @ = N String
     
     Return the the `N`th character of `String`.
     """
@@ -439,7 +444,7 @@ def stringlower(st, env, filename, infonode):
 @builtin("StringFind")
 def stringFind(tup, env, filename, infonode):
     """
-    @ = {String1, String2}
+    @ = String1 String2
     
     Finds the first occurrence of `String1` in `String2`, and returns
     the index of that occurrence in `String2`.
@@ -461,7 +466,7 @@ def stringFind(tup, env, filename, infonode):
 @builtin("StringSlice")
 def stringslice(tup, env, filename, infonode):
     """
-    @ = {Start, Stop, String}
+    @ = Start Stop String
     
     Returns a substring of `String` starting at index `Start` (inclusive),
     ending at index `Stop` (exclusive).
@@ -499,7 +504,7 @@ def tupleslice(tup, env, filename, infonode):
 @builtin("StringRstrip")
 def stringrstrip(tup, env, filename, infonode):
     """
-    @ = {Chars, String}
+    @ = Chars String
     
     Return `String` with all trailing characters that appear in the string `Chars` removed.
     """
@@ -513,7 +518,7 @@ def stringrstrip(tup, env, filename, infonode):
 @builtin("StringLstrip")
 def stringlstrip(tup, env, filename, infonode):
     """
-    @ = {Chars, String}
+    @ = Chars String
     
     Return `String` with all leading characters that appear in the string `Chars` removed.
     """
@@ -527,7 +532,7 @@ def stringlstrip(tup, env, filename, infonode):
 @builtin("StringSplit")
 def stringsplit(tup, env, filename, infonode):
     """
-    @ = {Sep, String}
+    @ = Sep String
     
     Splits `String` into a list of strings, using the non-empty string `Sep` as the delimiter.
     """
