@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-Get := [
+Get := Funcs:Curry 2 [
   "
-  @ = {Key, Dict}
+  @ = Key Dict
 
   Finds the first `{K, V}` pair where `K` = `Key` in the list `Dict` and returns
   `{ok, V}` if the search is successful, and `sorry` otherwise.
@@ -26,13 +26,13 @@ Get := [
   case D of
     #[]           -> sorry.
     {{Key, V}, T} -> {ok, V}.
-    {{K,   V}, T} -> Get {Key, T}.
+    {{K,   V}, T} -> Get Key T.
   end.
 ].
 
-Remove := [
+Remove := Funcs:Curry 2 [
   "
-  @ = {Key, Dict}
+  @ = Key Dict
 
   Return a new `Dict` with all `{K, V}` pairs where `K` = `Key` removed.
   ".
@@ -40,20 +40,20 @@ Remove := [
   #[{K, V} | {K, V} <- D, K != Key].
 ].
 
-Set := [
+Set := Funcs:Curry 3 [
   "
-  @ = {Key, Val, Dict}
+  @ = Key Val Dict
 
   Return a new `Dict` with the pair `{Key, Val}` inserted, and all `{K, V}` pairs
   where `K` = `Key` removed.
   ".
   {K, V, D} := @.
-  {{K, V}, Remove {K, D}}.
+  {{K, V}, Remove K D}.
 ].
 
-Member := [
+Member := Funcs:Curry 2 [
   "
-  @ = {Key, Dict}
+  @ = Key Dict
 
   Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` = `Key`.
   ".
@@ -79,9 +79,9 @@ Values := [
   Lists:Map [{K, V} := @, V.]  @.
 ].
 
-Extend := [
+Extend := Funcs:Curry 2 [
   "
-  @ = {Old, New}
+  @ = Old New
 
   Return a version of `Old` where every `{K, V}` pair in `New` is present,
   overwriting any old values.
@@ -90,6 +90,6 @@ Extend := [
 
   case New of
     nil -> Old.
-    {{K, V}, Tail} -> Extend {Set {K, V, Old}, Tail}.
+    {{K, V}, Tail} -> Extend (Set K V Old) Tail.
   end.
 ].

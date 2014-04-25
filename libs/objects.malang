@@ -36,27 +36,27 @@ Create := [
   Even though you can extend an object with the `extend` message, there's no such
   thing as a parent object, all objects are flat, and attributes are simply overwritten.
   ".
-  Attributes := Dicts:Extend {@, #[
+  Attributes := Dicts:Extend @ #[
     {set, [
       {_, {K, V}}  := @.
-      (Create ~ Dicts:Set) {K, V, Attributes}.
+      (Create ~ Dicts:Set K V) Attributes.
     ]},
     {extend, [
       {_, Newattrs} := @.
-      (Create ~ Dicts:Extend) {Attributes, Newattrs}.
+      Create (Dicts:Extend Attributes Newattrs).
     ]},
     {show, [
       Io:Print "Object:\n".
       #[(Io:Print ~ Lists:Join)
         #["  ", ToStr At, " -> ",
-          (ToStr ~ Cdr ~ Dicts:Get) {At, Attributes}, "\n"]
+          (ToStr ~ Cdr ~ Dicts:Get At) Attributes, "\n"]
           | At <- Dicts:Keys Attributes],
       ok.
     ]}
-  ]}.
+  ].
 
   Self := [
-    {ok, Val} := Dicts:Get {@, Attributes},
+    {ok, Val} := Dicts:Get @ Attributes,
     case TypeOf Val of
       "function" -> [Val {Self, @}.].
       "builtin"  -> [Val {Self, @}.].

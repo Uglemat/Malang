@@ -285,19 +285,19 @@ Li                 := Lists:Slice 1 5 Li.
 ".
 
 D := #[{one, 1}, {two, 2}, {"three", three}].
-{ok, 1} := Dicts:Get {one, D}.
-sorry   := Dicts:Get {four, D}.
+{ok, 1} := Dicts:Get one  D.
+sorry   := Dicts:Get four D.
 
-yeah := Dicts:Member {"three", D}.
-nope := Dicts:Member {four, D}.
-nope := Dicts:Member {2, D}.
+yeah := Dicts:Member "three" D.
+nope := Dicts:Member four    D.
+nope := Dicts:Member 2       D.
 
-yeah := Dicts:Member {two,  Dicts:Remove {"three", D}}.
-nope := Dicts:Member {four, Dicts:Remove {two,     D}}.
-nope := Dicts:Member {one,  Dicts:Remove {one,     D}}.
+yeah := Dicts:Member two  (Dicts:Remove "three" D).
+nope := Dicts:Member four (Dicts:Remove two     D).
+nope := Dicts:Member one  (Dicts:Remove one     D).
 
-yeah := Dicts:Member {4, Dicts:Set {4, four, D}}.
-{ok, four} := Dicts:Get {4, Dicts:Set {4, four, D}}.
+yeah := Dicts:Member 4 (Dicts:Set 4 four D).
+{ok, four} := Dicts:Get 4 (Dicts:Set 4 four D).
 
 Vals := Dicts:Values D.
 Keys := Dicts:Keys D.
@@ -311,8 +311,9 @@ yeah := Lists:Member 2       Vals.
 
 Ag  := #[{peter, 23}, {dory, 91}].
 Ag2 := #[{harry, 83}, {dory, 11}].
-#[{dory, 11}, {harry, 83}, {peter, 23}] :=
-  Dicts:Extend {Ag, Ag2}.
+Ag  := Dicts:Extend Ag #[].
+#[] := Dicts:Extend #[] #[].
+#[{dory, 11}, {harry, 83}, {peter, 23}] := Dicts:Extend Ag Ag2.
 
 "
         Sort Tests:

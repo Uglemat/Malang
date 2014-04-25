@@ -8,34 +8,34 @@ Enter this in the shell to start dashing out compound expressions in the REPL:
 
 Here's an example session:
 
-    malang > 234, 923.
+    Malang> 234, 923.
     923
-    malang > [@ * @.] 5.
+    Malang> [@ * @.] 5.
     25
-    malang > List := #[one, two, three].
+    Malang> List := #[one, two, three].
     {one, {two, {three, nil}}}
-    malang > Lists:Reverse List.
+    Malang> Lists:Reverse List.
     {three, {two, {one, nil}}}
-    malang > Bools:And {yeah, nope}.
+    Malang> Bools:And {yeah, nope}.
     nope
-    malang > Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
+    Malang> Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
     {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
-    malang > Dicts:Get {george, Ages}.
+    Malang> Dicts:Get george Ages.
     {ok, 30}
-    malang > Dicts:Get {me, Ages}.
+    Malang> Dicts:Get me Ages.
     sorry
-    malang > Dicts:Set {me, 123, Ages}.
+    Malang> Dicts:Set me 123 Ages.
     {{me, 123}, {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}}
-    malang > Dicts:Remove {peter, Ages}.
+    Malang> Dicts:Remove peter Ages.
     {{mary, 22}, {{george, 30}, nil}}
-    malang > Pairings := #[{P1, P2} | {P1, _} <- Ages, {P2, _} <- Ages, P1 > P2].
+    Malang> Pairings := #[{P1, P2} | {P1, _} <- Ages, {P2, _} <- Ages, P1 > P2].
     {{peter, mary}, {{peter, george}, {{mary, george}, nil}}}
-    malang > 
+    Malang> 
 
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
-All functions take exactly 1 argument.
+All functions take exactly 1 argument (but they can take tuples as arguments, and use currying).
 
 All functions are anonymous. Functions are values, and can be bound to a name.
 
