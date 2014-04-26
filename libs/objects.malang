@@ -47,10 +47,8 @@ Create := [
     ]},
     {show, [
       Io:Print "Object:\n".
-      #[(Io:Print ~ Lists:Join)
-        #["  ", ToStr At, " -> ",
-          (ToStr ~ Cdr ~ Dicts:Get At) Attributes, "\n"]
-          | At <- Dicts:Keys Attributes],
+      (Io:Print ~ Lists:Join)
+        #[Fmt "\t{K} -> {V}\n" | {K, V} <- Attributes],
       ok.
     ]}
   ].

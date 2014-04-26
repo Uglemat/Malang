@@ -71,3 +71,16 @@ Curry := [
 
   _Curry {2, _Curry}.
 ] {}.
+
+Partial := Curry 2 [
+  "
+  @ = Args Func
+
+  Returns a new function `F0` that will call `Func` with
+  `Args + NewArgs` where `NewArgs` is the argument passed to `F0`.
+  So `Args` and `NewArgs` could be tuples (tuples can be concatenated
+  with `+`) or something else, like numbers.
+  ".
+  {Args, Func} := @.
+  [Func (Args + @).].
+].

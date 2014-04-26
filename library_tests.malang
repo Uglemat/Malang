@@ -519,6 +519,14 @@ Add10 := Curried_Pluser 1 3 6.
 22 := Add10 12.
 
 
+Add15 := Funcs:Partial {5, 5, 5} Pluser.
+17 := Add15 {2}.
+
+Doubler := [@*2.].
+Double_Plus_10 := Funcs:Partial 5 Doubler.
+16 := Double_Plus_10 3.
+
+
 "
         Numbers Tests:
 ".
