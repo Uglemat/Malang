@@ -173,6 +173,11 @@ if __name__ == "__main__":
                     ).content,
                 )
             except MalangError as e:
-                print("{}Uncaught value: {}".format(ansicode(31), e.args[0]))
+                val = e.args[0]
+                if (val._type == 'tuple' and len(val.content) == 2 and 
+                    val.content[0]._type == 'atom' and val.content[0].content == 'error'):
+                    print("{}Error: {}".format(ansicode(31), builtin_funcs.tostr(val.content[1]).content))
+                else:
+                    print("{}Uncaught value: {}".format(ansicode(31), val))
             finally:
                 print(ansicode(39), end="")

@@ -68,7 +68,7 @@ def patternmatch(pattern, expr, env, filename):
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
-    exception = utils.InvalidMatch("Invalid match", filename, infonode=pattern)
+    make_exception = lambda s: utils.InvalidMatch("Invalid match" + s, filename, infonode=pattern)
 
 
     if pattern._type == 'uminus' and pattern.content._type == 'number':
@@ -89,22 +89,29 @@ def patternmatch(pattern, expr, env, filename):
     elif pattern._type == 'id' and env.is_bound(pattern.content):
         val = env.get(pattern.content, filename, infonode=pattern)
         if not utils.equal(val, expr):
-            raise exception
+            raise make_exception(" (identifier {!r} is already bound)".format(pattern.content))
         return
 
     elif pattern._type != expr._type:
-        raise exception
+        raise make_exception(
+            " (tried to match something of type {} agains a pattern of type {})".format(expr._type, pattern._type))
 
     elif pattern._type == 'tuple':
-        if not len(pattern.content) == len(expr.content):
-            raise exception
+        pattern_len = len(pattern.content)
+        expr_len = len(expr.content)
+        if not pattern_len == expr_len:
+            raise make_exception(
+                (" (tried to match a tuple of length {} agains a "
+                 "pattern-tuple of length {})").format(expr_len, pattern_len))
         for pat, e in zip(pattern.content, expr.content):
             patternmatch(pat, e, env, filename)
         return
 
     elif pattern._type in ('number', 'str', 'atom'):
         if not pattern.content == expr.content:
-            raise exception
+            raise make_exception(
+                " (tried to match the {} {!r} agains the pattern-{} {!r}".format(expr._type, expr.content,
+                                                                                 pattern._type, pattern.content))
         return 
         
     raise MalangError("Don't know how to pattern-match that. ", filename, infonode=pattern)
