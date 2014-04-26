@@ -14,11 +14,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type, MalangError, cmp_to_key, python_list_to_malang_list
+from utils import Node, assert_type, MalangError, python_list_to_malang_list
 from evaluator import call_malang_func
 import time
 import random
 import re
+import functools
 
 """
 Some of the builtin funcs are curried when they are placed in
@@ -377,7 +378,7 @@ def tuplesortwith(arg, env, filename, infonode):
         assert_type(num, 'number', filename, infonode)
         return num.content
 
-    return Node('tuple', tuple(sorted(tup.content, key=cmp_to_key(_cmp))))
+    return Node('tuple', tuple(sorted(tup.content, key=functools.cmp_to_key(_cmp))))
 
 @builtin("TupleLength")
 def tuplelength(tup, env, filename, infonode):
