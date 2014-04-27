@@ -15,6 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+
+"
+    The environment of this file is accessible by all malang programs.
+    They don't share it directly, exactly, but their environment 'inherits' from this environment,
+    in the same sense that a function inherits the environment of where it was created.
+    
+    So any identifiers in this file will be available in all malang programs.
+".
+
+
 Require := Builtins:Require.
 Exhibit := Builtins:Exhibit.
 ToStr   := Builtins:ToStr.
@@ -81,24 +91,3 @@ Strings := Require "libs/strings.malang".
 Objects := Require "libs/objects.malang".
 Numbers := Require "libs/numbers.malang".
 
-"
-The environment of this file is accessible by all malang programs.
-They don't share it directly, exactly, but their environment 'inherits' from this environment,
-in the same sense that a function inherits the environment of where it was created.
-
-So any identifiers in this file will be available in all malang programs.
-".
-
-
-Io:Print "
-    * Welcome   *
-    * To Malang *
-    * The Best  *
-    * Programming language *
-
-  \"After I started using Malang™, I became super productive, and my 
-   skin became so smooth; I feel, like, 10 years younger! I recommend it.
-   Even though I'm paid to say this, I have to say, this product rocks!\"
-     - Gus (23)
-
-".

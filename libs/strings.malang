@@ -40,3 +40,5 @@ Strip  := Funcs:Curry 2 [
   {Chars, String} := @.
   Lstrip Chars (Rstrip Chars String).
 ].
+
+ToNumber := Builtins:StringToNumber.

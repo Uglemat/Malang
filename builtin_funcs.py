@@ -566,3 +566,11 @@ def error(arg, env, filename, infonode):
     Stop executing because of `Reason`. `Reason` can be any type.
     """
     raise MalangError(tostr(arg).content, filename, infonode)
+
+@builtin("StringToNumber")
+def string_to_number(string, env, filename, infonode):
+    assert_type(string, 'str', filename, infonode)
+    try:
+        return Node('number', int(string.content))
+    except ValueError:
+        raise MalangError("Can't convert string to number", filename, infonode)

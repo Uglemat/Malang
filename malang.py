@@ -22,6 +22,7 @@ from utils import Env, Node, change_directory, MalangError, readline_imported
 import utils
 from os import path
 import sys
+import re
 
 import evaluator
 
@@ -29,14 +30,18 @@ import evaluator
 sys.setrecursionlimit(5000)
 
 
-def eval_malang(code, env, filename):
+def eval_malang(code, env, filename, remove_shebang=True):
     """
     (code: str, env: utils.Env, filename: str) -> (result: utils.Node)
 
     Evaluate `code` in the environment `env`.
 
     `filename` is used for reporting errors, it doesn't have to refer to an actual file.
+
+    Will try to remove the shebang if `remove_shebang` is True (which is the default).
     """
+    if remove_shebang and code.startswith("#!"):
+        code = code[code.index("\n")+1:]
     return evaluator.trampoline(parse(code, filename), env, filename)
 
 
@@ -105,11 +110,13 @@ original_REPL_env = REPL_env = Env(parent=main_env)
 
 
 
-stdlib_location = path.join(path.dirname(path.abspath(__file__)), "init.malang")
-with open(stdlib_location) as f:
+init_location = path.join(path.dirname(path.abspath(__file__)), "init.malang")
+with open(init_location) as f:
     with change_directory(path.dirname(path.abspath(__file__))):
         # Evaluates the init file in the main environment, thus filling it with the basic bindings
-        eval_malang(f.read(), main_env, stdlib_location)
+        eval_malang(f.read(), main_env, init_location)
+
+
 
 
 
@@ -137,6 +144,12 @@ if __name__ == "__main__":
 
 
     if interactive:
+
+        repl_init_location = path.join(path.dirname(path.abspath(__file__)), "repl_init.malang")
+        with open(repl_init_location) as f:
+            with change_directory(path.dirname(path.abspath(__file__))):
+                eval_malang(f.read(), REPL_env, repl_init_location)
+
         ansicode          = lambda n: "\x1b[{}m".format(n)
         readline_ansicode = ansicode
         if readline_imported:

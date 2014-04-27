@@ -1,0 +1,3 @@
+#!../malang.py
+
+Io:PrintLn "Hello, world!".

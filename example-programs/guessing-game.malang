@@ -1,0 +1,56 @@
+#!../malang.py
+
+GuessingGame := [
+  {Lives, Answer} := @.
+
+  Guess := Io:Input "Guess a number between 0 (inclusive) and 100 (exclusive): ".
+  case catch Strings:ToNumber Guess of
+    {error, _} -> Io:PrintLn "You need to guess a number, try again.",
+                  GuessingGame {Lives, Answer}.
+    {no_error, Num} ->
+      if Num = Answer
+        then Io:PrintLn (Fmt "You won! The correct answer was indeed {Answer}.").
+        else IncorrectGuess {Lives, Answer, Num}.
+      end.
+  end.
+].
+
+IncorrectGuess := [
+  {Lives, Answer, Guess} := @.
+
+  if Lives = 0
+    then Io:PrintLn (Fmt "You lose! The correct answer was {Answer}... you looser.").
+    else
+      FixFor1 := if Lives = 1 then "life". else "lives". end,
+      if Answer > Guess
+        then Io:PrintLn (Fmt "You need to guess higher! You have {Lives} {FixFor1} left."),
+             GuessingGame {Lives-1, Answer}.
+        else Io:PrintLn (Fmt "You need to guess lower! You have {Lives} {FixFor1} left."),
+             GuessingGame {Lives-1, Answer}.
+      end.
+  end.
+].
+
+YesOrNo := [
+  Reply := Io:Input (Fmt "{@} [yes/no]: ").
+  
+  case Reply of
+    "yes" -> yeah.
+    "no"  -> nope.
+    "fuck you" -> Io:PrintLn "Fuck you too", nope.
+    _     -> Io:Print "I don't know what that means. say \"yes\" or \"no\", please.\n",
+             YesOrNo @.
+  end.
+].
+
+Main := [
+  GuessingGame {3, Numbers:RandRange 0 100}.
+  if YesOrNo "Play again?"
+    then Main {}.
+    else ok.
+  end.
+].
+
+
+Main {}.
+Io:PrintLn "Bye!".
