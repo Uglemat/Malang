@@ -228,7 +228,7 @@ def p_throw_match_expr(p):
 
 
 def p_match_expr_bind(p):
-    'match_expr : arith_expr BIND match_expr'
+    'match_expr : arith_expr BIND expression'
     p[0] = Node('bind', (p[1], p[3]), infonode=p[1])
 
 

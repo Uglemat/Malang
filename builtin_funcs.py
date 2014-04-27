@@ -569,6 +569,14 @@ def error(arg, env, filename, infonode):
 
 @builtin("StringToNumber")
 def string_to_number(string, env, filename, infonode):
+    """
+    @ = String
+
+    Convert the `String` to a number. `String` can be of the form `<base>#<numeral>`
+    where `base` can be from 2 (binary) to 16 (hexadecimal), or just `<numberal>`,
+    where a base of 10 will be assumed. You can write numbers in your malang programs
+    this way too.
+    """
     assert_type(string, 'str', filename, infonode)
     try:
         return Node('number', to_number(string.content))

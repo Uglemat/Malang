@@ -181,7 +181,7 @@ if __name__ == "__main__":
             try:
                 print(
                     builtin_funcs.tostr(
-                        eval_malang(inp, REPL_env, "<REPL>"),
+                        eval_malang(inp, REPL_env, "<REPL>", remove_shebang=False),
                         repr_str=True
                     ).content,
                 )

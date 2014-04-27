@@ -493,6 +493,10 @@ sorry := Strings:Find "hello" "".
 "\" \\n hay \\t \"" := Strings:Repr " \n hay \t ".
 "\"\\\\\"" := Strings:Repr "\\".
 
+10 := Strings:ToNumber "10".
+255 := Strings:ToNumber "16#FF".
+{error, _} := catch Strings:ToNumber "abc".
+
 "
         Funcs Tests:
 ".
