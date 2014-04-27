@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type, MalangError, python_list_to_malang_list
+from utils import Node, assert_type, MalangError, python_list_to_malang_list, to_number
 from evaluator import call_malang_func
 import time
 import random
@@ -571,6 +571,6 @@ def error(arg, env, filename, infonode):
 def string_to_number(string, env, filename, infonode):
     assert_type(string, 'str', filename, infonode)
     try:
-        return Node('number', int(string.content))
+        return Node('number', to_number(string.content))
     except ValueError:
         raise MalangError("Can't convert string to number", filename, infonode)

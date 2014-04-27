@@ -24,7 +24,15 @@ try:
 except ImportError:
     readline_imported = False
 
-        
+def to_number(string):
+    if "#" in string:
+        radix, val = string.split("#")
+        radix = int(radix)
+    else:
+        val = string
+        radix = 10
+
+    return int(val, radix)
 
 def truthy(val):
     if val._type in ('tuple', 'str'):

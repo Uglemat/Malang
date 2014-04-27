@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from ply import lex, yacc
 import re
-from utils import Node, MalangError
+from utils import Node, MalangError, to_number
 
 def unescape_str(s):
     if r'\\' in s:
@@ -138,15 +138,8 @@ def t_NUMBER(t):
     (r"(([2-9]|1[0-6])\#(\d|[a-fA-F])+"
      r"|\d+)")
     
-    if "#" in t.value:
-        radix, val = t.value.split("#")
-        radix = int(radix)
-    else:
-        val = t.value
-        radix = 10
-
     try:
-        integer = int(val, radix)
+        integer = to_number(t.value)
     except ValueError:
         raise MalangError("Invalid number {!r}".format(t.value),
                           file_name, Node("dummy", None, lineno=t.lineno))
