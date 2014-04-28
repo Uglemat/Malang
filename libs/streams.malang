@@ -1,0 +1,104 @@
+"
+Copyright (C) 2014 Mattias Ugelvik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+".
+
+Next := [
+  "
+  @ = Stream
+  ".
+  if @ = empty then empty. else @ {}. end.
+].
+
+MakeStream := Funcs:Curry 2 [
+  "
+  @ = Seed Func
+  ".
+  {Seed, Func} := @.
+
+  [
+    NewVal := Func Seed.
+    if NewVal = empty
+     then empty.
+     else {NewVal, MakeStream NewVal Func}.
+    end.
+  ].
+].
+
+Map := Funcs:Curry 2 [
+  "
+  @ = Func Stream
+  ".
+  {Func, Stream} := @.
+
+  [
+    case Next Stream of
+     empty               -> empty.
+     {NewVal, NewStream} -> {Func NewVal, Map Func NewStream}.
+    end.
+  ].
+].
+
+ToList := [
+  "
+  @ = Stream
+  ".
+  case Next @ of
+    empty -> nil.
+    {Val, NewStream} -> {Val, ToList NewStream}.
+  end.
+].
+
+Take := Funcs:Curry 2 [
+  "
+  @ = N Stream
+  ".
+  {N, Stream} := @.
+  
+  [
+    if N <= 0
+      then empty.
+      else case Next Stream of
+           empty            -> empty.
+           {Val, NewStream} -> {Val, Take (N-1) NewStream}.
+      end.
+    end.
+  ].
+].
+
+Drop := Funcs:Curry 2 [
+  "
+  @ = N Stream
+  ".
+  {N, Stream} := @.
+  
+  Helper := [
+    {Current_Stream, Current_N} := @.
+    if Current_N <= 0
+      then Next Current_Stream.
+      else case Next Current_Stream of
+          empty          -> empty.
+          {_, NewStream} -> Helper {NewStream, Current_N-1}.
+      end.
+    end.
+  ].
+
+  [Helper {Stream, N}.].
+].
+
+--F := [if @ > 2 then empty. else @+1. end.].
+--S := MakeStream 0 F.
+--Double := [@*2.].
+--Mapped := Map Double S.

@@ -63,7 +63,7 @@ def eval_list_comprehension(env, expr, emitters, filename, acc):
                 eval_list_comprehension(temp_env, expr, emitters[1:], filename, acc=acc)
 
 
-def patternmatch(pattern, expr, env, filename):
+def patternmatch(pattern, expr, env, filename, readonly=False):
     """ `expr` should've been evaluated, `pattern` should not yet have been evaluated.
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
@@ -80,17 +80,32 @@ def patternmatch(pattern, expr, env, filename):
 
     if pattern._type == 'list':
         return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
-                            expr, env, filename)
+                            expr, env, filename, readonly)
 
     elif env.is_unbound_identifier(pattern):
-        env.bind(pattern.content, expr)
-        return
+        if readonly:
+            raise MalangError("Cannot bind readonly identifier in pattern", filename, infonode=pattern)
+        else:
+            env.bind(pattern.content, expr)
+            return
 
     elif pattern._type == 'id' and env.is_bound(pattern.content):
         val = env.get(pattern.content, filename, infonode=pattern)
         if not utils.equal(val, expr):
             raise make_exception(" (identifier {!r} is already bound)".format(pattern.content))
         return
+
+    elif pattern._type == 'module_access':
+        module, access = pattern.content
+        if not (module._type == 'id' and
+                env.is_bound(module.content) and
+                env.get(module.content, filename, infonode=pattern)._type == 'module'):
+            raise MalangError("Invalid module in pattern", filename, infonode=pattern)
+        else:
+            return patternmatch(access, expr,
+                                env.get(module.content, filename, infonode=pattern).content,
+                                filename, readonly=True)
+
 
     elif pattern._type != expr._type:
         raise make_exception(
@@ -104,7 +119,7 @@ def patternmatch(pattern, expr, env, filename):
                 (" (tried to match a tuple of length {} agains a "
                  "pattern-tuple of length {})").format(expr_len, pattern_len))
         for pat, e in zip(pattern.content, expr.content):
-            patternmatch(pat, e, env, filename)
+            patternmatch(pat, e, env, filename, readonly)
         return
 
     elif pattern._type in ('number', 'str', 'atom'):
@@ -112,8 +127,10 @@ def patternmatch(pattern, expr, env, filename):
             raise make_exception(
                 " (tried to match the {} {!r} agains the pattern-{} {!r}".format(expr._type, expr.content,
                                                                                  pattern._type, pattern.content))
-        return 
-        
+        return
+
+
+
     raise MalangError("Don't know how to pattern-match that. ", filename, infonode=pattern)
 
 arithmetic_funcs = {

@@ -90,4 +90,4 @@ Dicts   := Require "libs/dicts.malang".
 Strings := Require "libs/strings.malang".
 Objects := Require "libs/objects.malang".
 Numbers := Require "libs/numbers.malang".
-
+Streams := Require "libs/streams.malang".
