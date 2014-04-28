@@ -207,10 +207,9 @@ def maval(expr, env, filename):
             elif _type == 'tuple' and T == 'plus':
                 return Node('tuple', op1.content + op2.content, infonode=expr)
 
-        elif {op1._type, op2._type} == {'number', 'str'}:
+        elif T == 'times' and {op1._type, op2._type} == {'number', 'str'}:
             return Node('str', op1.content * op2.content)
-
-        elif {op1._type, op2._type} == {'number', 'tuple'}:
+        elif T == 'times' and {op1._type, op2._type} == {'number', 'tuple'}:
             return Node('tuple', op1.content * op2.content)
 
         else:
