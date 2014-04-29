@@ -37,13 +37,10 @@ IncorrectGuess := [
   if Lives = 0
     then Io:Fprint {"You lose! The correct answer was {1}... you loser.", Answer}.
     else
-      FixFor1 := if Lives = 1 then "life". else "lives". end,
-      if Answer > Guess
-        then Io:Fprint {"You need to guess higher! You have {1} {2} left.", Lives, FixFor1},
-             GuessingGame {Lives-1, Answer}.
-        else Io:Fprint {"You need to guess lower! You have {1} {2} left.", Lives, FixFor1},
-             GuessingGame {Lives-1, Answer}.
-      end.
+      HigherOrLower := if Answer > Guess then "higher". else "lower". end,
+      LifeOrLives   := if Lives = 1 then "life". else "lives". end,
+      Io:Fprint {"You need to guess {1}! You have {2} {3} left.", HigherOrLower, Lives, LifeOrLives}.
+      GuessingGame {Lives-1, Answer}.
   end.
 ].
 
@@ -53,7 +50,6 @@ YesOrNo := [
   case Reply of
     "yes" -> yeah.
     "no"  -> nope.
-    "fuck you" -> Io:PrintLn "Fuck you too", nope.
     _     -> Io:PrintLn "I don't know what that means. say \"yes\" or \"no\", please.",
              YesOrNo @.
   end.

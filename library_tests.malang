@@ -538,6 +538,38 @@ nope := Numbers:Even 31.
 Randnums := #[Numbers:RandRange 0 10 | _ <- Lists:Range 0 50].
 yeah     := Lists:All [Bools:And (@ >= 0) (@ < 10).] Randnums.
 
+
+"
+        Streams:Tests:
+".
+
+Ones := [{1, Ones}.].
+Ns := Streams:MakeStream 0 [@ + 1.].
+
+#[1, 1, 1] := Streams:ToList (Streams:Take 3 Ones).
+#[1, 2, 3] := Streams:ToList (Streams:Take 3 Ns).
+#[] := Streams:ToList empty.
+
+{1, Ones} := Streams:Next Ones.
+empty := Streams:Next empty.
+
+Evens := Streams:Map [@*2.] Ns.
+Odds  := Streams:Map [@-1.] Evens.
+
+empty := Streams:Next (Streams:Map [@*2.] empty).
+
+#[2, 4, 6, 8] := (Streams:ToList ~ Streams:Take 4) Evens.
+#[1, 3, 5, 7] := (Streams:ToList ~ Streams:Take 4) Odds.
+
+empty := Streams:Next (Streams:Take 0 Evens).
+empty := Streams:Next (Streams:Take 10 empty).
+
+#[2, 4]   := (Streams:ToList ~ Streams:Take 2 ~ Streams:Drop 0) Evens.
+#[10, 12] := (Streams:ToList ~ Streams:Take 2 ~ Streams:Drop 4) Evens.
+empty := Streams:Next (Streams:Drop 3 empty).
+empty := Streams:Next (Streams:Drop 10 (Streams:Take 3 Odds)).
+
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------
