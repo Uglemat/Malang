@@ -40,35 +40,36 @@ def eval_malang(code, env, filename, remove_shebang=True):
 
     Will try to remove the shebang if `remove_shebang` is True (which is the default).
     """
+    state = utils.State(env=env, filename=filename)
     if remove_shebang and code.startswith("#!"):
         code = code[code.index("\n")+1:]
-    return evaluator.trampoline(parse(code, filename), env, filename)
+    return evaluator.trampoline(parse(code, filename), state)
 
 
 
 # The reason I don't define `require` in the builtin_funcs module is that I need access to
 # `main_env` inside `require`.
 # same with `exhibit`, I need to access `REPL_env` and `original_REPL_env`.
-def require(filename_to_open, env, filename, infonode):
+def require(filename_to_open, state):
     """
     @ = Filename
 
     Evaluate the program in the file `Filename`, and return a module.
     """
-    utils.assert_type(filename_to_open, 'str', filename, infonode)
+    utils.assert_type(filename_to_open, 'str', state)
 
     try:
         with open(filename_to_open.content) as f:
             code = f.read()
     except IOError as e:
-        raise MalangError(e.args[1], filename, infonode)
+        raise MalangError(e.args[1], state.filename, state.infonode)
 
     module_env = Env(parent=main_env)
     with change_directory(path.dirname(path.abspath(filename_to_open.content))):
         eval_malang(code, module_env, filename_to_open.content)
     return Node('module', module_env)
 
-def exhibit(module, env, filename, infonode):
+def exhibit(module, state):
     """
     @ = Module | exit
 
@@ -84,7 +85,7 @@ def exhibit(module, env, filename, infonode):
     if module._type == 'atom' and module.content == 'exit':
         REPL_env = original_REPL_env
     else:
-        utils.assert_type(module, 'module', filename, infonode)
+        utils.assert_type(module, 'module', state)
         REPL_env = module.content
 
     if readline_imported:
@@ -95,8 +96,8 @@ def exhibit(module, env, filename, infonode):
 
 
 builtins_module = Node('module',
-                      Env(bindings={name: node for name, node
-                                    in builtin_funcs.builtins.items()}))
+                       Env(bindings={name: node for name, node
+                                     in builtin_funcs.builtins.items()}))
 builtins_module.content.bind('Require', Node('builtin', require))
 builtins_module.content.bind('Exhibit', Node('builtin', exhibit))
 

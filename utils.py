@@ -167,7 +167,7 @@ def generate_items(malang_list, filename):
     A generator that yields all the elements of a malang list
     """
     while not is_nil(malang_list):
-        assert_type(malang_list, 'tuple', filename, infonode=malang_list, tuplelength=2)
+        assert_type(malang_list, 'tuple', State(filename=filename, infonode=malang_list), tuplelength=2)
         head, malang_list = malang_list.content
         yield head
 
@@ -189,29 +189,27 @@ def transform_list_to_tuple(elems, infonode):
         return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
                     infonode=infonode)
 
-def assert_type(node, types, filename, infonode, tuplelength=None):
+def assert_type(node, types, state, tuplelength=None):
     if isinstance(types, str):
         T = types
         if not node._type == T:
-            raise MalangError("Incorrect type: got {!r}, expected {!r}.".format(node._type, T),
-                              filename, infonode)
+            raise MalangError("Incorrect type: got {!r}, expected {!r}.".format(node._type, T), state)
         elif node._type == 'tuple' and tuplelength is not None and len(node.content) != tuplelength:
             text = "Tuple has invalid length: got tuple of length {}, expected tuple of length {}".format(
                 len(node.content), tuplelength)
-            raise MalangError(text, filename, infonode)
+            raise MalangError(text, state)
 
     elif node._type not in types:
         raise MalangError("Incorrect type: got {!r}, expected one of {!r}.".format(
-            node._type, types),
-                          filename, infonode)
+            node._type, types), state)
 
 class MalangError(Exception):
-    def __init__(self, text, filename, infonode=None):
+    def __init__(self, text, state):
 
         append = ""
-        if get_lineno(infonode):
-            append = " at line #{}".format(get_lineno(infonode))
-        append += " in file {!r}".format(filename)
+        if get_lineno(state.infonode):
+            append = " at line #{}".format(get_lineno(state.infonode))
+        append += " in file {!r}".format(state.filename)
 
         value = Node('tuple', (Node('atom', 'error'), Node('str', text + append)))
 
@@ -258,17 +256,16 @@ class Env(object):
         if name != "_":
             self.bindings[name] = val
 
-    def get(self, name, filename, infonode=None):
+    def get(self, name, state):
         if name in self.bindings:
             return self.bindings[name]
         elif self.parent is not None:
-            return self.parent.get(name, filename, infonode=infonode)
-        raise UnboundIdentifier("Identifier {!r} not bound to a value".format(name),
-                                filename, infonode=infonode)
+            return self.parent.get(name, state)
+        raise UnboundIdentifier("Identifier {!r} not bound to a value".format(name), state)
 
     def is_bound(self, name):
         try:
-            self.get(name, filename=None)
+            self.get(name, State())
             return True
         except UnboundIdentifier:
             return False
@@ -326,3 +323,16 @@ class Completer:
             return self.matches[state]
         except IndexError:
             return None
+
+class State:
+    def __init__(self, env=None, filename=None, infonode=None):
+        self.env      = env
+        self.filename = filename
+        self.infonode = infonode
+
+    def newenv(self, env):
+        return State(env, self.filename, self.infonode)
+    def newfilename(self, filename):
+        return State(self.env, filename, self.infonode)
+    def newinfonode(self, infonode):
+        return State(self.env, self.filename, infonode)

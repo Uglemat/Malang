@@ -50,13 +50,13 @@ def builtin(name):
 
 
 @builtin("FuncsGetDocstring")
-def getdocstring(func, env, filename, infonode):
+def getdocstring(func, state):
     """
     @ = Function
 
     Return the docstring for `Function`, or `sorry` if there is no docstring for `Function`.
     """
-    assert_type(func, ('builtin', 'function'), filename, infonode)
+    assert_type(func, ('builtin', 'function'), state)
 
     docstring = func.content.__doc__ if func._type == 'builtin' else func.content['docstring'] 
 
@@ -66,7 +66,7 @@ def getdocstring(func, env, filename, infonode):
         return Node('str', docstring)
 
 @builtin("FuncsSetDocstring")
-def setdocstring(tup, env, filename, infonode):
+def setdocstring(tup, state):
     """
     @ = Docstring Function
 
@@ -74,12 +74,12 @@ def setdocstring(tup, env, filename, infonode):
     does not mutate `Function`. `Function` must be a malang function, it cannot
     be a builtin function.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
 
     new_docstring, func = tup.content
 
-    assert_type(new_docstring, 'str', filename, infonode)
-    assert_type(func, 'function', filename, infonode)
+    assert_type(new_docstring, 'str', state)
+    assert_type(func, 'function', state)
 
 
     function_content = func.content.copy()
@@ -88,7 +88,7 @@ def setdocstring(tup, env, filename, infonode):
 
 
 @builtin("Fmt")
-def fmt(s, env, filename, infonode):
+def fmt(s, state):
     """
     @ = String
 
@@ -109,9 +109,9 @@ def fmt(s, env, filename, infonode):
 
     You can not nest these things.
     """
-    assert_type(s, 'str', filename, infonode)
+    assert_type(s, 'str', state)
     def subfun(match):
-        string = tostr(env.get(match.group('id').strip(), filename, infonode)).content
+        string = tostr(state.env.get(match.group('id').strip(), state)).content
 
         if match.group('configs'):
             just = {'<': str.ljust, '>': str.rjust}[match.group('direction')]
@@ -123,7 +123,7 @@ def fmt(s, env, filename, infonode):
     return Node('str', re.sub(pattern, subfun, s.content))
 
 @builtin("Print")
-def _print(s, env, filename, infonode):
+def _print(s, state):
     """
     @ = Val
 
@@ -131,46 +131,46 @@ def _print(s, env, filename, infonode):
     """
     
     print(s.content if s._type == 'str' else
-          tostr(s, env).content, end="")
+          tostr(s, state).content, end="")
     return s
 
 @builtin("Writefile")
-def writefile(arg, env, filename, infonode):
+def writefile(arg, state):
     """
     @ = Str Filename
 
     Overwrite the contents of `Filename` to be `Str`.
     """
-    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(arg, 'tuple', state, tuplelength=2)
     _str, fname = arg.content
-    assert_type(_str, 'str',  filename, infonode)
-    assert_type(fname, 'str', filename, infonode)
+    assert_type(_str, 'str',  state)
+    assert_type(fname, 'str', state)
 
     try:
         with open(fname.content, mode="w") as f:
             f.write(_str.content)
     except IOError as e:
-        raise MalangError(e.args[1], filename, infonode)
+        raise MalangError(e.args[1], state)
 
     return Node('atom', 'ok')
 
 
 @builtin("Readfile")
-def readfile(fname, env, filename, infonode):
+def readfile(fname, state):
     """
     @ = Filename
 
     Read the text in `Filename` and return the resulting string.
     """
-    assert_type(fname, 'str', filename, infonode)
+    assert_type(fname, 'str', state)
     try:
         with open(fname.content) as f:
             return Node('str', f.read())
     except IOError as e:
-        raise MalangError(e.args[1], filename, infonode)
+        raise MalangError(e.args[1], state)
 
 @builtin("Help")
-def _help(fun, env, filename, infonode):
+def _help(fun, state):
     """
     @ = Func
 
@@ -179,7 +179,7 @@ def _help(fun, env, filename, infonode):
     print all the information about all the functions
     inside that module.
     """
-    assert_type(fun, ('function', 'builtin', 'module'), filename, infonode)
+    assert_type(fun, ('function', 'builtin', 'module'), state)
 
     if fun._type == 'module':
         mod_env = fun.content
@@ -193,7 +193,7 @@ def _help(fun, env, filename, infonode):
     return Node('atom', 'ok')
 
 @builtin("TypeOf")
-def type_of(thing, env, filename, infonode):
+def type_of(thing, state):
     """
     @ = Thing
 
@@ -202,41 +202,41 @@ def type_of(thing, env, filename, infonode):
     return Node('str', thing._type)
 
 @builtin("Input")
-def _input(prompt, env, filename, infonode):
+def _input(prompt, state):
     """
     @ = Prompt
 
     Get input from the user, with the prompt `Prompt`.
     """
-    assert_type(prompt, 'str', filename, infonode)
+    assert_type(prompt, 'str', state)
     return Node('str', input(prompt.content))
 
 @builtin("Sleep")
-def sleep(amount, env, filename, infonode):
+def sleep(amount, state):
     """
     @ = Ms
 
     Pause execution for `Ms` milliseconds.
     """
-    assert_type(amount, 'number', filename, infonode)
+    assert_type(amount, 'number', state)
     time.sleep(amount.content/1000.0)
     return Node('atom', 'ok')
 
 @builtin("RandRange")
-def randrange(tup, env, filename, infonode):
+def randrange(tup, state):
     """
     @ = Start Stop
 
     Returns a random integer between `Start` (inclusive) and `Stop` (exclusive).
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     num1, num2 = tup.content
-    assert_type(num1, 'number', filename, infonode)
-    assert_type(num2, 'number', filename, infonode)
+    assert_type(num1, 'number', state)
+    assert_type(num2, 'number', state)
     return Node('number', random.randrange(num1.content,num2.content))
 
 @builtin("Env")
-def list_env(arg, env, filename, infonode):
+def list_env(arg, state):
     """
     @ = Arg
 
@@ -248,15 +248,15 @@ def list_env(arg, env, filename, infonode):
     if arg is not None:
         if arg._type == 'module':
             print("\tIdentifier bindings in module environment:")
-            return list_env(None, arg.content, filename, infonode)
+            return list_env(None, state.newenv(arg.content))
         else:
             print("\tIdentifier bindings in current environment:")
 
-    if not len(env.bindings.keys()):
+    if not len(state.env.bindings.keys()):
         print("No bindings in module", end="")
     else:
-        for num, (identifier, value) in enumerate(env.bindings.items()):
-            valstr = tostr(value, env, repr_str=True).content
+        for num, (identifier, value) in enumerate(state.env.bindings.items()):
+            valstr = tostr(value, state, repr_str=True).content
             if len(valstr) > 15:
                 valstr = valstr[:15] + "..."
             print("{:<40}".format(
@@ -264,40 +264,39 @@ def list_env(arg, env, filename, infonode):
             ), end="\n" if num % 2 == 1 else "")
     print()
 
-    if not env.parent is None:
+    if not state.env.parent is None:
         print("\tShowing bindings for parent environment below:")
-        return list_env(None, env.parent, filename, infonode)
+        return list_env(None, state.newenv(env.parent))
     return Node('atom', 'ok')
 
 @builtin("ClearEnv")
-def clear_env(_arg, env, filename, infonode):
+def clear_env(_arg, state):
     """
     @ = <whatever>
 
     Removes the identifier bindings in the current environment.
     This doesn't remove identifier bindings from 'parent' environments.
     """
-    env.clear()
+    state.env.clear()
     return Node('atom', 'ok')
 
 
 @builtin("ToList")
-def tolist(tup, env, filename, infonode):
+def tolist(tup, state):
     """
     @ = Tuple
 
     Convert `Tuple` to a malang list.
     """
-    assert_type(tup, 'tuple', filename, infonode)
+    assert_type(tup, 'tuple', state)
     if tup.content == ():
         return Node('atom', 'nil')
     else:
         return Node('tuple', (tup.content[0],
-                              tolist(Node('tuple', tup.content[1:]), env,
-                                     filename, infonode)))
+                              tolist(Node('tuple', tup.content[1:]), state)))
 
 @builtin("ToStr")
-def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
+def tostr(val, state=None, depth=0, repr_str=False):
     """
     @ = Val
 
@@ -308,20 +307,19 @@ def tostr(val, env=None, filename="", infonode=None, depth=0, repr_str=False):
     if T == 'tuple' and depth > 50:
         content = "{...}"
     elif T == 'tuple':
-        content = "{" + ", ".join(tostr(elem, env, filename, infonode,
-                                        depth=depth+1, repr_str=True).content
+        content = "{" + ", ".join(tostr(elem, state, depth+1, repr_str=True).content
                                   for elem in val.content) + "}"
     elif T in ('module', 'function', 'builtin'):
         content = '[{}]'.format(T)
     elif repr_str and T == 'str':
-        content = stringrepr(val, env, filename, infonode).content
+        content = stringrepr(val, state).content
     else:
         content = str(val.content)
 
     return Node('str', content)
 
 @builtin("StringRepr")
-def stringrepr(string, env, filename, infonode):
+def stringrepr(string, state):
     """
     @ = String
 
@@ -329,33 +327,33 @@ def stringrepr(string, env, filename, infonode):
     and double-quotes with \\\" in `String`, wraps that in double-quotes
     and returns the result.
     """
-    assert_type(string, 'str', filename, infonode)
+    assert_type(string, 'str', state)
     return Node('str', '"{}"'.format(
         string.content.replace('\\', r'\\').replace('"', r'\"').replace('\t', r'\t').replace('\n', r'\n')))
 
 @builtin("TupleNth")
-def tuplenth(arg, env, filename, infonode):
+def tuplenth(arg, state):
     """
     @ = N Tuple
 
     Returns the `N`th element of `Tuple`. (Starting from 1)
     """
-    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(arg, 'tuple', state, tuplelength=2)
     N, actual_tuple = arg.content
-    assert_type(N, 'number', filename, infonode)
-    assert_type(actual_tuple, 'tuple', filename, infonode)
+    assert_type(N, 'number', state)
+    assert_type(actual_tuple, 'tuple', state)
     
     try:
         idx = N.content-1
         if idx < 0:
-            raise MalangError("Indices start at 1", filename, infonode)
+            raise MalangError("Indices start at 1", state)
         return actual_tuple.content[idx]
     except IndexError:
-        raise MalangError("Tuple index out of range", filename, infonode)
+        raise MalangError("Tuple index out of range", state)
 
 
 @builtin("TupleSortwith")
-def tuplesortwith(arg, env, filename, infonode):
+def tuplesortwith(arg, state):
     """
     @ = Func Tuple
 
@@ -367,83 +365,82 @@ def tuplesortwith(arg, env, filename, infonode):
     'higher' values goes to the end of the new tuple, 'lower' values go to
     the beginning.
     """
-    assert_type(arg, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(arg, 'tuple', state, tuplelength=2)
     func, tup = arg.content
-    assert_type(func, ('function', 'builtin'), filename, infonode)
-    assert_type(tup, 'tuple', filename, infonode)
+    assert_type(func, ('function', 'builtin'), state)
+    assert_type(tup, 'tuple', state)
 
     def _cmp(val_1, val_2):
-        num = call_malang_func(func, Node('tuple', (val_1, val_2)),
-                               env, filename, infonode)
-        assert_type(num, 'number', filename, infonode)
+        num = call_malang_func(func, Node('tuple', (val_1, val_2)), state)
+        assert_type(num, 'number', state)
         return num.content
 
     return Node('tuple', tuple(sorted(tup.content, key=functools.cmp_to_key(_cmp))))
 
 @builtin("TupleLength")
-def tuplelength(tup, env, filename, infonode):
+def tuplelength(tup, state):
     """
     @ = Tuple
     
     Return the length of `Tuple`
     """
-    assert_type(tup, 'tuple', filename, infonode)
+    assert_type(tup, 'tuple', state)
     return Node('number', len(tup.content))
 
 @builtin("StringLength")
-def stringlength(st, env, filename, infonode):
+def stringlength(st, state):
     """
     @ = String
     
     Return the length of `String`
     """
-    assert_type(st, 'str', filename, infonode)
+    assert_type(st, 'str', state)
     return Node('number', len(st.content))
 
 @builtin("StringNth")
-def stringnth(tup, env, filename, infonode):
+def stringnth(tup, state):
     """
     @ = N String
     
     Return the the `N`th character of `String`.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     N, string = tup.content
-    assert_type(N, 'number', filename, infonode)
-    assert_type(string, 'str', filename, infonode)
+    assert_type(N, 'number', state)
+    assert_type(string, 'str', state)
 
 
     try:
         idx = N.content-1
         if idx < 0:
-            raise MalangError("Indices start at 1", filename, infonode)
+            raise MalangError("Indices start at 1", state)
         return Node('str', string.content[idx])
     except IndexError:
-        raise MalangError("String index out of range", filename, infonode)
+        raise MalangError("String index out of range", state)
 
 @builtin("StringUpper")
-def stringupper(st, env, filename, infonode):
+def stringupper(st, state):
     """
     @ = String
     
     Return a version of `String` with uppercase characters.
     """
-    assert_type(st, 'str', filename, infonode)
+    assert_type(st, 'str', state)
     return Node('str', st.content.upper())
 
 @builtin("StringLower")
-def stringlower(st, env, filename, infonode):
+def stringlower(st, state):
     """
     @ = String
     
     Return a version of `String` with lowercase characters.
     """
-    assert_type(st, 'str', filename, infonode)
+    assert_type(st, 'str', state)
     return Node('str', st.content.lower())
 
 
 @builtin("StringFind")
-def stringFind(tup, env, filename, infonode):
+def stringFind(tup, state):
     """
     @ = String1 String2
     
@@ -452,10 +449,10 @@ def stringFind(tup, env, filename, infonode):
 
     If no occurrence is found, it returns `sorry`.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     s1, s2 = tup.content
-    assert_type(s1, 'str', filename, infonode)
-    assert_type(s2, 'str', filename, infonode)
+    assert_type(s1, 'str', state)
+    assert_type(s2, 'str', state)
 
     result = s2.content.find(s1.content)
     if result == -1:
@@ -465,92 +462,92 @@ def stringFind(tup, env, filename, infonode):
 
 
 @builtin("StringSlice")
-def stringslice(tup, env, filename, infonode):
+def stringslice(tup, state):
     """
     @ = Start Stop String
     
     Returns a substring of `String` starting at index `Start` (inclusive),
     ending at index `Stop` (exclusive).
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=3)
+    assert_type(tup, 'tuple', state, tuplelength=3)
     start, stop, string = tup.content
-    assert_type(start,  'number', filename, infonode)
-    assert_type(stop,   'number', filename, infonode)
-    assert_type(string, 'str', filename, infonode)
+    assert_type(start,  'number', state)
+    assert_type(stop,   'number', state)
+    assert_type(string, 'str', state)
 
     if start.content < 1 or stop.content < 1:
-        raise MalangError("Indices start at 1", filename, infonode)
+        raise MalangError("Indices start at 1", state)
 
     return Node('str', string.content[start.content-1:stop.content-1])
 
 @builtin("TupleSlice")
-def tupleslice(tup, env, filename, infonode):
+def tupleslice(tup, state):
     """
     @ = Start Stop Tuple
     
     Returns a subtuple of `Tuple` starting at index `Start` (inclusive),
     ending at index `Stop` (exclusive).
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=3)
+    assert_type(tup, 'tuple', state, tuplelength=3)
     start, stop, actual_tuple = tup.content
-    assert_type(start,  'number', filename, infonode)
-    assert_type(stop,   'number', filename, infonode)
-    assert_type(actual_tuple, 'tuple',  filename, infonode)
+    assert_type(start,  'number', state)
+    assert_type(stop,   'number', state)
+    assert_type(actual_tuple, 'tuple',  state)
 
     if start.content < 1 or stop.content < 1:
-        raise MalangError("Indices start at 1", filename, infonode)
+        raise MalangError("Indices start at 1", state)
 
     return Node('tuple', actual_tuple.content[start.content-1:stop.content-1])
 
 @builtin("StringRstrip")
-def stringrstrip(tup, env, filename, infonode):
+def stringrstrip(tup, state):
     """
     @ = Chars String
     
     Return `String` with all trailing characters that appear in the string `Chars` removed.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     chars, string = tup.content
-    assert_type(chars,  'str', filename, infonode)
-    assert_type(string, 'str', filename, infonode)
+    assert_type(chars,  'str', state)
+    assert_type(string, 'str', state)
 
     return Node('str', string.content.rstrip(chars.content))
 
 @builtin("StringLstrip")
-def stringlstrip(tup, env, filename, infonode):
+def stringlstrip(tup, state):
     """
     @ = Chars String
     
     Return `String` with all leading characters that appear in the string `Chars` removed.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     chars, string = tup.content
-    assert_type(chars,  'str', filename, infonode)
-    assert_type(string, 'str', filename, infonode)
+    assert_type(chars,  'str', state)
+    assert_type(string, 'str', state)
 
     return Node('str', string.content.lstrip(chars.content))
 
 @builtin("StringSplit")
-def stringsplit(tup, env, filename, infonode):
+def stringsplit(tup, state):
     """
     @ = Sep String
     
     Splits `String` into a list of strings, using the non-empty string `Sep` as the delimiter.
     """
-    assert_type(tup, 'tuple', filename, infonode, tuplelength=2)
+    assert_type(tup, 'tuple', state, tuplelength=2)
     sep, string = tup.content
-    assert_type(sep,    'str', filename, infonode)
-    assert_type(string, 'str', filename, infonode)
+    assert_type(sep,    'str', state)
+    assert_type(string, 'str', state)
 
     if sep.content == "":
-        raise MalangError("The separator cannot be the empty string", filename, infonode)
+        raise MalangError("The separator cannot be the empty string", state)
 
     return python_list_to_malang_list(
         list(map(lambda s: Node('str', s), string.content.split(sep.content)))
     )
 
 @builtin("Exit")
-def exit_malang(_arg, env, filename, infonode):
+def exit_malang(_arg, state):
     """
     @ = <whatever>
 
@@ -559,16 +556,16 @@ def exit_malang(_arg, env, filename, infonode):
     exit()
 
 @builtin("Error")
-def error(arg, env, filename, infonode):
+def error(arg, state):
     """
     @ = Reason
 
     Stop executing because of `Reason`. `Reason` can be any type.
     """
-    raise MalangError(tostr(arg).content, filename, infonode)
+    raise MalangError(tostr(arg).content, state)
 
 @builtin("StringToNumber")
-def string_to_number(string, env, filename, infonode):
+def string_to_number(string, state):
     """
     @ = String
 
@@ -577,8 +574,8 @@ def string_to_number(string, env, filename, infonode):
     where a base of 10 will be assumed. You can write numbers in your malang programs
     this way too.
     """
-    assert_type(string, 'str', filename, infonode)
+    assert_type(string, 'str', state)
     try:
         return Node('number', to_number(string.content))
     except ValueError:
-        raise MalangError("Can't convert string to number", filename, infonode)
+        raise MalangError("Can't convert string to number", state)

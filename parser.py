@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from ply import lex, yacc
 import re
-from utils import Node, MalangError, to_number
+from utils import Node, MalangError, to_number, State
 
 def unescape_str(s):
     if r'\\' in s:
@@ -142,7 +142,7 @@ def t_NUMBER(t):
         integer = to_number(t.value)
     except ValueError:
         raise MalangError("Invalid number {!r}".format(t.value),
-                          file_name, Node("dummy", None, lineno=t.lineno))
+                          State(filename=file_name, infonode=Node("dummy", None, lineno=t.lineno)))
 
     t.value = Node('number', integer, lineno=t.lineno)
     return t
@@ -419,9 +419,9 @@ def p_expr_list_single(p):
 def p_error(p):
     lexer.begin("INITIAL")
     if p is None:
-        raise MalangError("Syntax error (probably somewhere near the end)", file_name)
+        raise MalangError("Syntax error (probably somewhere near the end)", State(filename=file_name))
     else:
-        raise MalangError("Syntax error", file_name, infonode=Node("dummy", None, lineno=p.lineno))
+        raise MalangError("Syntax error", State(filename=file_name, infonode=Node("dummy", None, lineno=p.lineno)))
 
 lexer  = lex.lex()
 parser = yacc.yacc()

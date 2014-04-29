@@ -22,7 +22,7 @@ import utils
 import operator
 
 
-def eval_list_comprehension(env, expr, emitters, filename, acc):
+def eval_list_comprehension(state, expr, emitters, acc):
     """
     This evaluates the list comprehension, and mutates `acc`, which should be
     a python list. `expr` is the expression on the left hand side of the pipe
@@ -39,36 +39,36 @@ def eval_list_comprehension(env, expr, emitters, filename, acc):
     last_emitter = len(emitters) <= 1
 
     if emitter._type == 'filter':
-        result = trampoline(emitter.content, env, filename)
+        result = trampoline(emitter.content, state)
         if utils.truthy(result):
             if last_emitter:
-                acc.append(trampoline(expr, env, filename))
+                acc.append(trampoline(expr, state))
             else:
-                eval_list_comprehension(env, expr, emitters[1:], filename, acc)
+                eval_list_comprehension(state, expr, emitters[1:], acc)
 
     elif emitter._type == 'emitter':
         pattern     = emitter.content['pattern']
-        malang_list = trampoline(emitter.content['expr'], env, filename)
+        malang_list = trampoline(emitter.content['expr'], state)
 
 
         if last_emitter:
-            for item in utils.generate_items(malang_list, filename):
-                temp_env = env.shallow_copy()
-                patternmatch(pattern, item, temp_env, filename)
-                acc.append(trampoline(expr, temp_env, filename))
+            for item in utils.generate_items(malang_list, state.filename):
+                temp_state = state.newenv(state.env.shallow_copy())
+                patternmatch(pattern, item, temp_state)
+                acc.append(trampoline(expr, temp_state))
         else:
-            for item in utils.generate_items(malang_list, filename):
-                temp_env = env.shallow_copy()
-                patternmatch(pattern, item, temp_env, filename)
-                eval_list_comprehension(temp_env, expr, emitters[1:], filename, acc=acc)
+            for item in utils.generate_items(malang_list, state.filename):
+                temp_state = state.newenv(state.env.shallow_copy())
+                patternmatch(pattern, item, temp_state)
+                eval_list_comprehension(temp_state, expr, emitters[1:], acc=acc)
 
 
-def patternmatch(pattern, expr, env, filename, readonly=False):
+def patternmatch(pattern, expr, state, readonly=False):
     """ `expr` should've been evaluated, `pattern` should not yet have been evaluated.
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
-    make_exception = lambda s: utils.InvalidMatch("Invalid match" + s, filename, infonode=pattern)
+    make_exception = lambda s: utils.InvalidMatch("Invalid match" + s, state.newinfonode(pattern))
 
 
     if pattern._type == 'uminus' and pattern.content._type == 'number':
@@ -80,17 +80,17 @@ def patternmatch(pattern, expr, env, filename, readonly=False):
 
     if pattern._type == 'list':
         return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
-                            expr, env, filename, readonly)
+                            expr, state, readonly)
 
-    elif env.is_unbound_identifier(pattern):
+    elif state.env.is_unbound_identifier(pattern):
         if readonly:
-            raise MalangError("Cannot bind readonly identifier in pattern", filename, infonode=pattern)
+            raise MalangError("Cannot bind readonly identifier in pattern", state.newinfonode(pattern))
         else:
-            env.bind(pattern.content, expr)
+            state.env.bind(pattern.content, expr)
             return
 
-    elif pattern._type == 'id' and env.is_bound(pattern.content):
-        val = env.get(pattern.content, filename, infonode=pattern)
+    elif pattern._type == 'id' and state.env.is_bound(pattern.content):
+        val = state.env.get(pattern.content, state.newinfonode(pattern))
         if not utils.equal(val, expr):
             raise make_exception(" (identifier {!r} is already bound)".format(pattern.content))
         return
@@ -98,13 +98,13 @@ def patternmatch(pattern, expr, env, filename, readonly=False):
     elif pattern._type == 'module_access':
         module, access = pattern.content
         if not (module._type == 'id' and
-                env.is_bound(module.content) and
-                env.get(module.content, filename, infonode=pattern)._type == 'module'):
-            raise MalangError("Invalid module in pattern", filename, infonode=pattern)
+                state.env.is_bound(module.content) and
+                state.env.get(module.content, state.newinfonode(pattern))._type == 'module'):
+            raise MalangError("Invalid module in pattern", state.newinfonode(pattern))
         else:
             return patternmatch(access, expr,
-                                env.get(module.content, filename, infonode=pattern).content,
-                                filename, readonly=True)
+                                state.newenv(state.env.get(module.content, state.newinfonode(pattern)).content),
+                                readonly=True)
 
 
     elif pattern._type != expr._type:
@@ -119,7 +119,7 @@ def patternmatch(pattern, expr, env, filename, readonly=False):
                 (" (tried to match a tuple of length {} agains a "
                  "pattern-tuple of length {})").format(expr_len, pattern_len))
         for pat, e in zip(pattern.content, expr.content):
-            patternmatch(pat, e, env, filename, readonly)
+            patternmatch(pat, e, state, readonly)
         return
 
     elif pattern._type in ('number', 'str', 'atom'):
@@ -131,7 +131,7 @@ def patternmatch(pattern, expr, env, filename, readonly=False):
 
 
 
-    raise MalangError("Don't know how to pattern-match that. ", filename, infonode=pattern)
+    raise MalangError("Don't know how to pattern-match that. ", state.newinfonode(pattern))
 
 arithmetic_funcs = {
     'plus':   operator.add,
@@ -156,23 +156,23 @@ def thunk(func, *args, **kwargs):
         return func(*args, **kwargs)
     return _f
 
-def trampoline(expr, env, filename):
+def trampoline(expr, state):
     """
     This trampoline function is necessary for the purpose of implementing tail call elimination.
     When `maval' is about to evaluate an expression in tail position, it returns a thunk
     instead of recursing deeper into itself, thus making sure that the python call stack
     doesn't grow huge. So it's like `maval' is 'jumping' on this trampoline. I guess.
     """
-    result = maval(expr, env, filename)
+    result = maval(expr, state)
     while callable(result):
         result = result()
     return result
 
-def maval(expr, env, filename):
+def maval(expr, state):
     """
     This is the evaluation function. I didn't want to shadow the python builtin function `eval', so I called it
     `maval' instead. `expr' is the abstract syntax tree that has been created with Python Lex-Yacc.
-    `env' is an Env instance, storing the identifier bindings for malang. It will be mutated inside `maval'.
+    `state.env' is an Env instance, storing the identifier bindings for malang. It will be mutated inside `maval'.
     `maval' can return:
     (1) A 'Node' instance, signifying a value, it could for example return Node('number', 3), which could maybe
     be the result of evaluating the expression Node('plus', (Node('number' 2), Node('number', 1))).
@@ -186,20 +186,20 @@ def maval(expr, env, filename):
         return expr
 
     elif T == 'uminus':
-        op = trampoline(expr.content, env, filename)
+        op = trampoline(expr.content, state)
         if not op._type == 'number':
-            raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
+            raise MalangError("Invalid arithmetic expression", state.newinfonode(expr))
         return Node('number', -op.content, infonode=expr)
 
     elif T in ('plus', 'minus', 'divide', 'times', 'modulo', 'pow'):
 
-        op1, op2 = (trampoline(op, env, filename) for op in expr.content)
+        op1, op2 = (trampoline(op, state) for op in expr.content)
         if op1._type == op2._type:
             _type = op1._type
 
             if _type == 'number':
                 if T in ('modulo', 'divide') and op2.content == 0:
-                    raise MalangError("Division or modulo by zero", filename, infonode=expr)
+                    raise MalangError("Division or modulo by zero", state.newinfonode(expr))
                 else:
                     return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
             elif _type == 'str' and T == 'plus':
@@ -213,48 +213,48 @@ def maval(expr, env, filename):
             return Node('tuple', op1.content * op2.content)
 
         else:
-            raise MalangError("Invalid arithmetic expression", filename, infonode=expr)
+            raise MalangError("Invalid arithmetic expression", state.newinfonode(expr))
 
 
     elif T in ('eq', 'ne', 'gt', 'lt', 'ge', 'le'):
-        op1, op2 = (trampoline(op, env, filename) for op in expr.content)
+        op1, op2 = (trampoline(op, state) for op in expr.content)
         return Node('atom', {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)], infonode=expr)
 
     elif T == 'tuple':
-        return Node('tuple', tuple(trampoline(e, env, filename) for e in expr.content), infonode=expr)
+        return Node('tuple', tuple(trampoline(e, state) for e in expr.content), infonode=expr)
 
     elif T == 'list':
-        elems = tuple(trampoline(e, env, filename) for e in expr.content)
+        elems = tuple(trampoline(e, state) for e in expr.content)
         return utils.transform_list_to_tuple(elems, expr)
 
     elif T == 'list_comprehension':
         result = []
         leftside_expr, emitters = expr.content
 
-        eval_list_comprehension(env, leftside_expr, emitters, filename, acc=result)
+        eval_list_comprehension(state, leftside_expr, emitters, acc=result)
         return utils.python_list_to_malang_list(result)
 
 
     elif T == 'bind':
         pattern, e = expr.content
-        val = trampoline(e, env, filename)
-        patternmatch(pattern, val, env, filename)
+        val = trampoline(e, state)
+        patternmatch(pattern, val, state)
         return val
 
     elif T == 'id':
-        return env.get(expr.content, filename, infonode=expr)
+        return state.env.get(expr.content, state.newinfonode(expr))
 
     elif T == 'module_access':
-        module = trampoline(expr.content[0], env, filename)
+        module = trampoline(expr.content[0], state)
         if module._type != 'module':
-            raise MalangError("You tried to use module access on something that wasn't a module", filename, infonode=expr)
-        val = trampoline(expr.content[1], module.content, filename)
+            raise MalangError("You tried to use module access on something that wasn't a module", state.newinfonode(expr))
+        val = trampoline(expr.content[1], state.newenv(module.content))
         return val
 
     elif T == 'composition':
-        f1, f2 = (trampoline(e, env, filename) for e in expr.content)
-        utils.assert_type(f1, ('builtin', 'function'), filename, expr)
-        utils.assert_type(f2, ('builtin', 'function'), filename, expr)
+        f1, f2 = (trampoline(e, state) for e in expr.content)
+        utils.assert_type(f1, ('builtin', 'function'), state.newinfonode(expr))
+        utils.assert_type(f2, ('builtin', 'function'), state.newinfonode(expr))
 
         code = Node('program', [
             Node('program', [
@@ -267,21 +267,24 @@ def maval(expr, env, filename):
 
         return Node('function', {
             'code': code,
-            'filename': filename,
+            'filename': state.filename,
             'docstring': None,
-            'parent_env': env
+            'parent_env': state.env
         })
 
     elif T == 'fncall':
-        func, arg = (trampoline(e, env, filename) for e in expr.content)
-        utils.assert_type(func, ('builtin', 'function'), filename, expr)
+        func, arg = (trampoline(e, state) for e in expr.content)
+        utils.assert_type(func, ('builtin', 'function'), state.newinfonode(expr))
         if func._type == 'builtin':
-            return func.content(arg, env, filename, expr)
+            return func.content(arg, state.newinfonode(expr))
         elif func._type == 'function':
             return thunk(maval,
                          func.content['code'],
-                         Env(parent=func.content['parent_env'], bindings={'@': arg}),
-                         func.content['filename'])
+                         state.newenv(
+                             Env(parent=func.content['parent_env'], bindings={'@': arg})
+                         ).newfilename(
+                             func.content['filename']
+                         ))
 
     elif T == 'func_def':
         maybe_docstring = expr.content[0].content[0].content[0]
@@ -292,58 +295,58 @@ def maval(expr, env, filename):
         return Node('function', {'code': expr.content[0],
                                  'filename': expr.content[1],
                                  'docstring': docstring,
-                                 'parent_env': env}, infonode=expr)
+                                 'parent_env': state.env}, infonode=expr)
 
     elif T == 'program':
         start = expr.content[:-1]
         last  = expr.content[-1]
         for e in start:
-            trampoline(e, env, filename)
-        return thunk(maval, last, env, filename)
+            trampoline(e, state)
+        return thunk(maval, last, state)
 
     elif T == 'case_of':
-        val = trampoline(expr.content['matched_expr'], env, filename)
+        val = trampoline(expr.content['matched_expr'], state)
         for arrow in expr.content['arrow_list']:
-            env_copy = env.shallow_copy()
+            env_copy_state = state.newenv(state.env.shallow_copy())
             try:
-                patternmatch(arrow['pattern'], val, env_copy, filename)
+                patternmatch(arrow['pattern'], val, env_copy_state)
             except utils.InvalidMatch:
                 continue
-            return thunk(maval, arrow['expr'], env_copy, filename)
-        raise MalangError("No pattern matched in case_of expression", filename, infonode=expr)
+            return thunk(maval, arrow['expr'], env_copy_state)
+        raise MalangError("No pattern matched in case_of expression", state.newinfonode(expr))
 
     elif T == 'if':
         test_expr, if_true, if_false = expr.content
-        if utils.truthy(trampoline(test_expr, env, filename)):
-            return thunk(maval, if_true,  env, filename)
+        if utils.truthy(trampoline(test_expr, state)):
+            return thunk(maval, if_true,  state)
         else:
-            return thunk(maval, if_false, env, filename)
+            return thunk(maval, if_false, state)
 
     elif T == 'catch':
         try:
-            result = trampoline(expr.content, env, filename)
+            result = trampoline(expr.content, state)
         except MalangError as e:
             return e.args[0]
 
         return Node('tuple', (Node('atom', 'no_error'), result))
 
     elif T == 'throw':
-        value = trampoline(expr.content, env, filename)
+        value = trampoline(expr.content, state)
         raise utils.Throw(value)
 
-    raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), filename, infonode=expr)
+    raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), state.newinfonode(expr))
 
 
 
-def call_malang_func(func, arg, env, filename, infonode):
+def call_malang_func(func, arg, state):
     """
     Call the already evaluated `func` with the already evaluated `value`.
     """
-    utils.assert_type(func, ('builtin', 'function'), filename, infonode)
+    utils.assert_type(func, ('builtin', 'function'), state)
     if func._type == 'builtin':
-        return func.content(arg, env, filename, expr)
+        return func.content(arg, state.newinfonode(expr))
     elif func._type == 'function':
         return trampoline(func.content['code'],
-                          Env(parent=func.content['parent_env'], bindings={'@': arg}),
-                          func.content['filename'])
+                          utils.State(env=Env(parent=func.content['parent_env'], bindings={'@': arg}),
+                                      filename=func.content['filename']))
 

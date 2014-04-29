@@ -67,13 +67,16 @@ ToList := [
   "
   @ = Stream
 
-  Converts `Stream` to a list. This implementation isn't tail recursive, so you
-  can easily hit the recursion limit for big streams.
+  Converts `Stream` to a list.
   ".
-  case Next @ of
-    empty -> nil.
-    {Val, NewStream} -> {Val, ToList NewStream}.
-  end.
+  Helper := [
+    {Stream, Acc} := @.
+    case Next Stream of
+      empty -> Acc.
+      {Val, NewStream} -> Helper {NewStream, {Val, Acc}}.
+    end.
+  ].
+  (Lists:Reverse ~ Helper) {@, #[]}.
 ].
 
 Take := Funcs:Curry 2 [
