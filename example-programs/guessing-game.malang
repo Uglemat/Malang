@@ -25,7 +25,7 @@ GuessingGame := [
                   GuessingGame {Lives, Answer}.
     {no_error, Num} ->
       if Num = Answer
-        then Io:PrintLn (Fmt "You won! The correct answer was indeed {Answer}.").
+        then Io:Fprint {"You won! The correct answer was indeed {1}.", Answer}.
         else IncorrectGuess {Lives, Answer, Num}.
       end.
   end.
@@ -35,26 +35,26 @@ IncorrectGuess := [
   {Lives, Answer, Guess} := @.
 
   if Lives = 0
-    then Io:PrintLn (Fmt "You lose! The correct answer was {Answer}... you loser.").
+    then Io:Fprint {"You lose! The correct answer was {1}... you loser.", Answer}.
     else
       FixFor1 := if Lives = 1 then "life". else "lives". end,
       if Answer > Guess
-        then Io:PrintLn (Fmt "You need to guess higher! You have {Lives} {FixFor1} left."),
+        then Io:Fprint {"You need to guess higher! You have {1} {2} left.", Lives, FixFor1},
              GuessingGame {Lives-1, Answer}.
-        else Io:PrintLn (Fmt "You need to guess lower! You have {Lives} {FixFor1} left."),
+        else Io:Fprint {"You need to guess lower! You have {1} {2} left.", Lives, FixFor1},
              GuessingGame {Lives-1, Answer}.
       end.
   end.
 ].
 
 YesOrNo := [
-  Reply := Io:Input (Fmt "{@} [yes/no]: ").
+  Reply := Io:Finput {"{1} [yes/no]: ", @}.
   
   case Reply of
     "yes" -> yeah.
     "no"  -> nope.
     "fuck you" -> Io:PrintLn "Fuck you too", nope.
-    _     -> Io:Print "I don't know what that means. say \"yes\" or \"no\", please.\n",
+    _     -> Io:PrintLn "I don't know what that means. say \"yes\" or \"no\", please.",
              YesOrNo @.
   end.
 ].

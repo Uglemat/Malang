@@ -58,8 +58,7 @@ ListToStr := [
       "str" -> Strings:Repr @.
       _     -> @.
     end.] @.
-  SepStr := Joinwith ", " Repr_Strings.
-  Fmt "#[{SepStr}]".
+  Strings:Fmt {"#[{1}]", Joinwith ", " Repr_Strings}.
 ].
 
 Reverse := [

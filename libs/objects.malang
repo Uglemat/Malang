@@ -46,9 +46,9 @@ Create := [
       Create (Dicts:Extend Attributes Newattrs).
     ]},
     {show, [
-      Io:Print "Object:\n".
+      Io:PrintLn "Object:".
       (Io:Print ~ Lists:Join)
-        #[Fmt "\t{K} -> {V}\n" | {K, V} <- Attributes],
+        #[Strings:Fmt {"\t{1} -> {2}\n", K, V} | {K, V} <- Attributes],
       ok.
     ]}
   ].

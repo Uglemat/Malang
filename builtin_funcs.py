@@ -88,39 +88,47 @@ def setdocstring(tup, state):
 
 
 @builtin("Fmt")
-def fmt(s, state):
+def fmt(tup, state):
     """
-    @ = String
+    @ = {String, Thing1, ..., ThingN}
 
-    Format `String`. It will search for identifiers between curly
-    braces in `String`, lookup the value in the environment of the caller
-    (it can do that because it's a builtin function) and replace it with a
-    string representation of the value.
+    Format `String` using the `Thing<N>`s. It will search for numbers
+    between curly braces in `String` and replace them with the thing in
+    that position.
 
-    So `S := "test", Fmt "{S} hay"` should return "test hay"
+    `Fmt {"{1} hay", "test"}` should return "test hay".
+    `Fmt {"{2}{1} {1} hay", 42, "?"}` should return "?42 42 hay".
 
     You can optionally put "|<fillchar><direction><width>" at the end of the
-    identifier in the curly braces, where `width` will set a minimum width,
+    index in the curly braces, where `width` will set a minimum width,
     `direction` must be either "<" or ">" to specify which way to justify
     the value when `width` is longer than the value, and `fillchar` specifies
     what character to pad with then `width` is longer than the value.
 
-    So `N := 32, Fmt "{N|0>5}$"` should return "00032$".
-
-    You can not nest these things.
+    So `Fmt {"{1|->5}$", 32}` should return "---32$".
     """
-    assert_type(s, 'str', state)
+    assert_type(tup, 'tuple', state)
+    if not len(tup.content) >= 2:
+        raise MalangError("Fmt needs a string and at least 1 thing", state)
+
+    string = tup.content[0]
+    assert_type(string, 'str', state)
+
+    things = Node('tuple', tup.content[1:])
+
     def subfun(match):
-        string = tostr(state.env.get(match.group('id').strip(), state)).content
+        idx = int(match.group('idx'))
+        thing = tuplenth(Node('tuple', (Node('number', idx), things)), state)
+        string = tostr(thing).content
 
         if match.group('configs'):
             just = {'<': str.ljust, '>': str.rjust}[match.group('direction')]
             string = just(string, int(match.group('width')), match.group('fillchar'))
         return string
 
-    pattern = (r"\{(?P<id>[^|{}]+)"
+    pattern = (r"\{(?P<idx>[0-9]+)"
                r"(?P<configs>\|(?P<fillchar>.)(?P<direction>[<>])(?P<width>[0-9]+))?\}")
-    return Node('str', re.sub(pattern, subfun, s.content))
+    return Node('str', re.sub(pattern, subfun, string.content))
 
 @builtin("Print")
 def _print(s, state):

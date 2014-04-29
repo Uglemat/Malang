@@ -33,7 +33,7 @@ Help    := Builtins:Help.
 Exit    := Builtins:Exit.
 Error   := Builtins:Error.
 Env     := Builtins:Env.
-Fmt     := Builtins:Fmt.
+
 
 Use := [
   "

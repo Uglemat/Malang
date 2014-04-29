@@ -18,5 +18,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Readfile  := Builtins:Readfile.
 Writefile := Funcs:Curry 2 Builtins:Writefile.
 Print     := Builtins:Print.
-PrintLn   := [Print (ToStr @ + "\n").].
+PrintLn   := [
+  "
+  @ = Val
+  
+  Print `Val` and a newline.
+  ".
+  Print (ToStr @ + "\n").
+].
 Input     := Builtins:Input.
+Fprint    := [
+  "
+  @ = Tuple
+  
+  Just a shorthand for `Io:PrintLn (Strings:Fmt Tuple)`.
+  ".
+  PrintLn (Strings:Fmt @).
+].
+Finput := [
+  "
+  @ = Tuple
+  
+  Just a shorthand for `Io:Input (Strings:Fmt Tuple)`.
+  ".
+  Input (Strings:Fmt @).
+].

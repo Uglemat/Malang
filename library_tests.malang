@@ -76,21 +76,7 @@ nope := #[1, #[2, #[3, 1]], 4, 5] = #[1, #[2, #[3]], 4, 5].
 nope := {0,2,3, 4} > {1,2,3}.
 yeah := {0,2, 3} < {1,2,3, 4}.
 
-Str := "{Str}".
-
-""     := Fmt "".
-"test" := Fmt "test".
-
-"{Str}"    := Fmt "{Str}".
-"---{Str}" := Fmt "{Str|->8}".
-"   {Str}" := Fmt "{Str| >8}".
-"{Str}---" := Fmt "{Str|-<8}".
-"{Str}   " := Fmt "{Str| <8}".
-"{Str}"    := Fmt "{Str| <2}".
-"{Str}"    := Fmt "{Str|!>2}".
-
-N := 32.
-"00032$" := Fmt "{N|0>5}$".
+Str := "yolo".
 
 "
         Bools Tests:
@@ -493,6 +479,18 @@ sorry := Strings:Find "hello" "".
 10 := Strings:ToNumber "10".
 255 := Strings:ToNumber "16#FF".
 {error, _} := catch Strings:ToNumber "abc".
+
+
+"yolo"      := Strings:Fmt {"{1}",       Str}.
+"----yolo"  := Strings:Fmt {"{1|->8}",   Str}.
+"    yolo"  := Strings:Fmt {"{1| >8}",   Str}.
+"yolo----"  := Strings:Fmt {"{1|-<8}",   Str}.
+"yolo    "  := Strings:Fmt {"{1| <8}",   Str}.
+"yolo"      := Strings:Fmt {"{1| <2}",   Str}.
+"yolo"      := Strings:Fmt {"{1|!>2}",   Str}.
+"yolo|yolo" := Strings:Fmt {"{1}{2}{1}", Str, "|"}.
+"---32$"    := Strings:Fmt {"{1|->5}$",  32}.
+
 
 "
         Funcs Tests:
