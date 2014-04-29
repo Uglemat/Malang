@@ -89,35 +89,25 @@ Map := Funcs:Curry 2 [
   #[Func E | E <- List].
 ].
 
-Foldl := Funcs:Curry 3 [
+Reduce := Funcs:Curry 3 [
   "
-  @ = Func Acc List
+  @ = Func Seed List
 
-  Fold from left to right of `List`, starting with `Acc` as the initial value.
+  Reduce `List` to a single value, by combining the elements with the function `Func`.
+  
 
   Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
-  and `Elem` is the current element of the list being folded.
+  and `Elem` is the current element of the list being reduced.
+  
+  `Acc` will be `Seed` and `Elem` will be the head of the list the first time `Func` is called,
+  then it will continue reducing towards the end of the list.
   ".
   case @ of
     {F, Acc, #[]}    -> Acc.
-    {F, Acc, {H, T}} -> Foldl F (F {Acc, H}) T.
+    {F, Acc, {H, T}} -> Reduce F (F {Acc, H}) T.
   end.
 ].
 
-Foldr := Funcs:Curry 3 [
-  "
-  @ = Func Acc List
-
-  Fold from right to left of `List`, starting with `Acc` as the initial value.
-
-  Func is called with the argument `{Acc, Elem}`, where `Acc` us the accumulated answer
-  and `Elem` is the current element of the list being folded.
-  ".
-  case @ of
-    {F, Acc, #[]}    -> Acc.
-    {F, Acc, {H, T}} -> F {Foldr F Acc T, H}.
-  end.
-].
 
 Length := [
   "
@@ -125,7 +115,7 @@ Length := [
 
   Returns the length of `List`.
   ".
-  Foldl [{Acc, _} := @, Acc+1.] 0 @.
+  Reduce [{Acc, _} := @, Acc+1.] 0 @.
 ].
 
 
@@ -488,7 +478,7 @@ Max := [
   ".
   case @ of
     #[]    -> Error "Max called with empty list".
-    {H, T} -> Foldl [
+    {H, T} -> Reduce [
         {Acc, Elem} := @.
         if Acc > Elem
           then Acc.
@@ -506,7 +496,7 @@ Min := [
   ".
   case @ of
     #[]    -> Error "Min called with empty list".
-    {H, T} -> Foldl [
+    {H, T} -> Reduce [
         {Acc, Elem} := @.
         if Acc < Elem
           then Acc.

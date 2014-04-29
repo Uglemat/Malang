@@ -156,11 +156,8 @@ Nums := #[1,2,3].
 #[] := Lists:Map Double nil.
 
 StrConcat := [{Acc, Elem} := @. Acc + Elem.].
-"123" := Lists:Foldl StrConcat "" #["1", "2", "3"].
-"321" := Lists:Foldr StrConcat "" #["1", "2", "3"].
-
-"" := Lists:Foldl StrConcat "" nil.
-"" := Lists:Foldr StrConcat "" nil.
+"123" := Lists:Reduce StrConcat "" #["1", "2", "3"].
+""    := Lists:Reduce StrConcat "" nil.
 
 0 := Lists:Length nil.
 1 := Lists:Length #[one].

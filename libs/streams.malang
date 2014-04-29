@@ -30,7 +30,7 @@ MakeStream := Funcs:Curry 2 [
   "
   @ = Seed Func
 
-  Create a new stream. The first item, lets call it `Item_1` in the stream
+  Create a new stream. The first item in the stream, lets call it `Item_1`,
   will be `Func Seed`. The next item will be `Func Item_1`. And so on, forever.
   
   If `Func` returns `empty` at any point then the stream will end.
