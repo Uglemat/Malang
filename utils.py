@@ -325,14 +325,17 @@ class Completer:
             return None
 
 class State:
-    def __init__(self, env=None, filename=None, infonode=None):
+    def __init__(self, env=None, filename=None, infonode=None, readonly=False):
         self.env      = env
         self.filename = filename
         self.infonode = infonode
+        self.readonly = readonly
 
     def newenv(self, env):
-        return State(env, self.filename, self.infonode)
+        return State(env, self.filename, self.infonode, self.readonly)
     def newfilename(self, filename):
-        return State(self.env, filename, self.infonode)
+        return State(self.env, filename, self.infonode, self.readonly)
     def newinfonode(self, infonode):
-        return State(self.env, self.filename, infonode)
+        return State(self.env, self.filename, infonode, self.readonly)
+    def newreadonly(self, readonly):
+        return State(self.env, self.filename, self.infonode, readonly)

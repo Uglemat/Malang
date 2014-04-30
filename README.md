@@ -134,8 +134,11 @@ hitting the recursion limit. Here's a tail recursive version:
 
 With that version, you *can* calculate `Factorial 20000`.
 
-The `case of` construct is just like the `:=` operator, except it tries to pattern match on several patterns,
-and stops once a pattern matches, and executes the corresponding compound expression. The syntax is
+The `case of` construct is like the `:=` operator, except it tries to pattern match on several patterns,
+and stops once a pattern matches, and executes the corresponding compound expression in a *new* environment
+that inherits from the outer environment. Note it's a new environment, so the bindings made from the pattern
+matching and in the compund expression are forgotten once the `case of` is done evaluating. This is different
+from how `if then else` works, which just evaluates everything in the same old environment. The syntax is
 
     case <expr> of
       <pattern1> -> <compund_expr1>

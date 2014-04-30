@@ -63,7 +63,7 @@ def eval_list_comprehension(state, expr, emitters, acc):
                 eval_list_comprehension(temp_state, expr, emitters[1:], acc=acc)
 
 
-def patternmatch(pattern, expr, state, readonly=False):
+def patternmatch(pattern, expr, state):
     """ `expr` should've been evaluated, `pattern` should not yet have been evaluated.
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
@@ -80,11 +80,12 @@ def patternmatch(pattern, expr, state, readonly=False):
 
     if pattern._type == 'list':
         return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
-                            expr, state, readonly)
+                            expr, state)
 
     elif state.env.is_unbound_identifier(pattern):
-        if readonly:
-            raise MalangError("Cannot bind readonly identifier in pattern", state.newinfonode(pattern))
+        if state.readonly:
+            raise MalangError("Cannot bind identifier {!r} in pattern in readonly mode".format(pattern.content),
+                              state.newinfonode(pattern))
         else:
             state.env.bind(pattern.content, expr)
             return
@@ -103,8 +104,9 @@ def patternmatch(pattern, expr, state, readonly=False):
             raise MalangError("Invalid module in pattern", state.newinfonode(pattern))
         else:
             return patternmatch(access, expr,
-                                state.newenv(state.env.get(module.content, state.newinfonode(pattern)).content),
-                                readonly=True)
+                                state.newenv(
+                                    state.env.get(module.content,
+                                                  state.newinfonode(pattern)).content).newreadonly(True))
 
 
     elif pattern._type != expr._type:
@@ -119,7 +121,7 @@ def patternmatch(pattern, expr, state, readonly=False):
                 (" (tried to match a tuple of length {} agains a "
                  "pattern-tuple of length {})").format(expr_len, pattern_len))
         for pat, e in zip(pattern.content, expr.content):
-            patternmatch(pat, e, state, readonly)
+            patternmatch(pat, e, state)
         return
 
     elif pattern._type in ('number', 'str', 'atom'):
@@ -248,7 +250,7 @@ def maval(expr, state):
         module = trampoline(expr.content[0], state)
         if module._type != 'module':
             raise MalangError("You tried to use module access on something that wasn't a module", state.newinfonode(expr))
-        val = trampoline(expr.content[1], state.newenv(module.content))
+        val = trampoline(expr.content[1], state.newenv(module.content).newreadonly(True))
         return val
 
     elif T == 'composition':
