@@ -120,7 +120,37 @@ Drop := Funcs:Curry 2 [
   [Helper {Stream, N}.].
 ].
 
---F := [if @ > 2 then empty. else @+1. end.].
---S := MakeStream 0 F.
---Double := [@*2.].
---Mapped := Map Double S.
+Zipwith := Funcs:Curry 3 [
+  "
+  @ = Func Stream1 Stream2
+
+  Return a new stream where `Stream1` and `Stream2` are 'zipped' together
+  with `Func`, which is called with an argument of the form `{Item1, Item2}`
+  where `Item1` is an item from `Stream1` and `Item2` is the corresponding item
+  in `Stream2`. If either `Stream1` or `Stream2` becomes empty, then the whole
+  zipped stream becomes empty.
+  ".
+  {Func, Stream1, Stream2} := @.
+
+  [
+    case {Next Stream1, Next Stream2} of
+      {empty, _} -> empty.
+      {_, empty} -> empty.
+      {{Val1, NewStream1}, {Val2, NewStream2}} ->
+        {Func {Val1, Val2}, Zipwith Func NewStream1 NewStream2}.
+    end.
+  ].
+].
+
+Zip := Funcs:Curry 2 [
+  "
+  @ = Stream1 Stream2
+
+  Return a new stream of tuples of the form `{Item1, Item2}` where
+  `Item1` is an item from `Stream1` and `Item2` is the corresponding
+  item in `Stream2`. If either `Stream1` or `Stream2` becomes empty,
+  then the whole zipped stream becomes empty.
+  ".
+  {Stream1, Stream2} := @.
+  Zipwith [@.] Stream1 Stream2.
+].

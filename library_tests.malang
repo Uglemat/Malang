@@ -545,9 +545,10 @@ yeah     := Lists:All [Bools:And (@ >= 0) (@ < 10).] Randnums.
 
 Ones := [{1, Ones}.].
 Ns := Streams:MakeStream 0 [@ + 1.].
+Show := [Streams:ToList ~ Streams:Take @.].
 
-#[1, 1, 1] := Streams:ToList (Streams:Take 3 Ones).
-#[1, 2, 3] := Streams:ToList (Streams:Take 3 Ns).
+#[1, 1, 1] := Show 3 Ones.
+#[1, 2, 3] := Show 3 Ns.
 #[] := Streams:ToList empty.
 
 {1, Ones} := Streams:Next Ones.
@@ -558,17 +559,25 @@ Odds  := Streams:Map [@-1.] Evens.
 
 empty := Streams:Next (Streams:Map [@*2.] empty).
 
-#[2, 4, 6, 8] := (Streams:ToList ~ Streams:Take 4) Evens.
-#[1, 3, 5, 7] := (Streams:ToList ~ Streams:Take 4) Odds.
+#[2, 4, 6, 8] := (Show 4) Evens.
+#[1, 3, 5, 7] := (Show 4) Odds.
 
 empty := Streams:Next (Streams:Take 0 Evens).
 empty := Streams:Next (Streams:Take 10 empty).
 
-#[2, 4]   := (Streams:ToList ~ Streams:Take 2 ~ Streams:Drop 0) Evens.
-#[10, 12] := (Streams:ToList ~ Streams:Take 2 ~ Streams:Drop 4) Evens.
+#[2, 4]   := (Show 2 ~ Streams:Drop 0) Evens.
+#[10, 12] := (Show 2 ~ Streams:Drop 4) Evens.
 empty := Streams:Next (Streams:Drop 3 empty).
 empty := Streams:Next (Streams:Drop 10 (Streams:Take 3 Odds)).
 
+#[{1,2}, {3,4}, {5,6}] := (Show 3 ~ Streams:Zip Odds) Evens.
+#[3, 7, 11] := (Show 3 ~ Streams:Zipwith [Car @ + Cdr @.] Odds) Evens.
+
+empty := Streams:Next (Streams:Zip empty Ones).
+empty := Streams:Next (Streams:Zip Ones empty).
+
+empty := Streams:Next (Streams:Zipwith [@*2.] Ones empty).
+empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
 
 ---------------------------------------
 ---------------------------------------

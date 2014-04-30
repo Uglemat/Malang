@@ -285,15 +285,8 @@ Zip := Funcs:Curry 2 [
 
   Zip two lists together. Returns a list of tuples.
   ".
-  {L1, L2} := @.
-  Helper := [
-    case @ of
-      {nil, _, Acc}             -> Acc.
-      {_, nil, Acc}             -> Acc.
-      {{H1, T1}, {H2, T2}, Acc} -> Helper {T1, T2, {{H1, H2}, Acc}}.
-    end.
-  ].
-  Reverse (Helper {L1, L2, #[]}).
+  {List1, List2} := @.
+  Zipwith [@.] List1 List2.
 ].
 
 Zipwith := Funcs:Curry 3 [
