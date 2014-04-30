@@ -307,12 +307,17 @@ def maval(expr, state):
     elif T == 'case_of':
         val = trampoline(expr.content['matched_expr'], state)
         for arrow in expr.content['arrow_list']:
-            env_copy_state = state.newenv(state.env.shallow_copy())
+            temp_state = state.newenv(Env(parent=state.env)) #state.env.shallow_copy())
             try:
-                patternmatch(arrow['pattern'], val, env_copy_state)
+                patternmatch(arrow['pattern'], val, temp_state)
             except utils.InvalidMatch:
                 continue
-            return thunk(maval, arrow['expr'], env_copy_state)
+
+            #for name in set(temp_state.env.bindings.keys()) - set(state.env.bindings.keys()):
+                #state.env.bind(name, temp_state.env.bindings[name])
+                #print("{} - {!r}".format(name, temp_state.env.bindings[name]))
+                
+            return thunk(maval, arrow['expr'], temp_state)
         raise MalangError("No pattern matched in case_of expression", state.newinfonode(expr))
 
     elif T == 'if':

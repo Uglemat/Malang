@@ -274,7 +274,7 @@ def list_env(arg, state):
 
     if not state.env.parent is None:
         print("\tShowing bindings for parent environment below:")
-        return list_env(None, state.newenv(env.parent))
+        return list_env(None, state.newenv(state.env.parent))
     return Node('atom', 'ok')
 
 @builtin("ClearEnv")
