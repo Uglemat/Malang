@@ -173,3 +173,35 @@ Chain := Funcs:Curry 2 [
     end.
   ].
 ].
+
+Interleave := Funcs:Curry 2 [
+  "
+  @ = Stream1 Stream2
+
+  Returns a new stream that alternates between `Stream1` and `Stream2`,
+  so it takes one item from `Stream1`, then one from `Stream2` then one
+  from `Stream2` and so on. This stream ends as soon as one of the streams
+  ends.
+  ".
+
+  {Stream1, Stream2} := @.
+
+  [
+    case Next Stream1 of
+      empty -> empty.
+      {Val, NewStream} -> {Val, Interleave Stream2 NewStream}.
+    end.
+  ].
+].
+
+Cons := Funcs:Curry 2 [
+  "
+  @ = Item Stream
+
+  Return a stream where the \"head\" is `Item` and the \"tail\" is `Stream`.
+  ".
+
+  {Item, Stream} := @.
+
+  [{Item, Stream}.].
+].
