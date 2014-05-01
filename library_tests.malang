@@ -588,6 +588,16 @@ empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
 #[hello] := Streams:ToList (Streams:Cons hello empty).
 #[0, 1, -1, 2, -2, 3, -3, 4] := Show 8 (Streams:Cons 0 (Streams:Interleave Ns (Streams:Map [-@.] Ns))).
 #[1, "1", 1, "3", 1, "5", 1] := Streams:ToList (Streams:Interleave Ones (Streams:Map ToStr (Streams:Take 3 Odds))).
+
+
+#[2, 4, 6, 8] := Streams:ToList (Streams:Takewhile [@ < 10.] Evens).
+#[]           := Streams:ToList (Streams:Takewhile [@ > 10.] Evens).
+#[]           := Streams:ToList (Streams:Takewhile [@ < 10.] empty).
+
+#[10, 12] := Show 2 (Streams:Dropwhile [@ < 10.] Evens).
+#[2, 4]   := Show 2 (Streams:Dropwhile [@ > 10.] Evens).
+#[]       := Streams:ToList (Streams:Dropwhile [@ < 10.] empty).
+
 ---------------------------------------
 ---------------------------------------
 ---------------------------------------

@@ -98,6 +98,28 @@ Take := Funcs:Curry 2 [
   ].
 ].
 
+Takewhile := Funcs:Curry 2 [
+  "
+  @ = Pred Stream
+
+  Returns a new version of `Stream` that stops once the function `Pred`
+  returns falsy for an item (and doesn't include that item).
+  ".
+  {Pred, Stream} := @.
+  
+  [
+    case Next Stream of
+      empty -> empty.
+      {Val, NewStream} ->
+        if Pred Val
+          then {Val, Takewhile Pred NewStream}.
+          else empty.
+        end.
+    end.
+  ].
+].
+
+
 Drop := Funcs:Curry 2 [
   "
   @ = N Stream
@@ -119,6 +141,30 @@ Drop := Funcs:Curry 2 [
 
   [Helper {Stream, N}.].
 ].
+
+Dropwhile := Funcs:Curry 2 [
+  "
+  @ = Pred Stream
+
+  Returns a new version of `Stream` with items dropped off
+  from the front as long as `Pred` is truthy for those items.
+  ".
+  {Pred, Stream} := @.
+  
+  Helper := [
+    case Next @ of
+      empty -> empty.
+      {Val, NewStream} ->
+        if Pred Val
+          then Helper NewStream.
+          else {Val, NewStream}.
+        end.
+    end.
+  ].
+
+  [Helper Stream.].
+].
+
 
 Zipwith := Funcs:Curry 3 [
   "
