@@ -14,7 +14,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-(defun insert-lines (indentation &rest lines)
+(defun insert-lines (indentation lines)
   (insert "\n")
   (dolist (line lines)
     (indent-to indentation)
@@ -28,15 +28,20 @@
     (skip-chars-forward " \t")))
 
 
-(defun malang-insert-func ()
-  (interactive)
-  (let ((indentation (find-indentation)))
+(defun malang-insert-func (prefix)
+  (interactive "P")
+  (let ((indentation (find-indentation))
+        (lines (if (null prefix)
+                   ;; Insert docstring if there is a prefix arg
+                   (list "  "    "].")
+                   (list "  \""    "  "    "  \"."    "]."))))
     (end-of-line)
     (just-one-space)
     (save-excursion
-      (insert ":= [\n")
-      (insert-lines indentation "  "  "]\.")))
-  (forward-line) (end-of-line))
+      (insert ":= [")
+      (insert-lines indentation lines)))
+  (forward-line) (end-of-line)
+  (unless (null prefix) (forward-line) (end-of-line)))
 
 (defun malang-insert-case ()
   (interactive)
@@ -44,7 +49,7 @@
     (end-of-line)
     (insert "case ")
     (save-excursion
-      (insert-lines indentation "  -> ."  "end\.")))
+      (insert-lines indentation (list "  -> ."    "end."))))
   (save-excursion (insert " of")))
 
 (defun malang-insert-if ()
@@ -53,7 +58,7 @@
     (end-of-line)
     (insert "if ")
     (save-excursion
-      (insert-lines indentation "  then ." "  else ."  "end\."))))
+      (insert-lines indentation (list "  then ."    "  else ."    "end.")))))
 
 
 (defvar malang-mode-hook nil)

@@ -252,3 +252,4 @@ Cons := Funcs:Curry 2 [
 
   [{Item, Stream}.].
 ].
+
