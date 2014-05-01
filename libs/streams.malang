@@ -142,6 +142,7 @@ Drop := Funcs:Curry 2 [
   [Helper {Stream, N}.].
 ].
 
+
 Dropwhile := Funcs:Curry 2 [
   "
   @ = Pred Stream

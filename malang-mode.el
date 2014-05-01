@@ -14,25 +14,55 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+(defun insert-lines (indentation &rest lines)
+  (insert "\n")
+  (dolist (line lines)
+    (indent-to indentation)
+    (insert line)
+    (insert "\n"))
+  (delete-backward-char 1))
 
-(defun insert-func ()
+(defun find-indentation ()
+  (save-excursion
+    (beginning-of-line)
+    (skip-chars-forward " \t")))
+
+
+(defun malang-insert-func ()
   (interactive)
-  (beginning-of-line)
-  (let ((indentation (skip-chars-forward " \t")))
+  (let ((indentation (find-indentation)))
     (end-of-line)
     (just-one-space)
-    (insert ":= [\n")
-    (indent-to (+ indentation 2))
     (save-excursion
-      (insert "\n")
-      (indent-to indentation)
-      (insert "]\."))))
+      (insert ":= [\n")
+      (insert-lines indentation "  "  "]\.")))
+  (forward-line) (end-of-line))
+
+(defun malang-insert-case ()
+  (interactive)
+  (let ((indentation (find-indentation)))
+    (end-of-line)
+    (insert "case ")
+    (save-excursion
+      (insert-lines indentation "  -> ."  "end\.")))
+  (save-excursion (insert " of")))
+
+(defun malang-insert-if ()
+  (interactive)
+  (let ((indentation (find-indentation)))
+    (end-of-line)
+    (insert "if ")
+    (save-excursion
+      (insert-lines indentation "  then ." "  else ."  "end\."))))
+
 
 (defvar malang-mode-hook nil)
 
 (defvar malang-mode-map
   (let ((map (make-keymap)))
-    (define-key map (kbd "C-c C-f") 'insert-func)
+    (define-key map (kbd "C-c f") 'malang-insert-func)
+    (define-key map (kbd "C-c c") 'malang-insert-case)
+    (define-key map (kbd "C-c i") 'malang-insert-if)
     map)
   "Keymap for malang major mode")
 
