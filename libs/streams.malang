@@ -154,3 +154,22 @@ Zip := Funcs:Curry 2 [
   {Stream1, Stream2} := @.
   Zipwith [@.] Stream1 Stream2.
 ].
+
+Chain := Funcs:Curry 2 [
+  "
+  @ = Stream1 Stream2
+
+  Create a new stream that will milk items from `Stream1` until it is
+  exhausted, then it moves on to `Stream2`. This function only makes
+  sense when `Stream1` is finite, obviously.
+  ".
+
+  {Stream1, Stream2} := @.
+
+  [
+    case Next Stream1 of
+      empty -> Next Stream2.
+      {Val, NewStream} -> {Val, Chain NewStream Stream2}.
+    end.
+  ].
+].
