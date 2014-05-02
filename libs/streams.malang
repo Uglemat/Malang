@@ -253,3 +253,31 @@ Cons := Funcs:Curry 2 [
   [{Item, Stream}.].
 ].
 
+Filter := Funcs:Curry 2 [
+  "
+  @ = Pred Stream
+
+  Return a new version of `Stream` where only items that passes the predicate
+  function `Pred` are present.
+  ".
+  {Pred, Stream} := @.
+
+  Next_Valid := [
+    case Next @ of
+      empty -> empty.
+      {Val, NewStream} ->
+        if Pred Val
+          then {Val, NewStream}.
+          else Next_Valid NewStream.
+        end.
+    end.
+  ].
+
+  [
+    case Next_Valid Stream of
+      empty -> empty.
+      {Val, NewStream} ->
+        {Val, Filter Pred NewStream}.
+    end.
+  ].
+].

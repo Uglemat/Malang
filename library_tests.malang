@@ -594,9 +594,13 @@ empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
 #[]           := Streams:ToList (Streams:Takewhile [@ > 10.] Evens).
 #[]           := Streams:ToList (Streams:Takewhile [@ < 10.] empty).
 
+
 #[10, 12] := Show 2 (Streams:Dropwhile [@ < 10.] Evens).
 #[2, 4]   := Show 2 (Streams:Dropwhile [@ > 10.] Evens).
 #[]       := Streams:ToList (Streams:Dropwhile [@ < 10.] empty).
+
+#[2, 4, 6, 8] := Show 4 (Streams:Filter Numbers:Even Ns).
+#[]           := Show 4 (Streams:Filter Numbers:Even empty).
 
 ---------------------------------------
 ---------------------------------------
