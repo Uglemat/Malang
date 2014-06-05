@@ -448,8 +448,8 @@ ello := Tuples:Nth 1 {ello}.
 
 8     := Strings:Find "hello" "Hello, hello!".
 1     := Strings:Find "hello" "hello, hello!".
-sorry := Strings:Find "hello" "ello, hEllo!".
-sorry := Strings:Find "hello" "".
+nope  := Strings:Find "hello" "ello, hEllo!".
+nope  := Strings:Find "hello" "".
 
 
 ""     := Strings:Slice 1 1 "".
@@ -496,7 +496,11 @@ sorry := Strings:Find "hello" "".
         Funcs Tests:
 ".
 
-sorry := Funcs:GetDocstring [hello. 21.].
+yeah := (Bools:Truthy ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename) Lists:Map.
+
+"Hayala" := (Funcs:GetFilename ~ Funcs:SetFilename "Hayala") Lists:Map.
+
+nope  := Funcs:GetDocstring [hello. 21.].
 "hay" := Funcs:GetDocstring ["hay". hello.].
 
 "haya" := (Funcs:GetDocstring ~ Funcs:SetDocstring "haya") Lists:Map.

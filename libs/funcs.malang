@@ -15,9 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-GetDocstring := Builtins:FuncsGetDocstring.
-SetDocstring := [Doc := @, [Builtins:FuncsSetDocstring {Doc, @}.].].
--- Manual currying ^
 
 Curry := [
 
@@ -61,16 +58,25 @@ Curry := [
       then Error "NumArgs must be at least 1".
       else Result := Helper N,
            Curried := [Result {@}.],
-           Doc := GetDocstring Func,
-           case Doc of
-             sorry -> Curried.
-             _     -> SetDocstring Doc Curried.
+           NewFunc := case Builtins:FuncsGetDocstring Func of
+               nope -> Curried.
+               Doc  -> Builtins:FuncsSetDocstring {Doc, Curried}.
+             end,
+           case TypeOf Func of
+             "builtin"  -> NewFunc.
+             "function" -> Builtins:FuncsSetFilename {Builtins:FuncsGetFilename Func, NewFunc}.
            end.
     end.
   ].
 
   _Curry {2, _Curry}.
 ] {}.
+
+GetFilename  := Builtins:FuncsGetFilename.
+SetFilename  := Curry 2 Builtins:FuncsSetFilename.
+GetDocstring := Builtins:FuncsGetDocstring.
+SetDocstring := Curry 2 Builtins:FuncsSetDocstring.
+
 
 Partial := Curry 2 [
   "

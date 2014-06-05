@@ -70,6 +70,8 @@ Here's an example session:
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
+There are no mutable values in Malang, so you can't change a value 'in place'.
+
 All functions take exactly 1 argument (but they can take tuples as arguments, and use currying).
 
 All functions are anonymous. Functions are values, and can be bound to a name.

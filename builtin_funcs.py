@@ -54,14 +54,14 @@ def getdocstring(func, state):
     """
     @ = Function
 
-    Return the docstring for `Function`, or `sorry` if there is no docstring for `Function`.
+    Return the docstring for `Function`, or `nope` if there is no docstring for `Function`.
     """
     assert_type(func, ('builtin', 'function'), state)
 
     docstring = func.content.__doc__ if func._type == 'builtin' else func.content['docstring'] 
 
     if docstring is None:
-        return Node('atom', 'sorry')
+        return Node('atom', 'nope')
     else:
         return Node('str', docstring)
 
@@ -86,6 +86,37 @@ def setdocstring(tup, state):
     function_content['docstring'] = new_docstring.content
     return Node('function', function_content)
 
+
+@builtin("FuncsGetFilename")
+def getfilename(func, state):
+    """
+    @ = Function
+
+    Return the filename where `Function` was defined. Does not work for builtin functions.
+    """
+    assert_type(func, 'function', state)
+    return Node('str', func.content['filename'])
+
+@builtin("FuncsSetFilename")
+def setfilename(tup, state):
+    """
+    @ = Filename Function
+
+    Return a new version of `Function` where the filename where 'Function' was created
+    is reported to be `Filename`. It does not mutate `Function`. `Function` must be a
+    malang function, it cannot be a builtin function.
+    """
+    assert_type(tup, 'tuple', state, tuplelength=2)
+
+    new_filename, func = tup.content
+
+    assert_type(new_filename, 'str', state)
+    assert_type(func, 'function', state)
+
+
+    function_content = func.content.copy()
+    function_content['filename'] = new_filename.content
+    return Node('function', function_content)
 
 @builtin("Fmt")
 def fmt(tup, state):
@@ -183,9 +214,8 @@ def _help(fun, state):
     @ = Func
 
     Prints information about the function `Func`.
-    Alternatively, if `Func` is a module, it will
-    print all the information about all the functions
-    inside that module.
+    Alternatively, if `Func` is a module, it will list
+    all the functions inside that module.
     """
     assert_type(fun, ('function', 'builtin', 'module'), state)
 
@@ -455,7 +485,7 @@ def stringFind(tup, state):
     Finds the first occurrence of `String1` in `String2`, and returns
     the index of that occurrence in `String2`.
 
-    If no occurrence is found, it returns `sorry`.
+    If no occurrence is found, it returns `nope`.
     """
     assert_type(tup, 'tuple', state, tuplelength=2)
     s1, s2 = tup.content
@@ -464,7 +494,7 @@ def stringFind(tup, state):
 
     result = s2.content.find(s1.content)
     if result == -1:
-        return Node('atom', 'sorry')
+        return Node('atom', 'nope')
     else:
         return Node('number', result + 1)
 
