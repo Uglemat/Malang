@@ -37,12 +37,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 yeah := case catch 100 / 0 of
-  {no_error, _} -> nope.
+  {no_throw, _} -> nope.
   {error, _}    -> yeah.
 end.
 
 nope := case catch 100 / 2 of
-  {no_error, _} -> nope.
+  {no_throw, _} -> nope.
   {error, _}    -> yeah.
 end.
 

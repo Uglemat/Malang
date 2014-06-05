@@ -215,6 +215,25 @@ It will evaluate `<expr>` in a new environment that inherits from the outer envi
 truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
 in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
 
+##Catch/throw
+
+`catch` and `throw` are control flow contructs, and can be useful if you're in a deep recursion and want 'return'
+some special value, for example to signify an error.
+
+`catch` syntax: `catch <expr>`
+
+The value of `catch` is a tuple of the form `{no_throw, <value>}` if everything goes as planned when evaluating `<expr>`,
+where `<value>` is the value of `<expr>`. If anything is thrown inside `<expr>` however (and that inludes anywhere inside any
+functions that may be called), then the value of the `catch` is that value.
+
+`throw` syntax: `throw <expr>`
+
+Stop execution and `throw` the value of `<expr>`. The program will crash unless something `catch`es it.
+
+Malang will throw a value of the form `{error, <reason>}` whenever an error occurs. This will be recognized by the REPL as
+an error. You may also throw values of that form, and the REPL will not disciminate you.
+
+
 ##Operators and such
 
  Operators/other            | Associativity | Arity  | Explanation

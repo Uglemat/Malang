@@ -338,7 +338,7 @@ def maval(expr, state):
         except MalangError as e:
             return e.args[0]
 
-        return Node('tuple', (Node('atom', 'no_error'), result))
+        return Node('tuple', (Node('atom', 'no_throw'), result))
 
     elif T == 'throw':
         value = trampoline(expr.content, state)
