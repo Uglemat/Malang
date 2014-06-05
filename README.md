@@ -309,7 +309,7 @@ The reason i write `Factorial (N-1)` is that function application has higher pre
 so `Factorial N-1` would be parsed as `(Factorial N) - 1`, which is not what I wanted.
 
 That version of factorial is not tail recursive, however, and you can't really calculate `Factorial 20000` without
-hitting the recursion limit. Here's a tail recursive version:
+hitting the recursion limit of python. Here's a tail recursive version:
 
     Factorial_Tail_Recursive := [
       Helper := [

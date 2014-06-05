@@ -227,7 +227,7 @@ Interleave := Funcs:Curry 2 [
 
   Returns a new stream that alternates between `Stream1` and `Stream2`,
   so it takes one item from `Stream1`, then one from `Stream2` then one
-  from `Stream2` and so on. This stream ends as soon as one of the streams
+  from `Stream1` and so on. This stream ends as soon as one of the streams
   ends.
   ".
 

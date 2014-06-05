@@ -20,6 +20,7 @@ import time
 import random
 import re
 import functools
+import sys
 
 """
 Some of the builtin funcs are curried when they are placed in
@@ -171,6 +172,7 @@ def _print(s, state):
     
     print(s.content if s._type == 'str' else
           tostr(s, state).content, end="")
+    sys.stdout.flush()
     return s
 
 @builtin("Writefile")
