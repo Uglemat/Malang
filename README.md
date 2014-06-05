@@ -40,16 +40,7 @@ Here's an example session:
     	Showing bindings for parent environment below:
     Use             => [function]           Builtins        => [module]
     Tuples          => [module]             Exit            => [builtin]
-    Env             => [builtin]            Dicts           => [module]
-    Lists           => [module]             Objects         => [module]
-    TypeOf          => [builtin]            Funcs           => [module]
-    Cdr             => [function]           Bools           => [module]
-    Car             => [function]           Require         => [builtin]
-    Streams         => [module]             Error           => [builtin]
-    Strings         => [module]             Cmp             => [function]
-    Exhibit         => [builtin]            Help            => [builtin]
-    ToStr           => [builtin]            Numbers         => [module]
-    Io              => [module]
+    ... (more lines like that)
     ok
     Malang> Help Numbers.
     Functions in module:
@@ -58,7 +49,7 @@ Here's an example session:
        RandRange
     ok
     Malang> Help Numbers:Odd.
-    Function was defined in the file 'libs/numbers.malang'
+    Function was defined in the file '/home/.../malang/libs/numbers.malang'
      - Docstring:
     
       @ = Number
@@ -68,6 +59,10 @@ Here's an example session:
     ok
     Malang> Numbers:Odd 43.
     yeah
+    Malang> 24 + "hello!".
+    Error: Invalid arithmetic expression at line #1 in file '<REPL>'
+    Malang> {error, Reason} := catch 22 / 0.
+    {error, "Division or modulo by zero at line #1 in file '<REPL>'"}
     Malang> 
 
 

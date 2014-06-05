@@ -27,7 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                M <- #[one, two]].
 
 
-
 1 := Car #[1, two, "three"].
 #[two, "three"] := Cdr #[1, two, "three"].
 
