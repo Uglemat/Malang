@@ -1,6 +1,9 @@
+#Malang
+
 Malang is a (very) minimalistic functional programming language. It's pretty useless, but it was fun to make.
 
-It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it with `sudo apt-get install python3-ply`.
+It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it
+with `sudo apt-get install python3-ply`.
 
 Enter this in the shell to start dashing out compound expressions in the REPL:
 
@@ -66,7 +69,9 @@ Here's an example session:
     Malang> Numbers:Odd 43.
     yeah
     Malang> 
-    
+
+
+#Overview
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
@@ -82,23 +87,43 @@ identifier, once you've said that A := 3, you can't change it. A is 3 always.
 The only way to loop is to use recursion and with list comprehensions. The control flow
 constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in list comprehensions).
 
+#Values
+
 There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
 of the form `{<key>, <val>}`, so they are what you'd call an 'alist' in a language like Lisp.
 
-Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary)
-to 16 (for hexadecimal), and base defaults to 10 (decimal). 
-Strings are what you'd expect, like `"string with \" < quote and \\ < backslash "`.
-Any character following a backslash is escaped, even if it doesn't have a special meaning like \n and \t,
-so "\hay" is the same string as just "hay".
-Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
-in your programs (in tuples, et cetera). Identifiers are names which
-are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
+##Numbers
 
-Tuples are just... tuples, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
+Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary) to 16 (for hexadecimal),
+and base defaults to 10 (decimal). Note that `<base>` and `<number>` above are not expressions.
+
+##Strings
+
+Strings are what you'd expect, like `"string with \" < quote and \\ < backslash "`. Any character following a
+backslash is escaped, even if it doesn't have a special meaning like \n and \t, so "\hay" is the same string
+as just "hay".
+
+##Atoms
+
+Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
+in your programs (in tuples, et cetera).
+
+##Identifiers
+
+Identifiers are names which are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
+The identifier `_` is special, it will match anything and is never bound to anything.
+
+##Tuples
+
+A tuple is an ordered collection of items, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
+
+##Lists
 
 Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just syntactic sugar.
 `#[1, 2, 3]` translates into `{1, {2, {3, nil}}}` (where `nil` is an atom).
+
+#Syntax and semantics
 
 A Malang program is a list of compound expressions.
 
@@ -112,6 +137,8 @@ or
 
 The value of a compound expression is the value of the last expression.
 
+##Functions
+
 A function is a list of compound expressions surrounded by square brackets. For example:
 
     [1, 3. 
@@ -119,6 +146,11 @@ A function is a list of compound expressions surrounded by square brackets. For 
 
 The above function will always return the tuple `{atom, "string"}`, because functions returns the value
 of the last compound expression.
+
+If the first expression in a function body is a string, then that string will be the documentation string
+for that function.
+
+##Bind operator
 
 You pattern-match with the 'bind' operator, ":=". Like this
 
@@ -138,10 +170,72 @@ This will only match tuples with two identical elements:
 Because the second time it sees `Same`, it is no longer an unbound identifier, and malang will insist
 that it must match.
 
-The syntax for function application is `<expr> <expr>`.
+##Function application
+
+The syntax for function application is `<function> <argument>`.
+
+##The @
 
 As I said eariler, all functions take exactly one argument. It is automatically bound to the special
-identifier `@`.
+identifier `@`. The `@` will shadow any outside `@` that may exist.
+
+##Case of
+
+The `case of` construct is like the `:=` operator, except it tries to pattern match on several patterns,
+and stops once a pattern matches, and executes the corresponding compound expression in a *new* environment
+that inherits from the outer environment. Note it's a new environment, so the bindings made from the pattern
+matching and in the compund expression are forgotten once the `case of` is done evaluating. The syntax is
+
+    case <expr> of
+      <pattern1> -> <compound_expr1>
+      ...
+      <patternN> -> <compound_exprN>
+    end
+
+The `<expr>` above is evaluated in the outer environment (so any identifier bindings will be remembered).
+
+##If then else
+
+The syntax for the `if then else` construct is
+
+    if <expr>
+      then <consequent_compound_expr>
+      else <alternative_compound_expr>
+    end
+
+It will evaluate `<expr>` in a new environment that inherits from the outer environment, and then, depending on the
+truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
+in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
+
+##Modules
+
+You can use the builtin function `Require` to import modules. Like this:
+
+    My_Module := Require "src/module.malang".
+
+It will evaluate the program in the file specified, and then return a module.
+
+When you are evaluating top-level expressions in a file (i.e. not something that's inside a function), then the working
+directory should be the directory that that file is located in, and so you can use relative path-names when using
+`Require`.
+
+'Module access' is used to make use of a module, this is the syntax
+
+    <module>:<expr>
+
+It will evaluate `<expr>` in the context of `<module>`, or in other words, in the same environment, and then return it.
+So you can use all the identifiers in the module inside `<expr>`. `<expr>` is usually just an identifier that points to
+a function in the module, but it could be a more complicated expression, such as a tuple or a function expression. Why not.
+You cannot bind new identifiers in `<expr>`, it is said to be evaluated in "readonly mode".
+
+So if `My_Module` contains a function bound to the identifier `Factorial` then you can do this to use it:
+
+    My_Module:Factorial 20000.
+
+It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
+argument 20000.
+
+#Factorial example
 
 Here is factorial written in Malang:
 
@@ -171,54 +265,13 @@ hitting the recursion limit. Here's a tail recursive version:
 
 With that version, you *can* calculate `Factorial 20000`.
 
-The `case of` construct is like the `:=` operator, except it tries to pattern match on several patterns,
-and stops once a pattern matches, and executes the corresponding compound expression in a *new* environment
-that inherits from the outer environment. Note it's a new environment, so the bindings made from the pattern
-matching and in the compund expression are forgotten once the `case of` is done evaluating. The syntax is
+#Navigating the REPL
 
-    case <expr> of
-      <pattern1> -> <compound_expr1>
-      ...
-      <patternN> -> <compound_exprN>
-    end
+You can use the functions `Help` and `Env` to get information about things. Run `Help Help.` to get started.
 
-The `<expr>` above is evaluated in the outer environment (so any identifier bindings will be remembered).
+You can use the function `Exhibit` to go 'inside' of a module when you're in the REPL.
 
-The syntax for the `if then else` construct is
-
-    if <expr>
-      then <consequent_compound_expr>
-      else <alternative_compound_expr>
-    end
-
-It will evaluate `<expr>` in a new environment that inherits from the outer environment, and then, depending on the
-truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
-in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
-
-You can use the builtin function `Require` to import modules. Like this:
-
-    My_Module := Require "src/module.malang".
-
-It will evaluate the program in the file specified, and then return a module.
-
-'Module access' is used to make use of a module, this is the syntax
-
-    <module>:<expr>
-
-It will evaluate `<expr>` in the context of `<module>`, or in other words, in the same environment, and then return it.
-So you can use all the identifiers in the module inside `<expr>`. `<expr>` is usually just an identifier that points to
-a function in the module, but it could be a more complicated expression, such as a tuple or a function expression. Why not.
-You cannot bind new identifiers in `<expr>`, it is said to be evaluated in "readonly mode".
-
-So if `My_Module` contains a function bound to the identifier `Factorial` then you can do this to use it:
-
-    My_Module:Factorial 20000.
-
-It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
-argument 20000.
-
-The identifier `_` is special, it will match anything and is never bound to anything.
-
+The function `Use` is quite *use*ful for testing out a file in the REPL.
 
 # License
 

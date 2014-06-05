@@ -66,7 +66,7 @@ def require(filename_to_open, state):
 
     module_env = Env(parent=main_env)
     with change_directory(path.dirname(path.abspath(filename_to_open.content))):
-        eval_malang(code, module_env, filename_to_open.content)
+        eval_malang(code, module_env, path.abspath(filename_to_open.content))
     return Node('module', module_env)
 
 def exhibit(module, state):
