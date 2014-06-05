@@ -160,7 +160,7 @@ You pattern-match with the 'bind' operator, ":=". Like this
 
 It will evaluate the right side expression and try to match it with the left side pattern (from left to right).
 If it sees an unbound identifier (an identifier that hasn't been pattern-matched already)
-it will just bind it to the respective value on the right hand side.
+it will just bind it to the respective value on the right hand side. 
 
 This will only match tuples with two identical elements:
 
@@ -169,6 +169,13 @@ This will only match tuples with two identical elements:
 
 Because the second time it sees `Same`, it is no longer an unbound identifier, and malang will insist
 that it must match.
+
+The resulting value is the same as the right hand side. Combine this with the fact that the operator
+is right-associative and you can do stuff like this:
+
+    Tup := {Fst, Snd} := {hello, yoyo}.
+
+Which is parsed as `Tup := ({Fst, Snd} := {hello, yoyo}).` and thus does exactly what you'd expect.
 
 ##Function application
 
@@ -206,6 +213,43 @@ The syntax for the `if then else` construct is
 It will evaluate `<expr>` in a new environment that inherits from the outer environment, and then, depending on the
 truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
 in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
+
+##Operators and such
+
+Associativity | Arity  | Operators/other      | Explanation
+------------- | -----  | --------             | -------------
+Left          | Binary | < > <= >= = !=       | Comparison operators. Values of different types has an inherent order, so they can be compared. Strings and tuples are compared lexicographically. The (not-)equals operator works for all types, but functions/modules/builtins aren't orderable.
+Left          | Binary | +                    | Add two things together. Works for numbers, strings, and tuples.
+Left          | Binary | -                    | Subtract one thing from another. Numbers only.
+Right         | Unary  | -                    | Negation operator for a number on the right.
+Left          | Binary | *                    | Multiply one thing by another. Works for numbers. Also works if one operand is a number, and the other operand is a tuple or a string.
+Left          | Binary | /                    | Divide one thing by another. Only works for numbers. Does floor division (Malang doesn't have real numbers. Real numbers are complicated, therefore dubious. fo real).
+Left          | Binary | %                    | Modulo operator. Works in the same way as the modulo in python. Numbers only.
+Left          | Binary | ~                    | Function composition, creates a new function out if its operands. (F ~ G) X = F(G(X)).
+Right         | Binary | **                   | Raises an operand to some power.
+Left          | Binary | Function application | Calling a function with an argument.
+Right         | Binary | :                    | Evaluating an expression in the context of some module.
+Right         | Binary | :=                   | Match a value agains a pattern.
+
+###Precedence
+
+The things at the top has higher precedence than the things at the bottom:
+
+Prec.  | Operators/other
+------ | ---------------
+1      | (...) #[...] {...} [...] `case of` `if then else`
+2      | : (Module access)
+3      | Function application (<func> <arg>)
+4      | ~ (Function composition)
+5      | unary - (negation)
+6      | **
+7      | * / %
+8      | + -
+9      | < > <= >= = !=
+10     | :=
+11     | throw/catch
+12     | , (seperator)
+13     | . (end of compound expression)
 
 ##Modules
 
