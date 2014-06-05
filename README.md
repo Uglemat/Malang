@@ -30,8 +30,43 @@ Here's an example session:
     {{mary, 22}, {{george, 30}, nil}}
     Malang> Pairings := #[{P1, P2} | {P1, _} <- Ages, {P2, _} <- Ages, P1 > P2].
     {{peter, mary}, {{peter, george}, {{mary, george}, nil}}}
+    Malang> Env {}.
+    	Identifier bindings in current environment:
+    Ages            => {{peter, 20}, {...   List            => {one, {two, {th...
+    Pairings        => {{peter, mary},...
+    	Showing bindings for parent environment below:
+    Use             => [function]           Builtins        => [module]
+    Tuples          => [module]             Exit            => [builtin]
+    Env             => [builtin]            Dicts           => [module]
+    Lists           => [module]             Objects         => [module]
+    TypeOf          => [builtin]            Funcs           => [module]
+    Cdr             => [function]           Bools           => [module]
+    Car             => [function]           Require         => [builtin]
+    Streams         => [module]             Error           => [builtin]
+    Strings         => [module]             Cmp             => [function]
+    Exhibit         => [builtin]            Help            => [builtin]
+    ToStr           => [builtin]            Numbers         => [module]
+    Io              => [module]
+    ok
+    Malang> Help Numbers.
+    Functions in module:
+       Even
+       Odd
+       RandRange
+    ok
+    Malang> Help Numbers:Odd.
+    Function was defined in the file 'libs/numbers.malang'
+     - Docstring:
+    
+      @ = Number
+    
+      Returns `yeah` if `Number` is odd, `false` otherwise.
+      
+    ok
+    Malang> Numbers:Odd 43.
+    yeah
     Malang> 
-
+    
 
 It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
 
@@ -124,9 +159,9 @@ hitting the recursion limit. Here's a tail recursive version:
     Factorial_Tail_Recursive := [
       Helper := [
         {N, Acc} := @.
-        case N <= 1 of
-          yeah -> Acc.
-          nope -> Helper {N-1, N * Acc}.
+        if N <= 1
+          then Acc.
+          else Helper {N-1, N * Acc}.
         end.
       ].
       Helper {@, 1}.
@@ -137,14 +172,26 @@ With that version, you *can* calculate `Factorial 20000`.
 The `case of` construct is like the `:=` operator, except it tries to pattern match on several patterns,
 and stops once a pattern matches, and executes the corresponding compound expression in a *new* environment
 that inherits from the outer environment. Note it's a new environment, so the bindings made from the pattern
-matching and in the compund expression are forgotten once the `case of` is done evaluating. This is different
-from how `if then else` works, which just evaluates everything in the same old environment. The syntax is
+matching and in the compund expression are forgotten once the `case of` is done evaluating. The syntax is
 
     case <expr> of
-      <pattern1> -> <compund_expr1>
+      <pattern1> -> <compound_expr1>
       ...
       <patternN> -> <compound_exprN>
     end
+
+The `<expr>` above is evaluated in the outer environment (so any identifier bindings will be remembered).
+
+The syntax for the `if then else` construct is
+
+    if <expr>
+      then <consequent_compound_expr>
+      else <alternative_compound_expr>
+    end
+
+It will evaluate `<expr>` in a new environment that inherits from the outer environment, and then, depending on the
+truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
+in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
 
 You can use the builtin function `Require` to import modules. Like this:
 
@@ -159,6 +206,7 @@ It will evaluate the program in the file specified, and then return a module.
 It will evaluate `<expr>` in the context of `<module>`, or in other words, in the same environment, and then return it.
 So you can use all the identifiers in the module inside `<expr>`. `<expr>` is usually just an identifier that points to
 a function in the module, but it could be a more complicated expression, such as a tuple or a function expression. Why not.
+You cannot bind new identifiers in `<expr>`, it is said to be evaluated in "readonly mode".
 
 So if `My_Module` contains a function bound to the identifier `Factorial` then you can do this to use it:
 

@@ -308,7 +308,7 @@ def maval(expr, state):
 
     elif T == 'case_of':
         val = trampoline(expr.content['matched_expr'], state)
-        for arrow in expr.content['arrow_list']:
+        for arrow in expr.content['arrow_sequence']:
             temp_state = state.newenv(Env(parent=state.env))
             try:
                 patternmatch(arrow['pattern'], val, temp_state)
@@ -320,10 +320,11 @@ def maval(expr, state):
 
     elif T == 'if':
         test_expr, if_true, if_false = expr.content
-        if utils.truthy(trampoline(test_expr, state)):
-            return thunk(maval, if_true,  state)
+        temp_state = state.newenv(Env(parent=state.env))
+        if utils.truthy(trampoline(test_expr, temp_state)):
+            return thunk(maval, if_true,  temp_state)
         else:
-            return thunk(maval, if_false, state)
+            return thunk(maval, if_false, temp_state)
 
     elif T == 'catch':
         try:

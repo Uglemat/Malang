@@ -19,7 +19,7 @@ Odd := [
   "
   @ = Number
 
-  Returns `yeah` if `Number` is odd, false otherwise.
+  Returns `yeah` if `Number` is odd, `false` otherwise.
   ".
   @ % 2 = 1.
 ].
@@ -28,7 +28,7 @@ Even := [
   "
   @ = Number
 
-  Returns `yeah` if `Number` is Even, false otherwise.
+  Returns `yeah` if `Number` is Even, `false` otherwise.
   ".
   Bools:Not (Odd @).
 ].
