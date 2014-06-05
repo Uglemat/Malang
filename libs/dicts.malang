@@ -20,11 +20,11 @@ Get := Funcs:Curry 2 [
   @ = Key Dict
 
   Finds the first `{K, V}` pair where `K` = `Key` in the list `Dict` and returns
-  `{ok, V}` if the search is successful, and `sorry` otherwise.
+  `{ok, V}` if the search is successful, and `nope` otherwise.
   ".
   {Key, D} := @.
   case D of
-    #[]           -> sorry.
+    #[]           -> nope.
     {{Key, V}, T} -> {ok, V}.
     {{K,   V}, T} -> Get Key T.
   end.
@@ -45,7 +45,7 @@ Set := Funcs:Curry 3 [
   @ = Key Val Dict
 
   Return a new `Dict` with the pair `{Key, Val}` inserted, and all `{K, V}` pairs
-  where `K` = `Key` removed.
+  where `K` = `Key` removed. So it's obviously not constant time.
   ".
   {K, V, D} := @.
   {{K, V}, Remove K D}.
@@ -67,7 +67,7 @@ Keys := [
 
   Returns a list of all the keys in Dict.
   ".
-  Lists:Map [{K, V} := @, K.]  @.
+  #[K | {K, V} <- @].
 ].
 
 Values := [
@@ -76,7 +76,7 @@ Values := [
 
   Returns a list of all the values in Dict.
   ".
-  Lists:Map [{K, V} := @, V.]  @.
+  #[V | {K, V} <- @].
 ].
 
 Extend := Funcs:Curry 2 [

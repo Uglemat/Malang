@@ -271,7 +271,7 @@ Li                 := Lists:Slice 1 5 Li.
 
 D := #[{one, 1}, {two, 2}, {"three", three}].
 {ok, 1} := Dicts:Get one  D.
-sorry   := Dicts:Get four D.
+nope    := Dicts:Get four D.
 
 yeah := Dicts:Member "three" D.
 nope := Dicts:Member four    D.

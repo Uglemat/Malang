@@ -23,7 +23,7 @@ Here's an example session:
     Malang> Dicts:Get george Ages.
     {ok, 30}
     Malang> Dicts:Get me Ages.
-    sorry
+    nope
     Malang> Dicts:Set me 123 Ages.
     {{me, 123}, {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}}
     Malang> Dicts:Remove peter Ages.
@@ -84,7 +84,7 @@ constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in 
 
 There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
 not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
-of the form `{<key>, <val>}`.
+of the form `{<key>, <val>}`, so they are what you'd call an 'alist' in a language like Lisp.
 
 Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary)
 to 16 (for hexadecimal), and base defaults to 10 (decimal). 
