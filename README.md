@@ -107,7 +107,8 @@ as just "hay".
 ##Atoms
 
 Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
-in your programs (in tuples, et cetera).
+in your programs (in tuples, et cetera). The keywords of the language aren't atoms, so you can't have
+an atom like `if`, `case` or `end`, that would be a syntax error.
 
 ##Identifiers
 

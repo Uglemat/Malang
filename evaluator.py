@@ -220,7 +220,13 @@ def maval(expr, state):
 
     elif T in ('eq', 'ne', 'gt', 'lt', 'ge', 'le'):
         op1, op2 = (trampoline(op, state) for op in expr.content)
-        return Node('atom', {True: 'yeah', False: 'nope'}[cmp_funcs[T](op1, op2)], infonode=expr)
+        try:
+            result = cmp_funcs[T](op1, op2)
+        except TypeError:
+            raise MalangError("Cannot compare values of types {} and {} with the {} operator"
+                              .format(op1._type, op2._type, T),
+                              state.newinfonode(expr))
+        return Node('atom', {True: 'yeah', False: 'nope'}[result], infonode=expr)
 
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, state) for e in expr.content), infonode=expr)
