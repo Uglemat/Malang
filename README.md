@@ -181,6 +181,8 @@ or
 
 The value of a compound expression is the value of the last expression.
 
+Whitespace (including newlines) are not significant in Malang.
+
 ##Functions
 
 A function is a list of compound expressions surrounded by square brackets. For example:
@@ -241,6 +243,10 @@ Which is parsed as `Tup := ({Fst, Snd} := {hello, yoyo}).` and thus does exactly
 ##Function application
 
 The syntax for function application is `<function> <argument>`.
+
+Where `<function>` and `<argument>` are both expressions. Function application is left-associative,
+so `Func Arg1 Arg2` is parsed as `(Func Arg1) Arg2` (`Func Arg1` better return a new function, or else
+that'd be an error).
 
 
 ##Case of
@@ -360,7 +366,14 @@ argument 20000.
 Sometimes it's useful to hide some identifiers and expose others, for example if you're making a library and want to ensure
 backwards compatibility. You can do that with the `classified` construct, this is the syntax:
 
-    classified exposing <identifier1> <identifier2> ... <identifierN> where <compound_expressions> endify
+    classified
+    exposing <identifier1>
+             <identifier2>
+             ...
+             <identifierN>
+    where
+    <compound_expressions>
+    endify
 
 It will evaluate all the `<compound_expressions>` in its own environment inheriting from the outer environment. When that's done,
 it will 'copy' all the exposed identifiers (`<identifier1> ... <identifierN>`) to the outer environment. All those identifiers
@@ -368,7 +381,9 @@ have to be present in the environment of `<compund_expressions>`.
 
 If you don't want to expose any identifiers, then you can use this alternative form instead:
 
-    classified where <compound_expressions> endify
+    classified where
+    <compound_expressions>
+    endify
 
 The value of `classified` is the value of the last compound expression.
 
