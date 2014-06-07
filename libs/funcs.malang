@@ -27,6 +27,10 @@ Curry := [
     argument, and at the end of that chain is the function which will call `Func`
     with the accumulated arguments.
     
+    The function returned will have the same docstring and filename as `Func`, so
+    if someone uses `Help` on that function, then it will show the same docstring, 
+    and report that it was defined where `Func` was defined.
+
     This function was called on itself to create a curried version of itself. Neat. 
     ".
     {N, Func} := @.

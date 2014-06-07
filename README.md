@@ -344,6 +344,22 @@ You can use the function `Exhibit` to go 'inside' of a module when you're in the
 
 The function `Use` is quite *use*ful for testing out a file in the REPL.
 
+If you need to enter many lines into the REPL at once, you can do so by starting and ending with a \` character.
+For example, you could enter the factorial function above into the REPL like this:
+
+    Malang> `Factorial := [
+    ------>   case @ of
+    ------>     1 -> 1.
+    ------>     N -> N * Factorial (N-1).
+    ------>   end.
+    ------> ].`
+    [function]
+    Malang> Factorial 5.
+    120
+    Malang> 
+
+You can't have any characters before the first \` or after the last \`, and they must be on different lines.
+
 # License
 
 GNU GPLv3

@@ -170,20 +170,42 @@ if __name__ == "__main__":
                                                readline_ansicode(1)  + readline_ansicode(33),
                                                readline_ansicode(22) + readline_ansicode(32))
 
+        acc_prompt = "{}------{}> {}".format(readline_ansicode(36),
+                                               readline_ansicode(1)  + readline_ansicode(33),
+                                               readline_ansicode(22) + readline_ansicode(32))
+        accumulating = False
         while True:
             try:
                 with utils.tab_completion():
-                    inp = input(color_prompt)
+                    inp = input(color_prompt if accumulating == False else acc_prompt)
                     print(ansicode(39), end="")
+
             except EOFError:
                 print(ansicode(39))
                 break
+ 
             if not inp:
                 continue
+
+            if accumulating == False and inp.startswith("`"):
+                accumulating = inp[1:]
+                continue
+
+            if accumulating != False:
+                if inp.endswith("`"):
+                    code = accumulating + inp[:-1]
+                    accumulating = False
+                else:
+                    accumulating += inp
+                    continue
+            else:
+                code = inp
+
+
             try:
                 print(
                     builtin_funcs.tostr(
-                        eval_malang(inp, REPL_env, "<REPL>", remove_shebang=False),
+                        eval_malang(code, REPL_env, "<REPL>", remove_shebang=False),
                         repr_str=True
                     ).content,
                 )
