@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-Odd := [
+Odd? := [
   "
   @ = Number
 
@@ -24,13 +24,13 @@ Odd := [
   @ % 2 = 1.
 ].
 
-Even := [
+Even? := [
   "
   @ = Number
 
   Returns `yeah` if `Number` is Even, `false` otherwise.
   ".
-  Bools:Not (Odd @).
+  Bools:Not? (Odd? @).
 ].
 
 RandRange := Funcs:Curry 2 Builtins:RandRange.

@@ -23,7 +23,7 @@ GuessingGame := [
   case catch Strings:ToNumber Guess of
     {error, _} -> Io:PrintLn "You need to guess a number, try again.",
                   GuessingGame {Lives, Answer}.
-    {no_error, Num} ->
+    {no_throw, Num} ->
       if Num = Answer
         then Io:Fprint {"You won! The correct answer was indeed {1}.", Answer}.
         else IncorrectGuess {Lives, Answer, Num}.

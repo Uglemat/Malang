@@ -19,7 +19,7 @@ Here's an example session:
     {one, {two, {three, nil}}}
     Malang> Lists:Reverse List.
     {three, {two, {one, nil}}}
-    Malang> Bools:And yeah nope.
+    Malang> Bools:And? yeah nope.
     nope
     Malang> Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
     {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
@@ -44,11 +44,11 @@ Here's an example session:
     ok
     Malang> Help Numbers.
     Functions in module:
-       Even
-       Odd
+       Even?
+       Odd?
        RandRange
     ok
-    Malang> Help Numbers:Odd.
+    Malang> Help Numbers:Odd?.
     Function was defined in the file '/home/.../malang/libs/numbers.malang'
      - Docstring:
     
@@ -57,14 +57,25 @@ Here's an example session:
       Returns `yeah` if `Number` is odd, `false` otherwise.
       
     ok
-    Malang> Numbers:Odd 43.
+    Malang> Numbers:Odd? 43.
     yeah
     Malang> 24 + "hello!".
     Error: Invalid arithmetic expression at line #1 in file '<REPL>'
     Malang> {error, Reason} := catch 22 / 0.
     {error, "Division or modulo by zero at line #1 in file '<REPL>'"}
+    Malang> Add := [{Fst, Snd} := @, Fst + Snd.].
+    [function]
+    Malang> Add {23, 10}.
+    33
+    Malang> Add' := Funcs:Curry 2 Add.
+    [function]
+    Malang> Add' 23 10.
+    33
+    Malang> Add10 := Add' 10.
+    [function]
+    Malang> Add10 23.
+    33
     Malang> 
-
 
 #Overview
 
@@ -107,8 +118,9 @@ an atom like `if`, `case` or `end`, that would be a syntax error.
 
 ##Identifiers
 
-Identifiers are names which are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_]*`.
+Identifiers are names which are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_'?]*`.
 The identifier `_` is special, it will match anything and is never bound to anything.
+
 
 ##Tuples
 

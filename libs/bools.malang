@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-Truthy := [
+Truthy? := [
   "
   @ = Val
 
@@ -28,46 +28,46 @@ Truthy := [
 ].
 
 
-And := Funcs:Curry 2 [
+And? := Funcs:Curry 2 [
   "
   @ = Val1 Val2
 
   Returns `yeah` if and only if both `Val1` and `Val2` are truthy, `nope` otherwise.
   ".
   {A1, A2} := @.
-  case {Truthy A1, Truthy A2} of
+  case {Truthy? A1, Truthy? A2} of
     {yeah, yeah} -> yeah.
     {_, _}       -> nope.
   end.
 ].
 
-Or := Funcs:Curry 2 [
+Or? := Funcs:Curry 2 [
   "
   @ = Val1 Val2
 
   Returns `yeah` if either `Val1` or `Val2` is truthy, `nope` otherwise.
   ".
   {A1, A2} := @.
-  case {Truthy A1, Truthy A2} of
+  case {Truthy? A1, Truthy? A2} of
     {nope, nope} -> nope.
     {_, _}       -> yeah.
   end.
 ].
 
-Xor := Funcs:Curry 2 [
+Xor? := Funcs:Curry 2 [
   "
   @ = Val1 Val2
 
   Returns `yeah` if exactly one of `Val1` and `Val2` is truthy, `nope` otherwise.
   ".
   {A1, A2} := @.
-  case {Truthy A1, Truthy A2} of
+  case {Truthy? A1, Truthy? A2} of
     {Same, Same} -> nope.
     {_, _}       -> yeah.
   end.
 ].
 
-Not := [
+Not? := [
   "
   @ = Val
 

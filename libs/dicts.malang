@@ -51,14 +51,14 @@ Set := Funcs:Curry 3 [
   {{K, V}, Remove K D}.
 ].
 
-Member := Funcs:Curry 2 [
+Member? := Funcs:Curry 2 [
   "
   @ = Key Dict
 
   Returns `true` if there exists a `{K, V}` pair in `Dict` where `K` = `Key`.
   ".
   {Key, Dict} := @.
-  Lists:Any [{K, _} := @, K = Key.] Dict.
+  Lists:Any? [{K, _} := @, K = Key.] Dict.
 ].
 
 Keys := [

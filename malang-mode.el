@@ -77,12 +77,14 @@
   (list
    '("\\(\\<\\(case\\|of\\|if\\|then\\|else\\|end\\|catch\\|throw\\)\\>\\|->\\|<-\\)" . font-lock-keyword-face)
    '("\\<\\([a-z][A-Za-z0-9_]*\\)\\>" . font-lock-constant-face)
-   '("\\(\\<\\([A-Z_][A-Za-z0-9_]*\\)\\>\\|@\\)" . font-lock-variable-name-face))
+   '("\\(\\<\\([A-Z_][A-Za-z0-9_?']*\\)\\>\\|@\\)" . font-lock-variable-name-face))
   "highlighting expressions for malang mode.")
 
 (defvar malang-mode-syntax-table
   (let ((st (make-syntax-table)))
     (modify-syntax-entry ?_ "w" st)
+    (modify-syntax-entry ?\? "w" st)
+    (modify-syntax-entry ?' "w" st)
     (modify-syntax-entry ?\- ". 12" st)
     (modify-syntax-entry ?\n ">" st)
     st)

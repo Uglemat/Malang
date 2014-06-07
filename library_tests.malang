@@ -80,36 +80,36 @@ Str := "yolo".
 "
         Bools Tests:
 ".
-nope := Bools:Truthy {}.
-nope := Bools:Truthy 0.
-nope := Bools:Truthy nope.
-nope := Bools:Truthy "".
+nope := Bools:Truthy? {}.
+nope := Bools:Truthy? 0.
+nope := Bools:Truthy? nope.
+nope := Bools:Truthy? "".
 
-yeah  := Bools:Truthy yeah.
-yeah  := Bools:Truthy "true".
-yeah  := Bools:Truthy 23.
-yeah  := Bools:Truthy {nope}.
-
-
-yeah  := Bools:And 1 2.
-yeah  := Bools:And yeah yeah.
-
-nope := Bools:And nope nope.
-nope := Bools:And yeah nope.
+yeah  := Bools:Truthy? yeah.
+yeah  := Bools:Truthy? "true".
+yeah  := Bools:Truthy? 23.
+yeah  := Bools:Truthy? {nope}.
 
 
-yeah := Bools:Or "3"  nope.
-yeah := Bools:Or 0    1.
-nope := Bools:Or nope "".
+yeah  := Bools:And? 1 2.
+yeah  := Bools:And? yeah yeah.
+
+nope := Bools:And? nope nope.
+nope := Bools:And? yeah nope.
 
 
-yeah := Bools:Xor 0    yeah.
-yeah := Bools:Xor yeah nope.
-nope := Bools:Xor yeah yeah.
-nope := Bools:Xor 0    0.
+yeah := Bools:Or? "3"  nope.
+yeah := Bools:Or? 0    1.
+nope := Bools:Or? nope "".
 
-yeah := Bools:Not nope.
-nope := Bools:Not yeah.
+
+yeah := Bools:Xor? 0    yeah.
+yeah := Bools:Xor? yeah nope.
+nope := Bools:Xor? yeah yeah.
+nope := Bools:Xor? 0    0.
+
+yeah := Bools:Not? nope.
+nope := Bools:Not? yeah.
 
 "
         Lists Tests:
@@ -159,28 +159,28 @@ second := Lists:Nth 2 #[first, second].
 #[1, 2, 3, 4] := Lists:Concat #[1, 2] #[3, 4].
 
 
-yeah := Lists:Any [@ = 2.] #[1, 2, 3].
-nope := Lists:Any [@ = 2.] #[1, 3].
+yeah := Lists:Any? [@ = 2.] #[1, 2, 3].
+nope := Lists:Any? [@ = 2.] #[1, 3].
 
-yeah := Lists:All [@ = 4.] #[4, 4, 4, 4].
-yeah := Lists:All [@ = 4.] #[].
-nope := Lists:All [@ = 4.] #[4, 4, 4, four, 4].
-
-
-yeah := Lists:And #[].
-yeah := Lists:And #[1, 2, 3].
-yeah := Lists:And #[yeah].
-nope := Lists:And #[1, 2, nope, 4].
-nope := Lists:And #[0].
-
-nope := Lists:Or #[].
-nope := Lists:Or #[0, nope, nil, "", {}].
-yeah := Lists:Or #[0, nope, nil, "", {}, "Hello"].
-yeah := Lists:Or #[yeah, 1].
+yeah := Lists:All? [@ = 4.] #[4, 4, 4, 4].
+yeah := Lists:All? [@ = 4.] #[].
+nope := Lists:All? [@ = 4.] #[4, 4, 4, four, 4].
 
 
-yeah := Lists:Member "str" #[one, 2, "str"].
-nope := Lists:Member str   #[one, 2, "Str"].
+yeah := Lists:And? #[].
+yeah := Lists:And? #[1, 2, 3].
+yeah := Lists:And? #[yeah].
+nope := Lists:And? #[1, 2, nope, 4].
+nope := Lists:And? #[0].
+
+nope := Lists:Or? #[].
+nope := Lists:Or? #[0, nope, nil, "", {}].
+yeah := Lists:Or? #[0, nope, nil, "", {}, "Hello"].
+yeah := Lists:Or? #[yeah, 1].
+
+
+yeah := Lists:Member? "str" #[one, 2, "str"].
+nope := Lists:Member? str   #[one, 2, "Str"].
 
 #[] := Lists:Repeat 0 hello.
 #[hello, hello, hello] := Lists:Repeat 3 hello.
@@ -272,23 +272,23 @@ D := #[{one, 1}, {two, 2}, {"three", three}].
 {ok, 1} := Dicts:Get one  D.
 nope    := Dicts:Get four D.
 
-yeah := Dicts:Member "three" D.
-nope := Dicts:Member four    D.
-nope := Dicts:Member 2       D.
+yeah := Dicts:Member? "three" D.
+nope := Dicts:Member? four    D.
+nope := Dicts:Member? 2       D.
 
-yeah := Dicts:Member two  (Dicts:Remove "three" D).
-nope := Dicts:Member four (Dicts:Remove two     D).
-nope := Dicts:Member one  (Dicts:Remove one     D).
+yeah := Dicts:Member? two  (Dicts:Remove "three" D).
+nope := Dicts:Member? four (Dicts:Remove two     D).
+nope := Dicts:Member? one  (Dicts:Remove one     D).
 
-yeah := Dicts:Member 4 (Dicts:Set 4 four D).
+yeah := Dicts:Member? 4 (Dicts:Set 4 four D).
 {ok, four} := Dicts:Get 4 (Dicts:Set 4 four D).
 
 Vals := Dicts:Values D.
 Keys := Dicts:Keys D.
-nope := Lists:Member one     Vals.
-nope := Lists:Member three   Keys.
-yeah := Lists:Member "three" Keys.
-yeah := Lists:Member 2       Vals.
+nope := Lists:Member? one     Vals.
+nope := Lists:Member? three   Keys.
+yeah := Lists:Member? "three" Keys.
+yeah := Lists:Member? 2       Vals.
 
 3 := Lists:Length Vals.
 3 := Lists:Length Keys.
@@ -495,7 +495,7 @@ nope  := Strings:Find "hello" "".
         Funcs Tests:
 ".
 
-yeah := (Bools:Truthy ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename) Lists:Map.
+yeah := (Bools:Truthy? ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename) Lists:Map.
 
 "Hayala" := (Funcs:GetFilename ~ Funcs:SetFilename "Hayala") Lists:Map.
 
@@ -533,13 +533,13 @@ Double_Plus_10 := Funcs:Partial 5 Doubler.
         Numbers Tests:
 ".
 
-yeah := Numbers:Odd  13.
-nope := Numbers:Odd  2.
-yeah := Numbers:Even 0.
-nope := Numbers:Even 31.
+yeah := Numbers:Odd?  13.
+nope := Numbers:Odd?  2.
+yeah := Numbers:Even? 0.
+nope := Numbers:Even? 31.
 
 Randnums := #[Numbers:RandRange 0 10 | _ <- Lists:Range 0 50].
-yeah     := Lists:All [Bools:And (@ >= 0) (@ < 10).] Randnums.
+yeah     := Lists:All? [Bools:And? (@ >= 0) (@ < 10).] Randnums.
 
 
 "
@@ -602,8 +602,8 @@ empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
 #[2, 4]   := Show 2 (Streams:Dropwhile [@ > 10.] Evens).
 #[]       := Streams:ToList (Streams:Dropwhile [@ < 10.] empty).
 
-#[2, 4, 6, 8] := Show 4 (Streams:Filter Numbers:Even Ns).
-#[]           := Show 4 (Streams:Filter Numbers:Even empty).
+#[2, 4, 6, 8] := Show 4 (Streams:Filter Numbers:Even? Ns).
+#[]           := Show 4 (Streams:Filter Numbers:Even? empty).
 
 
 

@@ -178,7 +178,7 @@ Concat := Funcs:Curry 2 [
   Helper {Reverse L1, L2}.
 ].
 
-Any := Funcs:Curry 2 [
+Any? := Funcs:Curry 2 [
   "
   @ = Func List
 
@@ -187,12 +187,12 @@ Any := Funcs:Curry 2 [
   {Func, List} := @.
   case List of
     #[]    -> nope.
-    {H, T} -> if Func H then yeah. else Any Func T. end.
+    {H, T} -> if Func H then yeah. else Any? Func T. end.
   end.
 ].
 
 
-All := Funcs:Curry 2 [
+All? := Funcs:Curry 2 [
   "
   @ = Func List
 
@@ -201,12 +201,12 @@ All := Funcs:Curry 2 [
   {Func, List} := @.
   case List of
     #[]    -> yeah.
-    {H, T} -> if Func H then All Func T. else nope. end.
+    {H, T} -> if Func H then All? Func T. else nope. end.
   end.
 ].
 
 
-And := [
+And? := [
   "
   @ = List
 
@@ -214,11 +214,11 @@ And := [
   ".
   case @ of
     #[]    -> yeah.
-    {H, T} -> if H then And T. else nope. end.
+    {H, T} -> if H then And? T. else nope. end.
   end.
 ].
 
-Or := [
+Or? := [
   "
   @ = List
 
@@ -226,19 +226,19 @@ Or := [
   ".
   case @ of
     #[]    -> nope.
-    {H, T} -> if H then yeah. else Or T. end.
+    {H, T} -> if H then yeah. else Or? T. end.
   end.
 ].
 
 
-Member := Funcs:Curry 2 [
+Member? := Funcs:Curry 2 [
   "
   @ = Val List
 
   Returns `yeah` if `Val` is a member of the `List`, `nope` otherwise.
   ".
   {Val, List} := @.
-  Any [@ = Val.] List.
+  Any? [@ = Val.] List.
 ].
 
 Repeat := Funcs:Curry 2 [
