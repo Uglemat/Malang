@@ -15,6 +15,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Next
+         MakeStream
+         Map
+         ToList
+         Take
+         Takewhile
+         Drop
+         Dropwhile
+         Zipwith
+         Zip
+         Chain
+         Interleave
+         Cons
+         Filter
+where
+
 Next := [
   "
   @ = Stream
@@ -281,3 +298,5 @@ Filter := Funcs:Curry 2 [
     end.
   ].
 ].
+
+endify.

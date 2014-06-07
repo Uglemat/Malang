@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified where
+
 #[] := nil.
 {1, nil} := #[1].
 
@@ -75,11 +77,15 @@ nope := #[1, #[2, #[3, 1]], 4, 5] = #[1, #[2, #[3]], 4, 5].
 nope := {0,2,3, 4} > {1,2,3}.
 yeah := {0,2, 3} < {1,2,3, 4}.
 
-Str := "yolo".
+
+endify.
 
 "
         Bools Tests:
 ".
+
+classified where
+
 nope := Bools:Truthy? {}.
 nope := Bools:Truthy? 0.
 nope := Bools:Truthy? nope.
@@ -111,9 +117,13 @@ nope := Bools:Xor? 0    0.
 yeah := Bools:Not? nope.
 nope := Bools:Not? yeah.
 
+endify.
+
 "
         Lists Tests:
 ".
+
+classified where
 
 "" := Lists:Joinwith " -=- " #[].
 "1|3|9" := Lists:Joinwith "|" #[1, 3, 9].
@@ -232,12 +242,12 @@ Add := [{N1, N2} := @.
 #[2, 1]          := Lists:Dropwhile [@ > 2.] #[4, 3, 2, 1].
 
 
-{#[], #[1, 2, 3]} := Lists:Partition_At 0 #[1, 2, 3].
-{#[1], #[2, 3]}   := Lists:Partition_At 1 #[1, 2, 3].
-{#[2, 1], #[3]}   := Lists:Partition_At 2 #[1, 2, 3].
-{#[3, 2, 1], #[]} := Lists:Partition_At 3 #[1, 2, 3].
-{#[3, 2, 1], #[]} := Lists:Partition_At 4 #[1, 2, 3].
-{#[], #[]}        := Lists:Partition_At 2 #[].
+{#[], #[1, 2, 3]} := Lists:PartitionAt 0 #[1, 2, 3].
+{#[1], #[2, 3]}   := Lists:PartitionAt 1 #[1, 2, 3].
+{#[2, 1], #[3]}   := Lists:PartitionAt 2 #[1, 2, 3].
+{#[3, 2, 1], #[]} := Lists:PartitionAt 3 #[1, 2, 3].
+{#[3, 2, 1], #[]} := Lists:PartitionAt 4 #[1, 2, 3].
+{#[], #[]}        := Lists:PartitionAt 2 #[].
 
 
 {}          := Lists:ToTuple #[].
@@ -261,12 +271,14 @@ Li                 := Lists:Slice 1 5 Li.
 3 := Lists:Min #[3, 3].
 1 := Lists:Min #[1, 3, 2].
 
-
+endify.
 
 
 "
         Dicts Tests:
 ".
+
+classified where
 
 D := #[{one, 1}, {two, 2}, {"three", three}].
 {ok, 1} := Dicts:Get one  D.
@@ -299,9 +311,14 @@ Ag  := Dicts:Extend Ag #[].
 #[] := Dicts:Extend #[] #[].
 #[{dory, 11}, {harry, 83}, {peter, 23}] := Dicts:Extend Ag Ag2.
 
+endify.
+
 "
         Sort Tests:
 ".
+
+classified where
+
 #[] :=              Lists:Sort #[].
 #["hay"] :=         Lists:Sort #["hay"].
 #[1, 2, 3] :=       Lists:Sort #[1, 2, 3].
@@ -367,10 +384,13 @@ Reverse_LenCmp := [ -(LenCmp {Car @, Cdr @}).].
 {#["Hello"], #[]}       := Tuples:Sortwith Reverse_LenCmp {#[], #["Hello"]}.
 {#[-23, 4], #[92], #[]} := Tuples:Sortwith Reverse_LenCmp {#[-23, 4], #[], #[92]}.
 
+endify.
 
 "
         Objects Tests:
 ".
+
+classified where
 
 Point := Objects:Create #[
   {x, 10},
@@ -399,10 +419,13 @@ NewPoint := Point extend #[
 25 := NewPoint sum {}.
 39 := NewPoint newsum (-3).
 
+endify.
 
 "
         Tuples Tests:
 ".
+
+classified where
 
 nil := Tuples:ToList {}.
 #[1] := Tuples:ToList {1}.
@@ -423,10 +446,13 @@ ello := Tuples:Nth 1 {ello}.
 {1, 2, 3}    := Tuples:Slice 1 4 {1,2,3,4}.
 {1, 2, 3, 4} := Tuples:Slice 1 5 {1,2,3,4}.
 
+endify.
 
 "
         Strings Tests:
 ".
+
+classified where
 
 0  := Strings:Length "".
 1  := Strings:Length "-".
@@ -479,7 +505,7 @@ nope  := Strings:Find "hello" "".
 255 := Strings:ToNumber "16#FF".
 {error, _} := catch Strings:ToNumber "abc".
 
-
+Str := "yolo".
 "yolo"      := Strings:Fmt {"{1}",       Str}.
 "----yolo"  := Strings:Fmt {"{1|->8}",   Str}.
 "    yolo"  := Strings:Fmt {"{1| >8}",   Str}.
@@ -490,10 +516,13 @@ nope  := Strings:Find "hello" "".
 "yolo|yolo" := Strings:Fmt {"{1}{2}{1}", Str, "|"}.
 "---32$"    := Strings:Fmt {"{1|->5}$",  32}.
 
+endify.
 
 "
         Funcs Tests:
 ".
+
+classified where
 
 yeah := (Bools:Truthy? ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename) Lists:Map.
 
@@ -528,10 +557,13 @@ Doubler := [@*2.].
 Double_Plus_10 := Funcs:Partial 5 Doubler.
 16 := Double_Plus_10 3.
 
+endify.
 
 "
         Numbers Tests:
 ".
+
+classified where
 
 yeah := Numbers:Odd?  13.
 nope := Numbers:Odd?  2.
@@ -541,10 +573,13 @@ nope := Numbers:Even? 31.
 Randnums := #[Numbers:RandRange 0 10 | _ <- Lists:Range 0 50].
 yeah     := Lists:All? [Bools:And? (@ >= 0) (@ < 10).] Randnums.
 
+endify.
 
 "
         Streams:Tests:
 ".
+
+classified where
 
 Ones := [{1, Ones}.].
 Ns := Streams:MakeStream 0 [@ + 1.].
@@ -605,7 +640,7 @@ empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
 #[2, 4, 6, 8] := Show 4 (Streams:Filter Numbers:Even? Ns).
 #[]           := Show 4 (Streams:Filter Numbers:Even? empty).
 
-
+endify.
 
 ---------------------------------------
 ---------------------------------------

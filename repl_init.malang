@@ -15,23 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
-[
-  Testimonials := #[
-    "After I started using Malang™, I became really really productive",
-    "This product is really great, it's perfect for me",
-    "Switch to Malang™ now, and you won't regret it!",
-    "My life can be neatly divided into two parts; before and after Malang™",
-    "I feel 10 years younger after having used Malang™",
-    "I used to have issues with my stomach, but now? That's a thing of the past, now!"
-  ].
-  Names := #["Ben Bitdiddle",
-             "Eva Lu Ator",
-             "Louis Reasoner",
-             "Alyssa P. Hacker",
-             "Cy D. Fect",
-             "Lem E. Tweakit"].
+classified where
 
-  Io:Fprint {"Welcome To Malang, The Best Programming Language Ever
+Testimonials := #[
+  "After I started using Malang™, I became really really productive",
+  "This product is really great, it's perfect for me",
+  "Switch to Malang™ now, and you won't regret it!",
+  "My life can be neatly divided into two parts; before and after Malang™",
+  "I feel 10 years younger after having used Malang™",
+  "I used to have issues with my stomach, but now? That's a thing of the past, now!"
+].
+Names := #["Ben Bitdiddle",
+           "Eva Lu Ator",
+           "Louis Reasoner",
+           "Alyssa P. Hacker",
+           "Cy D. Fect",
+           "Lem E. Tweakit"].
+
+Io:Fprint {"Welcome To Malang, The Best Programming Language Ever
 Copyright 2014 Mattias Ugelvik
 License: GPLv3
 
@@ -40,6 +41,6 @@ License: GPLv3
     ", 
     Lists:RandomChoice Testimonials,
     Lists:RandomChoice Names,
-    Numbers:RandRange 2 110
-  }.
-] {}.
+    Numbers:RandRange 2 110}.
+
+endify.

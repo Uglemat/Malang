@@ -15,6 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Curry
+         GetFilename
+         SetFilename
+         GetDocstring
+         SetDocstring
+         Partial
+where
 
 Curry := [
 
@@ -94,3 +102,5 @@ Partial := Curry 2 [
   {Args, Func} := @.
   [Func (Args + @).].
 ].
+
+endify.

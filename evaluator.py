@@ -184,6 +184,7 @@ def maval(expr, state):
     """
 
     T = expr._type
+
     if T in ('number', 'str', 'atom', 'function', 'builtin'):
         return expr
 
@@ -343,6 +344,17 @@ def maval(expr, state):
     elif T == 'throw':
         value = trampoline(expr.content, state)
         raise utils.Throw(value)
+
+    elif T == 'classified':
+        exposed, program = expr.content
+        hidden_state = state.newenv(Env(parent=state.env))
+        result = trampoline(program, hidden_state)
+
+        for ident in exposed:
+            val = hidden_state.env.get(ident.content, state.newinfonode(expr))
+            state.env.bind(ident.content, val)
+        
+        return result
 
     raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), state.newinfonode(expr))
 

@@ -75,7 +75,7 @@
 
 (defconst malang-font-lock-keywords
   (list
-   '("\\(\\<\\(case\\|of\\|if\\|then\\|else\\|end\\|catch\\|throw\\)\\>\\|->\\|<-\\)" . font-lock-keyword-face)
+   '("\\(\\<\\(case\\|of\\|if\\|then\\|else\\|end\\|catch\\|\throw\\|classified\\|exposing\\|where\\|endify\\)\\>\\|->\\|<-\\)" . font-lock-keyword-face)
    '("\\<\\([a-z][A-Za-z0-9_]*\\)\\>" . font-lock-constant-face)
    '("\\(\\<\\([A-Z_][A-Za-z0-9_?']*\\)\\>\\|@\\)" . font-lock-variable-name-face))
   "highlighting expressions for malang mode.")

@@ -15,6 +15,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Joinwith
+         Join
+         ListToStr
+         Reverse
+         Map
+         Reduce
+         Length
+         Range
+         Nth
+         RandomChoice
+         Concat
+         Any?
+         All?
+         And?
+         Or?
+         Member?
+         Repeat
+         Remove
+         Filter
+         Zip
+         Zipwith
+         PartitionAt
+         Take
+         Drop
+         Takewhile
+         Dropwhile
+         ToTuple
+         Sortwith
+         Sort
+         ReverseSort
+         Slice
+         Max
+         Min
+where
+
 Joinwith := Funcs:Curry 2 [
   "
   @ = Str List
@@ -309,7 +345,7 @@ Zipwith := Funcs:Curry 3 [
   ].
   Reverse (Helper {L1, L2, #[]}).].
 
-Partition_At := Funcs:Curry 2 [
+PartitionAt := Funcs:Curry 2 [
   "
   @ = N List
 
@@ -341,7 +377,7 @@ Take := Funcs:Curry 2 [
   Return the first `N` elements of `List`.
   ".
   {N, List} := @.
-  Reverse (Car (Partition_At N List)).
+  Reverse (Car (PartitionAt N List)).
 ].
 
 Drop := Funcs:Curry 2 [
@@ -351,7 +387,7 @@ Drop := Funcs:Curry 2 [
   Drop the first `N` element off of `List`, and return the resulting list.
   ".
   {N, List} := @.
-  Cdr (Partition_At N List).
+  Cdr (PartitionAt N List).
 ].
 
 
@@ -497,3 +533,5 @@ Min := [
       ] H T.
   end.
 ].
+
+endify.

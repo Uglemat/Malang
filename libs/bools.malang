@@ -15,6 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Truthy?
+         And?
+         Or?
+         Xor?
+         Not?
+where
+
 Truthy? := [
   "
   @ = Val
@@ -75,3 +83,5 @@ Not? := [
   ".
   if @ then nope. else yeah. end.
 ].
+
+endify.

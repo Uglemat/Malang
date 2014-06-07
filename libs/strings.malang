@@ -15,6 +15,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Fmt
+         Repr
+         Length
+         Nth
+         Upper
+         Lower
+         Find
+         Slice
+         Split
+         Rstrip
+         Lstrip
+         Strip
+         ToNumber
+where
+
 Fmt    := Builtins:Fmt.
 Repr   := Builtins:StringRepr.
 
@@ -43,3 +59,5 @@ Strip  := Funcs:Curry 2 [
 ].
 
 ToNumber := Builtins:StringToNumber.
+
+endify.

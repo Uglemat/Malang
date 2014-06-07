@@ -207,9 +207,9 @@ In the library code, I use a standard format for documentation strings, like thi
 
     blabla bla
 
-If `<argument>` looks like this: `{Omg, Yah}` it means that the function expects a two-tuple. If it looks like
-this: `Omg Yag` it means that the function is curried, and `Omg` and `Yag` are the first and last arguments,
-respectively.
+If `<arguments>` looks like this: `{Omg, Yah}` it means that the function expects a two-tuple. If it looks like
+this: `Omg Yah` it means that the function is curried, and `Omg` and `Yah` are the first and last arguments,
+respectively. Pretty much all the functions in the library code are curried.
 
 ##Bind operator
 
@@ -354,6 +354,24 @@ So if `My_Module` contains a function bound to the identifier `Factorial` then y
 
 It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
 argument 20000.
+
+##Classified
+
+Sometimes it's useful to hide some identifiers and expose others, for example if you're making a library and want to ensure
+backwards compatibility. You can do that with the `classified` construct, this is the syntax:
+
+    classified exposing <identifier1> <identifier2> ... <identifierN> where <compound_expressions> endify
+
+It will evaluate all the `<compound_expressions>` in its own environment inheriting from the outer environment. When that's done,
+it will 'copy' all the exposed identifiers (`<identifier1> ... <identifierN>`) to the outer environment. All those identifiers
+have to be present in the environment of `<compund_expressions>`.
+
+If you don't want to expose any identifiers, then you can use this alternative form instead:
+
+    classified where <compound_expressions> endify
+
+The value of `classified` is the value of the last compound expression.
+
 
 ##Comments
 

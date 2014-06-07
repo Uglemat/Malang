@@ -29,7 +29,7 @@ def unescape_str(s):
 
 
 keywords = {kw: kw.upper()
-            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch', 'throw']}
+            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch', 'throw', 'classified', 'exposing', 'where', 'endify']}
 
 
 
@@ -170,7 +170,19 @@ def t_str_error(t):
 
 
 
+"""
+classified
+exposing Odd?
+         Even?
+         RandRange
+where
 
+Odd?  := [ ... ].
+Even? := [ ... ].
+RandRange := ...
+
+endify
+"""
 
 
 
@@ -336,7 +348,8 @@ def p_item_num(p):
             | ID
             | func_def
             | case_of
-            | if'''
+            | if
+            | classified'''
     p[0] = p[1]
 
 def p_item_expr(p):
@@ -415,6 +428,23 @@ def p_expr_sequence_single(p):
 
 
 
+def p_classified_no_expose(p):
+    'classified : CLASSIFIED WHERE program ENDIFY' 
+    p[0] = Node('classified', [(), p[3]], lineno=p.lineno(1))
+
+def p_classify_expose(p):
+    'classified : CLASSIFIED EXPOSING identifier_sequence WHERE program ENDIFY'
+    p[0] = Node('classified', [p[3], p[5]], lineno=p.lineno(1))
+
+
+def p_identifier_sequence(p):
+    'identifier_sequence : identifier_sequence ID'
+    p[0] = p[1] + (p[2],)
+
+
+def p_identifier_sequence_single(p):
+    'identifier_sequence : ID'
+    p[0] = (p[1],)
 
 # Error rule for syntax errors
 def p_error(p):

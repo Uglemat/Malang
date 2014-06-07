@@ -15,6 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing ToList
+         Nth
+         Sortwith
+         Length
+         Slice
+         Slice
+         Sort
+         ReverseSort
+where
+
 ToList   := Builtins:ToList.
 Nth      := Funcs:Curry 2 Builtins:TupleNth.
 Sortwith := Funcs:Curry 2 Builtins:TupleSortwith.
@@ -38,3 +49,5 @@ ReverseSort := [
   ".
   Sortwith [-(Cmp {Car @, Cdr @}).] @.
 ].
+
+endify.

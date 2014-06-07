@@ -15,6 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+classified
+exposing Get
+         Remove
+         Set
+         Member?
+         Keys
+         Values
+         Extend
+where
+
 Get := Funcs:Curry 2 [
   "
   @ = Key Dict
@@ -93,3 +103,5 @@ Extend := Funcs:Curry 2 [
     {{K, V}, Tail} -> Extend (Set K V Old) Tail.
   end.
 ].
+
+endify.
