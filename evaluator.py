@@ -183,6 +183,8 @@ def maval(expr, state):
     itself has no tail call elimination, and python's call stack would explode.
     """
 
+    state = state.newinfonode(expr)
+
     T = expr._type
 
     if T in ('number', 'str', 'atom', 'function', 'builtin'):
@@ -191,7 +193,7 @@ def maval(expr, state):
     elif T == 'uminus':
         op = trampoline(expr.content, state)
         if not op._type == 'number':
-            raise MalangError("Invalid arithmetic expression", state.newinfonode(expr))
+            raise MalangError("Invalid arithmetic expression", state)
         return Node('number', -op.content, infonode=expr)
 
     elif T in ('plus', 'minus', 'divide', 'times', 'modulo', 'pow'):
@@ -202,7 +204,7 @@ def maval(expr, state):
 
             if _type == 'number':
                 if T in ('modulo', 'divide') and op2.content == 0:
-                    raise MalangError("Division or modulo by zero", state.newinfonode(expr))
+                    raise MalangError("Division or modulo by zero", state)
                 else:
                     return Node('number', arithmetic_funcs[T](op1.content, op2.content), infonode=expr)
             elif _type == 'str' and T == 'plus':
@@ -216,7 +218,7 @@ def maval(expr, state):
             return Node('tuple', op1.content * op2.content)
 
         else:
-            raise MalangError("Invalid arithmetic expression", state.newinfonode(expr))
+            raise MalangError("Invalid arithmetic expression", state)
 
 
     elif T in ('eq', 'ne', 'gt', 'lt', 'ge', 'le'):
@@ -226,7 +228,7 @@ def maval(expr, state):
         except TypeError:
             raise MalangError("Cannot compare values of types {} and {} with the {} operator"
                               .format(op1._type, op2._type, T),
-                              state.newinfonode(expr))
+                              state)
         return Node('atom', {True: 'yeah', False: 'nope'}[result], infonode=expr)
 
     elif T == 'tuple':
@@ -251,19 +253,19 @@ def maval(expr, state):
         return val
 
     elif T == 'id':
-        return state.env.get(expr.content, state.newinfonode(expr))
+        return state.env.get(expr.content, state)
 
     elif T == 'module_access':
         module = trampoline(expr.content[0], state)
         if module._type != 'module':
-            raise MalangError("You tried to use module access on something that wasn't a module", state.newinfonode(expr))
+            raise MalangError("You tried to use module access on something that wasn't a module", state)
         val = trampoline(expr.content[1], state.newenv(module.content).newreadonly(True))
         return val
 
     elif T == 'composition':
         f1, f2 = (trampoline(e, state) for e in expr.content)
-        utils.assert_type(f1, ('builtin', 'function'), state.newinfonode(expr))
-        utils.assert_type(f2, ('builtin', 'function'), state.newinfonode(expr))
+        utils.assert_type(f1, ('builtin', 'function'), state)
+        utils.assert_type(f2, ('builtin', 'function'), state)
 
         code = Node('program', [
             Node('program', [
@@ -283,9 +285,9 @@ def maval(expr, state):
 
     elif T == 'fncall':
         func, arg = (trampoline(e, state) for e in expr.content)
-        utils.assert_type(func, ('builtin', 'function'), state.newinfonode(expr))
+        utils.assert_type(func, ('builtin', 'function'), state)
         if func._type == 'builtin':
-            return func.content(arg, state.newinfonode(expr))
+            return func.content(arg, state)
         elif func._type == 'function':
             return thunk(maval,
                          func.content['code'],
@@ -323,7 +325,7 @@ def maval(expr, state):
                 continue
 
             return thunk(maval, arrow['expr'], temp_state)
-        raise MalangError("No pattern matched in case_of expression", state.newinfonode(expr))
+        raise MalangError("No pattern matched in case_of expression", state)
 
     elif T == 'if':
         test_expr, if_true, if_false = expr.content
@@ -351,12 +353,12 @@ def maval(expr, state):
         result = trampoline(program, hidden_state)
 
         for ident in exposed:
-            val = hidden_state.env.get(ident.content, state.newinfonode(expr))
+            val = hidden_state.env.get(ident.content, state)
             state.env.bind(ident.content, val)
         
         return result
 
-    raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), state.newinfonode(expr))
+    raise MalangError("Unknown expression {!r}".format(utils.AST_to_str(expr)), state)
 
 
 

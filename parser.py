@@ -170,22 +170,6 @@ def t_str_error(t):
 
 
 
-"""
-classified
-exposing Odd?
-         Even?
-         RandRange
-where
-
-Odd?  := [ ... ].
-Even? := [ ... ].
-RandRange := ...
-
-endify
-"""
-
-
-
 
 
 
