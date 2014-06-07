@@ -131,6 +131,42 @@ A tuple is an ordered collection of items, surrounded by `{` and `}`, like this:
 Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just syntactic sugar.
 `#[1, 2, 3]` translates into `{1, {2, {3, nil}}}` (where `nil` is an atom).
 
+###List comprehensions
+
+You can use list comprehensions to create new lists out of old lists. This is the syntax:
+
+    #[<elem_expr> | <emitter1>, <emitter2>, ... <emitterN>]
+
+Where the syntax of the 'emitters' are:
+
+    <pattern> <- <expr>
+    or just
+    <filter>
+
+Where `<expr>` should evaluate to a list, and every element will be pattern-matched agains `<pattern>`.
+
+The list comprehension works the way they do in other languages, and it's a little tedious to explain how
+they work, so I'll just give a couple of examples:
+
+    Malang> L := #[1,2,3,4,5].
+    {1, {2, {3, {4, {5, nil}}}}}
+    Malang> #[Elem * 2 | Elem <- L].
+    {2, {4, {6, {8, {10, nil}}}}}
+    Malang> #[Elem | Elem <- L, Numbers:Even? Elem].
+    {2, {4, nil}}
+    Malang> Elem.
+    Error: Identifier 'Elem' not bound to a value at line #1 in file '<REPL>'
+    Malang> #[{Elem1, Elem2} | Elem1 <- L, Elem2 <- L, Elem1 >= Elem2*2].
+    {{2, 1}, {{3, 1}, {{4, 1}, {{4, 2}, {{5, 1}, {{5, 2}, nil}}}}}}
+
+As you can see, all the identifiers bound inside the list comprehension are forgotten, they only exist inside `<elem_expr>`
+and any *later* emitters (so an identifier bound in `<emitter2>` is available in `<emitter5>`, but not in `<emitter1>`.
+
+`#[Elem * 2 | Elem <- L]` is just another way of saying `Lists:Map [@*2.] L`, and `#[Elem | Elem <- L, Numbers:Even? Elem]`
+is just another way of saying `Lists:Filter Numbers:Even? L`.
+
+In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all combinations.
+
 #Syntax and semantics
 
 A Malang program is a list of compound expressions.
@@ -155,8 +191,25 @@ A function is a list of compound expressions surrounded by square brackets. For 
 The above function will always return the tuple `{atom, "string"}`, because functions returns the value
 of the last compound expression.
 
+###The @
+
+As I said eariler, all functions take exactly one argument. It is automatically bound to the special
+identifier `@`. The `@` will shadow any outside `@` that may exist.
+
+###Documentation strings
+
 If the first expression in a function body is a string, then that string will be the documentation string
 for that function.
+
+In the library code, I use a standard format for documentation strings, like this:
+
+    @ = <arguments>
+
+    blabla bla
+
+If `<argument>` looks like this: `{Omg, Yah}` it means that the function expects a two-tuple. If it looks like
+this: `Omg Yag` it means that the function is curried, and `Omg` and `Yag` are the first and last arguments,
+respectively.
 
 ##Bind operator
 
@@ -189,10 +242,6 @@ Which is parsed as `Tup := ({Fst, Snd} := {hello, yoyo}).` and thus does exactly
 
 The syntax for function application is `<function> <argument>`.
 
-##The @
-
-As I said eariler, all functions take exactly one argument. It is automatically bound to the special
-identifier `@`. The `@` will shadow any outside `@` that may exist.
 
 ##Case of
 
@@ -305,6 +354,10 @@ So if `My_Module` contains a function bound to the identifier `Factorial` then y
 
 It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
 argument 20000.
+
+##Comments
+
+Comments start with `--` and lasts until the end of the line.
 
 #Factorial example
 
