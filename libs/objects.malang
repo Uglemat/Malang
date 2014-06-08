@@ -15,6 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+ModuleDoc :=
+"
+  Functions relating to objects. Objects are functions that you can send 'messages' to
+  by calling them. Run `Help Objects:Create` for more info.
+".
+
 classified
 exposing Create
 where
@@ -25,20 +31,60 @@ Create := [
 
   Create an object out of `Dict`. An object is just a function.
 
-  You can \"send messages\" to it by calling it with a value;  
-  If it is a special type of message, then the object does some special
-  things, otherwise, it looks up the key in `Dict` which is equal to the
-  message, and returns the corresponding value.
+  You can \"send messages\" to it by calling it with a value. If it is a special type
+  of message, then the object does some special things, otherwise, it looks up the key 
+  in `Dict` which is equal to the message, and returns the corresponding value.
 
   In the special case that that corresponding value is a function or builtin, then it
-  is called a method, and the response is not the actual method, but a new function
+  is called a method, and the response is not the actual function, but a new function
   that will call that method with a tuple of the form `{Self, Arg}`, where `Self` is
   the object itself that you can send messages to, and where `Arg` is the actual argument.
 
-  `set`, `extend` and `show` are special messages.
+  `set`, `extend` and `show` are special messages, and are also methods.
+
+  `set` is used to set an attribute to a new value, `extend` is used to do that for more
+  than one attribute, and `show` will just print a representation of the object.
 
   Even though you can extend an object with the `extend` message, there's no such
   thing as a parent object, all objects are flat, and attributes are simply overwritten.
+
+  Here's an example showing how objects can be used:
+
+    Malang> Point := Objects:Create #[{x, 10}, {y, 14}].
+    [function]
+    Malang> Point show {}.
+    Object:
+    	show -> [function]
+    	extend -> [function]
+    	set -> [function]
+    	x -> 10
+    	y -> 14
+    ok
+    Malang> NewPoint := Point set {z, 4}.
+    [function]
+    Malang> NewPoint show {}.
+    Object:
+    	show -> [function]
+    	extend -> [function]
+    	set -> [function]
+    	z -> 4
+    	x -> 10
+    	y -> 14
+    ok
+    Malang> NewNewPoint := Point extend #[{x, 666}, {hello, yoyo}].
+    [function]
+    Malang> NewNewPoint show {}.
+    Object:
+    	show -> [function]
+    	extend -> [function]
+    	set -> [function]
+    	hello -> yoyo
+    	x -> 666
+    	y -> 14
+    ok
+    Malang> 
+
+    It would probably be wise to read the source code for this function to gain a deeper understanding.
   ".
   Attributes := Dicts:Extend @ #[
     {set, [
@@ -68,23 +114,3 @@ Create := [
 ].
 
 endify.
-
---  Point := Create #[
---    {x, 10},
---    {y, 20},
---    {hello, [
---      Io:Print ("Hi there, " + (Cdr @) + "\n").
---    ]},
---    {tostr, [
---      {Self, _} := @.
---      Lists:Join #["x: ", (ToStr ~ Self) x, " y: ", (ToStr ~ Self) y].
---    ]}
---  ].
---  
---  Thing := Point extend #[
---    {z, 30},
---    {tostr, [
---      {S, _} := @.
---      Lists:Join #["x: ", (ToStr ~ S) x, " y: ", (ToStr ~ S) y, " z: ", (ToStr ~ S) z].
---    ]}
---  ].

@@ -411,7 +411,6 @@ def p_expr_sequence_single(p):
     p[0] = (p[1],)
 
 
-
 def p_classified_no_expose(p):
     'classified : CLASSIFIED WHERE program ENDIFY' 
     p[0] = Node('classified', [(), p[3]], lineno=p.lineno(1))

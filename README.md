@@ -167,6 +167,23 @@ is just another way of saying `Lists:Filter Numbers:Even? L`.
 
 In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all combinations.
 
+##Booleans
+
+The boolean values in malang are the atoms `yeah` and `nope`. The purpose of choosing those atoms rather than `true` and `false`
+is twofold:
+
+ 1. `yeah` and `nope` aligns perfectly in a monospace font
+ 2. `true` and `false` are old-fashioned, `yeah` and `nope` are hip and cool.
+
+###Truthyness
+
+These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `nil`. All other values are considered
+'truthy'.
+
+The filters in list comprehensions, and the conditional expressions in the `if then else` constructs are places where
+you can use truthy and falsy values and it will work as expected. Also, a 'predicate function' in malang does *not* have to
+return either `yeah` or `nope`, they just have to return a truthy or falsy value, and it should work as expected.
+
 #Syntax and semantics
 
 A Malang program is a list of compound expressions.
@@ -360,6 +377,11 @@ So if `My_Module` contains a function bound to the identifier `Factorial` then y
 
 It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
 argument 20000.
+
+###Module docstring
+
+If there is a string bound to the identifier `ModuleDoc` in the environment of a module, then that string is the docstring
+for that module, which the `Help` function will appreciate.
 
 ##Classified
 

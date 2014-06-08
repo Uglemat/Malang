@@ -15,40 +15,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+ModuleDoc :=
+"
+  Functions for manipulating lists. Lists in malang are linked lists made out
+  of two-tuples. So the list #[a, b c] is identical to {a, {b, {c, nil}}}.
+".
+
 classified
-exposing Joinwith
-         Join
-         ListToStr
-         Reverse
-         Map
-         Reduce
-         Length
-         Range
-         Nth
-         RandomChoice
-         Concat
-         Any?
-         All?
-         And?
-         Or?
-         Member?
-         Repeat
-         Remove
-         Filter
-         Zip
-         Zipwith
-         PartitionAt
-         Take
-         Drop
-         Takewhile
-         Dropwhile
-         ToTuple
-         Sortwith
-         Sort
-         ReverseSort
-         Slice
+exposing Joinwith            Member?
+         Join                Repeat
+         ListToStr           Remove
+         Reverse             Filter
+         Map                 Zip
+         Reduce              Zipwith
+         Length              PartitionAt
+         Range               Take
+         Nth                 Drop
+         RandomChoice        Takewhile
+         Concat              Dropwhile
+         Any?                ToTuple
+         All?                Sortwith
+         And?                Sort
+         Or?                 ReverseSort
+         Min                 Slice
          Max
-         Min
 where
 
 Joinwith := Funcs:Curry 2 [
@@ -118,7 +108,7 @@ Map := Funcs:Curry 2 [
   "
   @ = Func List
 
-  Applies `Func` to every elemement of `List` are returns the result.
+  Applies `Func` to every elemement of `List` and returns the result.
   ".
   {Func, List} := @.
   #[Func E | E <- List].

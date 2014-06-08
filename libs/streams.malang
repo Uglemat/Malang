@@ -15,6 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ".
 
+ModuleDoc :=
+"
+  Functions related to streams. Streams are like 'lazy' lists, and they can conceptually
+  be infinite, which makes streams an interesting abstraction. A stream can take two forms:
+
+  (1) The atom `empty`, the value of the empty stream. Analogous to the `nil` for lists.
+  (2) A function that will either return `empty`, or a tuple of the form {Val, NextStream}, where
+      `Val` is a new item in the stream, and `NextStream` is the 'tail' of the stream.
+
+  Notice that the function can return 'empty' and that's still a valid stream. That's mildly annoying,
+  so if you have a stream and want the next element, you can use `Streams:Next`, which takes care of
+  both cases where the stream is empty.
+".
+
 classified
 exposing Next
          MakeStream
@@ -36,7 +50,7 @@ Next := [
   "
   @ = Stream
 
-  Returns `empty` if `Stream` is `empty`, else returns a tuple of the form
+  Returns `empty` if `Stream` is empty, else returns a tuple of the form
   `{Val, NewStream}` where `Val` is a new item taken from the stream, and where
   `NewStream` is the rest of the stream.
   ".

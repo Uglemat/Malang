@@ -27,6 +27,13 @@ Some of the builtin funcs are curried when they are placed in
 modules, so the docstring might reflect that.
 """
 
+def print_module_docstring(module):
+    if module.content.is_bound('ModuleDoc') and module.content.bindings['ModuleDoc']._type == 'str':
+        print(" - Module Docstring:")
+        print(module.content.bindings['ModuleDoc'].content)
+    else:
+        print("This module doesn't have a docstring")
+
 def print_docstring(fun):
     if fun._type == 'function':
         print("Function was defined in the file {!r}".format(fun.content['filename']))
@@ -37,7 +44,7 @@ def print_docstring(fun):
 
 
     if docstring is None:
-        print("That function doesn't have a docstring")
+        print("This function doesn't have a docstring")
     else:
         print(" - Docstring:")
         print(docstring)
@@ -211,24 +218,29 @@ def readfile(fname, state):
         raise MalangError(e.args[1], state)
 
 @builtin("Help")
-def _help(fun, state):
+def _help(thing, state):
     """
-    @ = Func
+    @ = Thing
 
-    Prints information about the function `Func`.
-    Alternatively, if `Func` is a module, it will list
-    all the functions inside that module.
+    If the `Thing` is a function, print the docstring of that function
+    and where it was defined
+
+    If the `Thing` is a module, print the module docstring and list
+    all the functions in that module.
     """
-    assert_type(fun, ('function', 'builtin', 'module'), state)
+    if thing._type == 'module':
+        print_module_docstring(thing)
+        mod_env = thing.content
+        print(" - Functions in module:")
+        for index, (ident, val) in enumerate(filter(lambda e: e[1]._type in ('function' ,'builtin'),
+                                                    sorted(mod_env.bindings.items()))):
+            print("  {:<22}".format(ident), end="\n" if (index) % 3 == 1 else "")
+        print()
+    elif thing._type in ('builtin', 'function'):
+        print_docstring(thing)
 
-    if fun._type == 'module':
-        mod_env = fun.content
-        print("Functions in module:")
-        for ident, val in sorted(mod_env.bindings.items()):
-            if val._type in ('function', 'builtin'):
-                print("  ", ident)
-    elif fun._type in ('builtin', 'function'):
-        print_docstring(fun)
+    else:
+        print("That is a value of type {}. I can't tell you more than that.".format(thing._type))
 
     return Node('atom', 'ok')
 
