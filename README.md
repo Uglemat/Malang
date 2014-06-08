@@ -1,9 +1,14 @@
 #Malang
 
-Malang is a (very) minimalistic functional programming language. It's pretty useless, but it was fun to make.
+Malang is a small functional programming language. It's pretty useless, but it was fun to make.
+
+I think it's a really elegant language, I'd almost go so far as to say it's my my favorite language.
+However, I may be biased.
 
 It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it
 with `sudo apt-get install python3-ply`.
+
+The efficiency of this implementation of the language is of little concern.
 
 Enter this in the shell to start dashing out compound expressions in the REPL:
 
@@ -43,10 +48,13 @@ Here's an example session:
     ... (more lines like that)
     ok
     Malang> Help Numbers.
-    Functions in module:
-       Even?
-       Odd?
-       RandRange
+     - Module Docstring:
+
+      Functions related to numbers. Remember that malang only has integers.
+    
+     - Functions in module:
+      Even?                   Odd?
+      RandRange
     ok
     Malang> Help Numbers:Odd?.
     Function was defined in the file '/home/.../malang/libs/numbers.malang'
@@ -467,6 +475,21 @@ For example, you could enter the factorial function above into the REPL like thi
     Malang> 
 
 You can't have any characters before the first \` or after the last \`, and they must be on different lines.
+
+#Emacs mode
+
+There's an emacs mode for this language in the file `malang-mode.el`. It has syntax highlighting, and some commands:
+
+ * `C-c f` (`malang-insert-func`) will insert ":= " and a function (and will also insert a docstring if it's called with a prefix argument),
+   so you just have to enter the identifier name for a new function and then use this keyboard shortcut.
+ * `C-c c` (`maland-insert-case`) will insert the basic structure of a `case` construct.
+ * `C-c i` (`malang-insert-if`) will insert the basic structure of an `if then else` construct.
+
+To use the mode, you can open `malang-mode.el` in emacs, enter `M-x eval-buffer`, then go into the buffer that has
+malang code in it, and enter `M-x malang-mode`.
+
+Or you can enter `M-x load-file RET path/to/malang-mode.el` and then `M-x malang-mode`.
+
 
 # License
 
