@@ -49,7 +49,14 @@ def print_docstring(fun):
         print(" - Docstring:")
         print(docstring)
 
-builtins = {}
+builtins = {'ModuleDoc':
+Node('str', """
+  This module is a forbidden fruit that you cannot taste. The docstrings for the
+  functions of this module are *wrong*, because the docstrings indicate that they
+  are curried, but they are not. The purpose of this module is just to have a place
+  to put all the builting functions before placing them in a more suitable location.
+""")}
+
 def builtin(name):
     def _f(func):
         builtins[name] = Node('builtin', func)
