@@ -2,7 +2,7 @@
 
 Malang is a small functional programming language. It's pretty useless, but it was fun to make.
 
-I think it's a really elegant language, I'd almost go so far as to say it's my favorite language.
+I think it's a really elegant language. I'd almost go so far as to say it's my favorite language.
 However, I may be biased.
 
 It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it
@@ -287,7 +287,12 @@ can be replaced by this:
 
     Strings:Length $ ToStr $ [@ * 2.] 83.
 
-Which does exactly the same but looks nicer.
+or this, using the function composition operator (described in the 'Operators and such' section below):
+
+    Strings:Length ~ ToStr ~ [@ * 2.] $ 83.
+
+All those lines do the same thing, but I think the bottom 2 are more aesthetically pleasing. And I really
+know what I'm talking about, because my sense of aesthetics is very refined. More so than yours.
 
 ##Case of
 
