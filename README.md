@@ -2,7 +2,7 @@
 
 Malang is a small functional programming language. It's pretty useless, but it was fun to make.
 
-I think it's a really elegant language, I'd almost go so far as to say it's my my favorite language.
+I think it's a really elegant language, I'd almost go so far as to say it's my favorite language.
 However, I may be biased.
 
 It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it

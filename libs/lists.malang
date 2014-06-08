@@ -38,7 +38,7 @@ exposing Joinwith            Member?
          And?                Sort
          Or?                 ReverseSort
          Min                 Slice
-         Max
+         Max                 ToStream
 where
 
 Joinwith := Funcs:Curry 2 [
@@ -430,7 +430,7 @@ ToTuple := [
   "
   @ = List
 
-  Convert `List` into a tuple
+  Convert `List` into a tuple.
   ".
   
   Helper := [
@@ -441,6 +441,21 @@ ToTuple := [
   ].
 
   Helper {@, {}}.
+].
+
+ToStream := [
+  "
+  @ = List
+
+  Convert `List` into a stream.
+  ".
+  List := @.
+  [
+    case List of
+      #[]    -> empty.
+      {H, T} -> {H, ToStream T}.
+    end.
+  ].
 ].
 
 Sortwith := Funcs:Curry 2 [
@@ -523,5 +538,6 @@ Min := [
       ] H T.
   end.
 ].
+
 
 endify.
