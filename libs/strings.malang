@@ -60,7 +60,7 @@ Strip  := Funcs:Curry 2 [
   in the string `Chars` removed.
   ".
   {Chars, String} := @.
-  Lstrip Chars (Rstrip Chars String).
+  Lstrip Chars ~ Rstrip Chars $ String.
 ].
 
 ToNumber := Builtins:StringToNumber.

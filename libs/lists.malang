@@ -184,7 +184,7 @@ RandomChoice := [
 
   Returns a random element of `List`.
   ".
-  Nth (Numbers:RandRange 1 (Length @ + 1)) @.
+  Nth (Numbers:RandRange 1 $ Length @ + 1) @.
 ].
 
 Concat := Funcs:Curry 2 [
@@ -367,7 +367,7 @@ Take := Funcs:Curry 2 [
   Return the first `N` elements of `List`.
   ".
   {N, List} := @.
-  Reverse (Car (PartitionAt N List)).
+  Reverse $ Car $ PartitionAt N List.
 ].
 
 Drop := Funcs:Curry 2 [
@@ -377,7 +377,7 @@ Drop := Funcs:Curry 2 [
   Drop the first `N` element off of `List`, and return the resulting list.
   ".
   {N, List} := @.
-  Cdr (PartitionAt N List).
+  Cdr $ PartitionAt N List.
 ].
 
 
@@ -402,7 +402,7 @@ Takewhile := Funcs:Curry 2 [
         end.
     end.
   ].
-  Reverse (Helper {List, nil}).
+  Reverse $ Helper {List, nil}.
 ].
 
 Dropwhile := Funcs:Curry 2 [
@@ -471,7 +471,7 @@ Sortwith := Funcs:Curry 2 [
   the beginning.
   ".
   {Func, List} := @.
-  (Tuples:ToList ~ Tuples:Sortwith Func ~ ToTuple) List.
+  Tuples:ToList ~ Tuples:Sortwith Func ~ ToTuple $ List.
 ].
 
 Sort := [
@@ -480,7 +480,7 @@ Sort := [
 
   Return a new version of `List`, sorted from low to high.
   ".
-  (Tuples:ToList ~ Tuples:Sort ~ ToTuple) @.
+  Tuples:ToList ~ Tuples:Sort ~ ToTuple $ @.
 ].
 
 ReverseSort := [
@@ -489,7 +489,7 @@ ReverseSort := [
 
   Return a new version of `List`, sorted from high to low.
   ".
-  (Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple) @.
+  Tuples:ToList ~ Tuples:ReverseSort ~ ToTuple $ @.
 ].
 
 Slice := Funcs:Curry 3 [
@@ -500,7 +500,7 @@ Slice := Funcs:Curry 3 [
   ending at index `Stop` (exclusive).
   ".
   {Start, Stop, List} := @.
-  (Take (Stop-Start) ~ Drop (Start-1)) List.
+  Take (Stop-Start) ~ Drop (Start-1) $ List.
 ].
 
 Max := [

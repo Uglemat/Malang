@@ -293,12 +293,12 @@ yeah := Dicts:Member? "three" D.
 nope := Dicts:Member? four    D.
 nope := Dicts:Member? 2       D.
 
-yeah := Dicts:Member? two  (Dicts:Remove "three" D).
-nope := Dicts:Member? four (Dicts:Remove two     D).
-nope := Dicts:Member? one  (Dicts:Remove one     D).
+yeah := Dicts:Member? two  $ Dicts:Remove "three" D.
+nope := Dicts:Member? four $ Dicts:Remove two     D.
+nope := Dicts:Member? one  $ Dicts:Remove one     D.
 
-yeah := Dicts:Member? 4 (Dicts:Set 4 four D).
-{ok, four} := Dicts:Get 4 (Dicts:Set 4 four D).
+yeah := Dicts:Member?   4 $ Dicts:Set 4 four D.
+{ok, four} := Dicts:Get 4 $ Dicts:Set 4 four D.
 
 Vals := Dicts:Values D.
 Keys := Dicts:Keys D.
@@ -529,14 +529,14 @@ endify.
 
 classified where
 
-yeah := (Bools:Truthy? ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename) Lists:Map.
+yeah := Bools:Truthy? ~ Strings:Find "libs/lists.malang" ~ Funcs:GetFilename $ Lists:Map.
 
-"Hayala" := (Funcs:GetFilename ~ Funcs:SetFilename "Hayala") Lists:Map.
+"Hayala" := Funcs:GetFilename ~ Funcs:SetFilename "Hayala" $ Lists:Map.
 
 nope  := Funcs:GetDocstring [hello. 21.].
 "hay" := Funcs:GetDocstring ["hay". hello.].
 
-"haya" := (Funcs:GetDocstring ~ Funcs:SetDocstring "haya") Lists:Map.
+"haya" := Funcs:GetDocstring ~ Funcs:SetDocstring "haya" $ Lists:Map.
 nope   := Funcs:GetDocstring Lists:Map = "haya".
 
 #[2,4,6] := Funcs:SetDocstring "haya" Lists:Map [@*2.] #[1,2,3].
@@ -602,48 +602,48 @@ Odds  := Streams:Map [@-1.] Evens.
 
 empty := Streams:Next (Streams:Map [@*2.] empty).
 
-#[2, 4, 6, 8] := (Show 4) Evens.
-#[1, 3, 5, 7] := (Show 4) Odds.
+#[2, 4, 6, 8] := Show 4 Evens.
+#[1, 3, 5, 7] := Show 4 Odds.
 
-empty := Streams:Next (Streams:Take 0 Evens).
-empty := Streams:Next (Streams:Take 10 empty).
+empty := Streams:Next $ Streams:Take 0 Evens.
+empty := Streams:Next $ Streams:Take 10 empty.
 
-#[2, 4]   := (Show 2 ~ Streams:Drop 0) Evens.
-#[10, 12] := (Show 2 ~ Streams:Drop 4) Evens.
-empty := Streams:Next (Streams:Drop 3 empty).
-empty := Streams:Next (Streams:Drop 10 (Streams:Take 3 Odds)).
+#[2, 4]   := Show 2 ~ Streams:Drop 0 $ Evens.
+#[10, 12] := Show 2 ~ Streams:Drop 4 $ Evens.
+empty := Streams:Next $ Streams:Drop 3 empty.
+empty := Streams:Next $ Streams:Drop 10 $ Streams:Take 3 Odds.
 
-#[{1,2}, {3,4}, {5,6}] := (Show 3 ~ Streams:Zip Odds) Evens.
+#[{1,2}, {3,4}, {5,6}] := Show 3 ~ Streams:Zip Odds $ Evens.
 #[3, 7, 11] := (Show 3 ~ Streams:Zipwith [Car @ + Cdr @.] Odds) Evens.
 
-empty := Streams:Next (Streams:Zip empty Ones).
-empty := Streams:Next (Streams:Zip Ones empty).
+empty := Streams:Next $ Streams:Zip empty Ones.
+empty := Streams:Next $ Streams:Zip Ones empty.
 
-empty := Streams:Next (Streams:Zipwith [@*2.] Ones empty).
-empty := Streams:Next (Streams:Zipwith [@*2.] empty Ones).
+empty := Streams:Next $ Streams:Zipwith [@*2.] Ones empty.
+empty := Streams:Next $ Streams:Zipwith [@*2.] empty Ones.
 
-#[2, 4, 6, 1, 3, 5] := Streams:ToList (Streams:Chain (Streams:Take 3 Evens) (Streams:Take 3 Odds)).
-#[2, 4, 6] := Streams:ToList (Streams:Chain (Streams:Take 3 Evens) [empty.]).
-#[1, 3, 5] := Streams:ToList (Streams:Chain empty (Streams:Take 3 Odds)).
-#[1, 3, 5] := Streams:ToList (Streams:Chain [empty.] (Streams:Take 3 Odds)).
-#[] := Streams:ToList (Streams:Chain empty empty).
+#[2, 4, 6, 1, 3, 5] := Streams:ToList $ Streams:Chain (Streams:Take 3 Evens) $ Streams:Take 3 Odds.
+#[2, 4, 6] := Streams:ToList $ Streams:Chain (Streams:Take 3 Evens) [empty.].
+#[1, 3, 5] := Streams:ToList $ Streams:Chain empty $ Streams:Take 3 Odds.
+#[1, 3, 5] := Streams:ToList $ Streams:Chain [empty.] $ Streams:Take 3 Odds.
+#[] := Streams:ToList $ Streams:Chain empty empty.
 
-#[hello] := Streams:ToList (Streams:Cons hello empty).
-#[0, 1, -1, 2, -2, 3, -3, 4] := Show 8 (Streams:Cons 0 (Streams:Interleave Ns (Streams:Map [-@.] Ns))).
-#[1, "1", 1, "3", 1, "5", 1] := Streams:ToList (Streams:Interleave Ones (Streams:Map ToStr (Streams:Take 3 Odds))).
-
-
-#[2, 4, 6, 8] := Streams:ToList (Streams:Takewhile [@ < 10.] Evens).
-#[]           := Streams:ToList (Streams:Takewhile [@ > 10.] Evens).
-#[]           := Streams:ToList (Streams:Takewhile [@ < 10.] empty).
+#[hello] := Streams:ToList $ Streams:Cons hello empty.
+#[0, 1, -1, 2, -2, 3, -3, 4] := Show 8 $ Streams:Cons 0 $ Streams:Interleave Ns $ Streams:Map [-@.] Ns.
+#[1, "1", 1, "3", 1, "5", 1] := Streams:ToList $ Streams:Interleave Ones $ Streams:Map ToStr $ Streams:Take 3 Odds.
 
 
-#[10, 12] := Show 2 (Streams:Dropwhile [@ < 10.] Evens).
-#[2, 4]   := Show 2 (Streams:Dropwhile [@ > 10.] Evens).
-#[]       := Streams:ToList (Streams:Dropwhile [@ < 10.] empty).
+#[2, 4, 6, 8] := Streams:ToList $ Streams:Takewhile [@ < 10.] Evens.
+#[]           := Streams:ToList $ Streams:Takewhile [@ > 10.] Evens.
+#[]           := Streams:ToList $ Streams:Takewhile [@ < 10.] empty.
 
-#[2, 4, 6, 8] := Show 4 (Streams:Filter Numbers:Even? Ns).
-#[]           := Show 4 (Streams:Filter Numbers:Even? empty).
+
+#[10, 12] := Show 2 $ Streams:Dropwhile [@ < 10.] Evens.
+#[2, 4]   := Show 2 $ Streams:Dropwhile [@ > 10.] Evens.
+#[]       := Streams:ToList $ Streams:Dropwhile [@ < 10.] empty.
+
+#[2, 4, 6, 8] := Show 4 $ Streams:Filter Numbers:Even? Ns.
+#[]           := Show 4 $ Streams:Filter Numbers:Even? empty.
 
 endify.
 

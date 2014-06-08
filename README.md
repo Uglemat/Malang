@@ -273,6 +273,21 @@ Where `<function>` and `<argument>` are both expressions. Function application i
 so `Func Arg1 Arg2` is parsed as `(Func Arg1) Arg2` (`Func Arg1` better return a new function, or else
 that'd be an error).
 
+There's also the `$` operator that you can use to call a function with an argument.
+This is how it's used:
+
+    <function> $ <argument>
+    
+The utility of the `$` operator is that it is right-associative (as opposed to normal function application)
+and has a very low precedence. So you can sometimes get rid of lots of parentheses. As an example, this:
+
+    Strings:Length (ToStr ([@ * 2.] 83)).
+
+can be replaced by this:
+
+    Strings:Length $ ToStr $ [@ * 2.] 83.
+
+Which does exactly the same but looks nicer.
 
 ##Case of
 
@@ -337,6 +352,7 @@ an error. You may also throw values of that form, and the REPL will not discimin
  Function application       | Left          | Binary | Calling a function with an argument.
  `:`                        | Right         | Binary | Evaluating an expression in the context of some module.
  `:=`                       | Right         | Binary | Match a value agains a pattern.
+ `$`                        | Right         | Binary | Calling a function with an argument.
 
 ###Precedence
 
@@ -355,8 +371,9 @@ Prec.  | Operators/other
 9      | `<` `>` `<=` `>=` `=` `!=`
 10     | `:=`
 11     | throw/catch
-12     | `,` (seperator)
-13     | `.` (end of compound expression)
+12     | `$` (Also function application)
+13     | `,` (seperator)
+14     | `.` (end of compound expression)
 
 ##Modules
 

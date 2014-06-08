@@ -29,7 +29,8 @@ def unescape_str(s):
 
 
 keywords = {kw: kw.upper()
-            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch', 'throw', 'classified', 'exposing', 'where', 'endify']}
+            for kw in ['case', 'of', 'if', 'then', 'else', 'end', 'catch', 
+                       'throw', 'classified', 'exposing', 'where', 'endify']}
 
 
 
@@ -39,7 +40,7 @@ tokens = (
     'LPAREN',   'RPAREN',
     'LBRACE',   'RBRACE',
     'LBRACKET', 'RBRACKET',
-    'STR',
+    'STR',      'DOLLAR',
     'DOT',      'ID',
     'COLON',    'STARTLIST',
     'COMMA',    'ATOM',
@@ -54,6 +55,7 @@ states = (
 )
 
 precedence = (
+    ('right', 'DOLLAR'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE', 'MODULO'),
     ('right', 'POW'),
@@ -89,6 +91,7 @@ t_NE = r'!='
 t_STARTLIST = r'\#\['
 t_TILDE = r'~'
 t_POW = r'\*\*'
+t_DOLLAR = r'\$'
 
 def t_COMMENT(t):
     r'--(.*)'
@@ -200,9 +203,17 @@ def p_compound_expression_sequence_single(p):
 
 
 def p_expression(p):
-    'expression : catch'
+    'expression : dollar_apply'
     p[0] = p[1]
 
+
+def p_dollar_apply(p):
+    'dollar_apply : catch DOLLAR dollar_apply'
+    p[0] = Node('fncall', (p[1], p[3]), infonode=p[1])
+
+def p_dollar_apply_catch(p):
+    'dollar_apply : catch'
+    p[0] = p[1]
 
 
 def p_catch(p):

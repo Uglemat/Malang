@@ -89,16 +89,16 @@ Create := [
   Attributes := Dicts:Extend @ #[
     {set, [
       {_, {K, V}}  := @.
-      (Create ~ Dicts:Set K V) Attributes.
+      Create ~ Dicts:Set K V $ Attributes.
     ]},
     {extend, [
       {_, Newattrs} := @.
-      Create (Dicts:Extend Attributes Newattrs).
+      Create $ Dicts:Extend Attributes Newattrs.
     ]},
     {show, [
       Io:PrintLn "Object:".
-      (Io:Print ~ Lists:Join)
-        #[Strings:Fmt {"\t{1} -> {2}\n", K, V} | {K, V} <- Attributes],
+      Io:Print ~ Lists:Join $
+        #[Strings:Fmt {"\t{1} -> {2}\n", K, V} | {K, V} <- Attributes].
       ok.
     ]}
   ].

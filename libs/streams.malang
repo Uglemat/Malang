@@ -107,7 +107,7 @@ ToList := [
       {Val, NewStream} -> Helper {NewStream, {Val, Acc}}.
     end.
   ].
-  (Lists:Reverse ~ Helper) {@, #[]}.
+  Lists:Reverse ~ Helper $ {@, #[]}.
 ].
 
 Take := Funcs:Curry 2 [

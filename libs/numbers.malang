@@ -41,7 +41,7 @@ Even? := [
 
   Returns `yeah` if `Number` is Even, `false` otherwise.
   ".
-  Bools:Not? (Odd? @).
+  Bools:Not? $ Odd? @.
 ].
 
 RandRange := Funcs:Curry 2 Builtins:RandRange.

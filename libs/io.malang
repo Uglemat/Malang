@@ -39,24 +39,24 @@ PrintLn   := [
   
   Print `Val` and a newline.
   ".
-  Print (ToStr @ + "\n").
+  Print $ ToStr @ + "\n".
 ].
 Input     := Builtins:Input.
 Fprint    := [
   "
   @ = Tuple
   
-  Just a shorthand for `Io:PrintLn (Strings:Fmt Tuple)`.
+  Just a shorthand for `Io:PrintLn $ Strings:Fmt Tuple`.
   ".
-  PrintLn (Strings:Fmt @).
+  PrintLn $ Strings:Fmt @.
 ].
 Finput := [
   "
   @ = Tuple
   
-  Just a shorthand for `Io:Input (Strings:Fmt Tuple)`.
+  Just a shorthand for `Io:Input $ Strings:Fmt Tuple`.
   ".
-  Input (Strings:Fmt @).
+  Input $ Strings:Fmt @.
 ].
 
 endify.

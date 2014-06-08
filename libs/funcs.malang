@@ -52,8 +52,8 @@ Curry := [
       ArgsLeft := @.
       case ArgsLeft of
         1 -> [Func @.].
-        _ -> Next := Helper (ArgsLeft-1),
-             [Tuple := @. [NewArg := @. Next (Tuple + {NewArg}).].].
+        _ -> Next := Helper $ ArgsLeft-1,
+             [Tuple := @. [NewArg := @. Next $ Tuple + {NewArg}.].].
       end.
     ].
 
@@ -105,7 +105,7 @@ Partial := Curry 2 [
   with `+`) or something else, like numbers.
   ".
   {Args, Func} := @.
-  [Func (Args + @).].
+  [Func $ Args + @.].
 ].
 
 endify.
