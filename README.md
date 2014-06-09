@@ -474,6 +474,41 @@ hitting the recursion limit of python. Here's a tail recursive version:
 
 With that version, you *can* calculate `Factorial 20000`.
 
+#Map example
+
+The map function is a higher-order function that applies a function to each element of something, for example a list.
+Here's how you could implement it for lists:
+
+    Malang> `Map := [
+    ------>   {F, List} := @.
+    ------>   case List of
+    ------>     #[] -> #[].
+    ------>     {Head, Tail} -> {F Head, Map {F, Tail}}.
+    ------>   end.
+    ------> ].`
+    [function]
+    Malang> Map {[@ * @.], #[1,2,3,4,5]}.
+    {1, {4, {9, {16, {25, nil}}}}}
+    Malang> Map' := [{F, List} := @, #[F Elem | Elem <- List].].
+    [function]
+    Malang> Map' {[@**@.], #[1,2,3,4]}.
+    {1, {4, {27, {256, nil}}}}
+    Malang> 
+
+The `Map'` above isn't very different from how the map is implemented in the `Lists` module:
+
+    Map := Funcs:Curry 2 [
+      "
+      @ = Func List
+    
+      Applies `Func` to every elemement of `List` and returns the result.
+      ".
+      {Func, List} := @.
+      #[Func E | E <- List].
+    ].
+
+The difference as you can see is that `Lists:Map` has a documentation string and is curried.
+
 #Navigating the REPL
 
 You can use the functions `Help` and `Env` to get information about things. Run `Help Help.` to get started.

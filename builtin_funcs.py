@@ -54,7 +54,7 @@ Node('str', """
   This module is a forbidden fruit that you cannot taste. The docstrings for the
   functions of this module are *wrong*, because the docstrings indicate that they
   are curried, but they are not. The purpose of this module is just to have a place
-  to put all the builting functions before placing them in a more suitable location.
+  to put all the builtin functions before placing them in a more suitable location.
 """)}
 
 def builtin(name):
