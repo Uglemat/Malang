@@ -141,7 +141,7 @@ Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just 
 
 ###List comprehensions
 
-You can use list comprehensions to create new lists out of old lists. This is the syntax:
+You can use list comprehensions to create new lists. This is the syntax:
 
     #[<elem_expr> | <emitter1>, <emitter2>, ... <emitterN>]
 
@@ -151,7 +151,8 @@ Where the syntax of the 'emitters' are:
     or just
     <filter>
 
-Where `<expr>` should evaluate to a list, and every element will be pattern-matched agains `<pattern>`.
+Where `<expr>` should evaluate to a list or a string, and every element/character will be pattern-matched
+agains `<pattern>`.
 
 The list comprehension works the way they do in other languages, and it's a little tedious to explain how
 they work, so I'll just give a couple of examples:

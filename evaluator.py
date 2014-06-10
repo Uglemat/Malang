@@ -47,19 +47,17 @@ def eval_list_comprehension(state, expr, emitters, acc):
                 eval_list_comprehension(state, expr, emitters[1:], acc)
 
     elif emitter._type == 'emitter':
-        pattern     = emitter.content['pattern']
-        malang_list = trampoline(emitter.content['expr'], state)
+        pattern = emitter.content['pattern']
+        value   = trampoline(emitter.content['expr'], state)
 
+        items = (Node('str', c) for c in value.content) if value._type == 'str' else utils.generate_items(value, state)
 
-        if last_emitter:
-            for item in utils.generate_items(malang_list, state.filename):
-                temp_state = state.newenv(state.env.shallow_copy())
-                patternmatch(pattern, item, temp_state)
+        for item in items:
+            temp_state = state.newenv(state.env.shallow_copy())
+            patternmatch(pattern, item, temp_state)
+            if last_emitter:
                 acc.append(trampoline(expr, temp_state))
-        else:
-            for item in utils.generate_items(malang_list, state.filename):
-                temp_state = state.newenv(state.env.shallow_copy())
-                patternmatch(pattern, item, temp_state)
+            else:
                 eval_list_comprehension(temp_state, expr, emitters[1:], acc=acc)
 
 

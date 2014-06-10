@@ -162,12 +162,12 @@ def AST_to_str(ast):
 def is_nil(v):
     return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
 
-def generate_items(malang_list, filename):
+def generate_items(malang_list, state):
     """
     A generator that yields all the elements of a malang list
     """
     while not is_nil(malang_list):
-        assert_type(malang_list, 'tuple', State(filename=filename, infonode=malang_list), tuplelength=2)
+        assert_type(malang_list, 'tuple', state, tuplelength=2)
         head, malang_list = malang_list.content
         yield head
 
