@@ -76,7 +76,7 @@ def patternmatch(pattern, expr, state):
         pattern.content = -pattern.content
 
 
-    if pattern._type == 'list':
+    if pattern._type == 'tuple-list':
         return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
                             expr, state)
 
@@ -232,7 +232,14 @@ def maval(expr, state):
     elif T == 'tuple':
         return Node('tuple', tuple(trampoline(e, state) for e in expr.content), infonode=expr)
 
-    elif T == 'list':
+    elif T == 'cons':
+        head, tail = (trampoline(op, state) for op in expr.content)
+        if tail._type == 'list' or utils.is_nil(tail):
+            return Node('list', (head, tail))
+        else:
+            raise MalangError("The second operand to the cons operator has to be a list", state)
+
+    elif T == 'tuple-list':
         elems = tuple(trampoline(e, state) for e in expr.content)
         return utils.transform_list_to_tuple(elems, expr)
 

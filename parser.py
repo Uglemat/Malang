@@ -47,7 +47,7 @@ tokens = (
     'BIND',     'ARROW',
     'LEFTARROW','PIPE',
     'GT', 'LT', 'GE',  'LE', 'EQ', 'NE',
-    'COMMENT', 'TILDE'
+    'COMMENT', 'TILDE', 'CONS'
 ) + tuple(keywords.values())
 
 states = (
@@ -92,6 +92,7 @@ t_STARTLIST = r'\#\['
 t_TILDE = r'~'
 t_POW = r'\*\*'
 t_DOLLAR = r'\$'
+t_CONS = r'::'
 
 def t_COMMENT(t):
     r'--(.*)'
@@ -330,9 +331,19 @@ def p_module_access(p):
     'module_access : item COLON module_access'
     p[0] = Node('module_access', (p[1], p[3]), infonode=p[1])
 
-def p_module_access_item(p):
-    'module_access : item'
+def p_module_access_cons(p):
+    'module_access : cons'
     p[0] = p[1]
+
+
+def p_cons(p):
+    'cons : item CONS cons'
+    p[0] = Node('cons', (p[1], p[3]), infonode=p[1])
+
+def p_cons_item(p):
+    'cons : item'
+    p[0] = p[1]
+
 
 def p_item_num(p):
     '''item : NUMBER 
@@ -407,11 +418,11 @@ def p_comprehension_sequence_filter_single(p):
 
 def p_list(p):
     'list : STARTLIST expr_sequence RBRACKET'
-    p[0] = Node('list', p[2], lineno=p.lineno(1))
+    p[0] = Node('tuple-list', p[2], lineno=p.lineno(1))
 
 def p_list_empty(p):
     'list : STARTLIST RBRACKET'
-    p[0] = Node('list', (), lineno=p.lineno(1))
+    p[0] = Node('tuple-list', (), lineno=p.lineno(1))
 
 def p_expr_sequence(p):
     'expr_sequence : expr_sequence COMMA expression'
