@@ -146,7 +146,6 @@ def patternmatch(pattern, expr, state):
         return
 
 
-    print("expr._type={}, pattern._type={}".format(expr._type, pattern._type))
     raise MalangError("Don't know how to pattern-match that. ", state.newinfonode(pattern))
 
 arithmetic_funcs = {

@@ -32,15 +32,15 @@ Names := #["Ben Bitdiddle",
            "Cy D. Fect",
            "Lem E. Tweakit"].
 
---Io:Fprint {"Welcome To Malang, The Best Programming Language Ever
---Copyright 2014 Mattias Ugelvik
---License: GPLv3
---
---    \"{1}\"
---       - {2} ({3} y/o)  
---    ", 
---    Lists:RandomChoice Testimonials,
---    Lists:RandomChoice Names,
---    Numbers:RandRange 2 110}.
---
+Io:Fprint {"Welcome To Malang, The Best Programming Language Ever
+Copyright 2014 Mattias Ugelvik
+License: GPLv3
+
+    \"{1}\"
+       - {2} ({3} y/o)  
+    ", 
+    Lists:RandomChoice Testimonials,
+    Lists:RandomChoice Names,
+    Numbers:RandRange 2 110}.
+
 endify.
