@@ -44,22 +44,6 @@ Use := [
   (Exhibit ~ Require) @.
 ].
 
-Car := [
-  "
-  @ = {Fst, Snd}
-
-  Returns `Fst`.
-  ".
-  {Fst, _} := @, Fst.
-].
-Cdr := [
-  "
-  @ = {Fst, Snd}
-
-  Returns `Snd`.
-  ".
-  {_, Snd} := @, Snd.
-].
 
 Cmp := [
   "
@@ -81,13 +65,13 @@ Cmp := [
 ].
 
 
---Funcs   := Require "libs/funcs.malang".
---Io      := Require "libs/io.malang".
---Lists   := Require "libs/lists.malang".
---Tuples  := Require "libs/tuples.malang".
---Bools   := Require "libs/bools.malang".
---Dicts   := Require "libs/dicts.malang".
---Strings := Require "libs/strings.malang".
---Objects := Require "libs/objects.malang".
---Numbers := Require "libs/numbers.malang".
---Streams := Require "libs/streams.malang".
+Funcs   := Require "libs/funcs.malang".
+Io      := Require "libs/io.malang".
+Lists   := Require "libs/lists.malang".
+Tuples  := Require "libs/tuples.malang".
+Bools   := Require "libs/bools.malang".
+Dicts   := Require "libs/dicts.malang".
+Strings := Require "libs/strings.malang".
+Objects := Require "libs/objects.malang".
+Numbers := Require "libs/numbers.malang".
+Streams := Require "libs/streams.malang".

@@ -24,7 +24,6 @@ ModuleDoc :=
 classified
 exposing Joinwith            Member?
          Join                Repeat
-         ListToStr           Remove
          Reverse             Filter
          Map                 Zip
          Reduce              Zipwith
@@ -39,6 +38,7 @@ exposing Joinwith            Member?
          Or?                 ReverseSort
          Min                 Slice
          Max                 ToStream
+         Remove
 where
 
 Joinwith := Funcs:Curry 2 [
@@ -352,7 +352,8 @@ Take := Funcs:Curry 2 [
   Return the first `N` elements of `List`.
   ".
   {N, List} := @.
-  Reverse $ Car $ PartitionAt N List.
+  {Seen, _} := PartitionAt N List.
+  Reverse Seen.
 ].
 
 Drop := Funcs:Curry 2 [
@@ -362,7 +363,8 @@ Drop := Funcs:Curry 2 [
   Drop the first `N` element off of `List`, and return the resulting list.
   ".
   {N, List} := @.
-  Cdr $ PartitionAt N List.
+  {_, Unseen} := PartitionAt N List.
+  Unseen.
 ].
 
 

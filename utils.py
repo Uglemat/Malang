@@ -74,6 +74,17 @@ def truthy(val):
         return True
 
 
+def zip_lists(list1, list2):
+    list1 = tuple(generate_items(list1))
+    list2 = tuple(generate_items(list2))
+    for z in zip(list1, list2):
+        yield z
+
+    if len(list1) > len(list2):
+        yield list1[-1], None
+    elif len(list2) > len(list1):
+        yield None, list2[-1]
+
 
 def zip_tuples(tuple1, tuple2):
     len1 = len(tuple1.content)
@@ -125,6 +136,11 @@ def equal(val_1, val_2):
             if None in (fst, snd):
                 return False
             elif not fst.content == snd.content:
+                return False
+        return True
+    elif T == 'list':
+        for elem1, elem2 in zip_lists(val_1, val_2):
+            if None in (elem1, elem2) or not equal(elem1, elem2):
                 return False
         return True
     else:

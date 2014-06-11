@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 classified where
 
 #[] := nil.
-{1, nil} := #[1].
+1::nil := #[1].
 
 #["one", 2] := #["one", 2].
 
@@ -29,12 +29,13 @@ classified where
                M <- #[one, two]].
 
 
-1 := Car #[1, two, "three"].
-#[two, "three"] := Cdr #[1, two, "three"].
-
 
 "string" := ToStr "string".
 "{\"Hay\", hay, 3}" := ToStr {"Hay", hay, 3}.
+"#[1]" := ToStr #[1].
+"#[1, {hello}, 2]" := ToStr #[1, {hello}, 2].
+"#[1, \"hello\", 2]" := ToStr #[1, "hello", 2].
+"#[1, {\"\\thay!\"}, 2]" := ToStr #[1, {"\thay!"}, 2].
 
 
 yeah := case catch 100 / 0 of
@@ -131,12 +132,6 @@ classified where
 
 "onetwo\"three\"" := Lists:Join #["one", "two", "\"three\""].
 
-"#[]"  := Lists:ListToStr nil.
-"#[1]" := Lists:ListToStr #[1].
-"#[1, {hello}, 2]" := Lists:ListToStr #[1, {hello}, 2].
-"#[1, \"hello\", 2]" := Lists:ListToStr #[1, "hello", 2].
-"#[1, {\"\\thay!\"}, 2]" := Lists:ListToStr #[1, {"\thay!"}, 2].
-
 
 L := #[1, two, "three"].
 
@@ -148,17 +143,17 @@ Double := [ @ * 2. ].
 Nums := #[1,2,3].
 
 #[2, 4, 6] := Lists:Map Double Nums.
-#[] := Lists:Map Double nil.
+#[] := Lists:Map Double #[].
 
 StrConcat := [{Acc, Elem} := @. Acc + Elem.].
 "123" := Lists:Reduce StrConcat "" #["1", "2", "3"].
-""    := Lists:Reduce StrConcat "" nil.
+""    := Lists:Reduce StrConcat "" #[].
 
-0 := Lists:Length nil.
+0 := Lists:Length #[].
 1 := Lists:Length #[one].
 2 := Lists:Length #[one, two].
 
-nil := Lists:Range 10 10.
+#[] := Lists:Range 10 10.
 #[10, 11, 12] := Lists:Range 10 13.
 
 first  := Lists:Nth 1 #[first].
@@ -184,8 +179,8 @@ nope := Lists:And? #[1, 2, nope, 4].
 nope := Lists:And? #[0].
 
 nope := Lists:Or? #[].
-nope := Lists:Or? #[0, nope, nil, "", {}].
-yeah := Lists:Or? #[0, nope, nil, "", {}, "Hello"].
+nope := Lists:Or? #[0, nope, #[], "", {}].
+yeah := Lists:Or? #[0, nope, #[], "", {}, "Hello"].
 yeah := Lists:Or? #[yeah, 1].
 
 
@@ -365,7 +360,7 @@ LenCmp := [
     end.
   end.
 ].
-Reverse_LenCmp := [ -(LenCmp {Car @, Cdr @}).].
+Reverse_LenCmp := [ {Fst, Snd} := @, -(LenCmp {Fst, Snd}).].
 
 
 #[]                      := Lists:Sortwith LenCmp #[].
@@ -432,7 +427,7 @@ endify.
 
 classified where
 
-nil := Tuples:ToList {}.
+#[] := Tuples:ToList {}.
 #[1] := Tuples:ToList {1}.
 #[1, 2, 3] := Tuples:ToList {1, 2, 3}.
 
@@ -614,7 +609,7 @@ empty := Streams:Next $ Streams:Drop 3 empty.
 empty := Streams:Next $ Streams:Drop 10 $ Streams:Take 3 Odds.
 
 #[{1,2}, {3,4}, {5,6}] := Show 3 ~ Streams:Zip Odds $ Evens.
-#[3, 7, 11] := (Show 3 ~ Streams:Zipwith [Car @ + Cdr @.] Odds) Evens.
+#[3, 7, 11] := (Show 3 ~ Streams:Zipwith [{Fst, Snd} := @, Fst + Snd.] Odds) Evens.
 
 empty := Streams:Next $ Streams:Zip empty Ones.
 empty := Streams:Next $ Streams:Zip Ones empty.

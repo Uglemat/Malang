@@ -352,8 +352,8 @@ def tolist(tup, state):
     if tup.content == ():
         return Node('atom', 'nil')
     else:
-        return Node('tuple', (tup.content[0],
-                              tolist(Node('tuple', tup.content[1:]), state)))
+        return Node('list', (tup.content[0],
+                             tolist(Node('tuple', tup.content[1:]), state)))
 
 @builtin("ToStr")
 def tostr(val, state=None, depth=0, repr_str=False):

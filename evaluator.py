@@ -121,6 +121,12 @@ def patternmatch(pattern, expr, state):
         raise make_exception(
             " (tried to match something of type {} agains a pattern of type {})".format(expr._type, pattern._type))
 
+    elif pattern._type == 'list':
+        patternmatch(pattern.content[0], expr.content[0], state)
+        patternmatch(pattern.content[1], expr.content[1], state)
+        return
+
+
     elif pattern._type == 'tuple':
         pattern_len = len(pattern.content)
         expr_len = len(expr.content)
@@ -140,7 +146,7 @@ def patternmatch(pattern, expr, state):
         return
 
 
-
+    print("expr._type={}, pattern._type={}".format(expr._type, pattern._type))
     raise MalangError("Don't know how to pattern-match that. ", state.newinfonode(pattern))
 
 arithmetic_funcs = {

@@ -52,7 +52,7 @@ ReverseSort := [
 
   Return a new version of `Tuple`, sorted from high to low.
   ".
-  Sortwith [-(Cmp {Car @, Cdr @}).] @.
+  Sortwith [{Fst, Snd} := @, -(Cmp {Fst, Snd}).] @.
 ].
 
 endify.
