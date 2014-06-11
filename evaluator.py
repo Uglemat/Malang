@@ -54,6 +54,8 @@ def eval_list_comprehension(state, expr, emitters, acc):
             items = (Node('str', c) for c in value.content)
         elif value._type == 'list':
             items = utils.generate_items(value)
+        elif value._type == 'tuple':
+            items = value.content
         else:
             raise MalangError("Invalid emitter type ({}) in list comprehension".format(value._type), state)
 

@@ -171,7 +171,7 @@ Where the syntax of the 'emitters' are:
     or just
     <filter>
 
-Where `<expr>` should evaluate to a list or a string, and every element/character will be pattern-matched
+Where `<expr>` should evaluate to a list, tuple or string, and every element/character will be pattern-matched
 agains `<pattern>`.
 
 The list comprehension works the way they do in other languages, and it's a little tedious to explain how

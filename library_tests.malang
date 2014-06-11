@@ -27,7 +27,7 @@ classified where
     #[{N, M} | N <- #[1, 2],
                N < 2,
                M <- #[one, two]].
-
+#[1,2,3] := #[N | N <- {1,2,3}].
 
 
 "string" := ToStr "string".
