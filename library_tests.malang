@@ -564,6 +564,11 @@ Doubler := [@*2.].
 Double_Plus_10 := Funcs:Partial 5 Doubler.
 16 := Double_Plus_10 3.
 
+yeah := Funcs:Callable? Funcs:Callable?.
+yeah := Funcs:Callable? Builtins:Print.
+nope := Funcs:Callable? 23.
+
+
 endify.
 
 "

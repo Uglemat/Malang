@@ -27,6 +27,7 @@ exposing Curry
          GetDocstring
          SetDocstring
          Partial
+         Callable?
 where
 
 Curry := [
@@ -106,6 +107,16 @@ Partial := Curry 2 [
   ".
   {Args, Func} := @.
   [Func $ Args + @.].
+].
+
+Callable? := [
+  "
+  @ = Thing
+
+  Returns `yeah` if `Thing` is of the type `function` or the type `builtin`, in which
+  case it can be called with a value, and `false` otherwise.
+  ".
+  Lists:Member? (TypeOf @) #["function", "builtin"].
 ].
 
 endify.
