@@ -72,21 +72,6 @@ Join :=  [
   Joinwith "" @.
 ].
 
-
-ListToStr := [
-  "
-  @ = List
-
-  Return the string representation for `List`.
-  ".
-  Repr_Strings := Map [
-    case TypeOf @ of
-      "str" -> Strings:Repr @.
-      _     -> @.
-    end.] @.
-  Strings:Fmt {"#[{1}]", Joinwith ", " Repr_Strings}.
-].
-
 Reverse := [
   "
   @ = List
