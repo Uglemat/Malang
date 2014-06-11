@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from utils import Node, assert_type, MalangError, python_list_to_malang_list, to_number
+import utils
 from evaluator import call_malang_func
 import time
 import random
@@ -359,23 +360,13 @@ def tostr(val, state=None, depth=0, repr_str=False):
     """
     @ = Val
 
-    Convert `Val` to a string. Won't go deeper than ~50 for nested tuples.
+    Convert `Val` to a string. Won't go deeper than ~50 for nested tuples and lists.
     If `Val` already is a string, this does nothing.
     """
-    T = val._type
-    if T == 'tuple' and depth > 50:
-        content = "{...}"
-    elif T == 'tuple':
-        content = "{" + ", ".join(tostr(elem, state, depth+1, repr_str=True).content
-                                  for elem in val.content) + "}"
-    elif T in ('module', 'function', 'builtin'):
-        content = '[{}]'.format(T)
-    elif repr_str and T == 'str':
-        content = stringrepr(val, state).content
+    if val._type == 'str' and not repr_str:
+        return val
     else:
-        content = str(val.content)
-
-    return Node('str', content)
+        return Node('str', utils.tostr(val))
 
 @builtin("StringRepr")
 def stringrepr(string, state):
@@ -387,8 +378,7 @@ def stringrepr(string, state):
     and returns the result.
     """
     assert_type(string, 'str', state)
-    return Node('str', '"{}"'.format(
-        string.content.replace('\\', r'\\').replace('"', r'\"').replace('\t', r'\t').replace('\n', r'\n')))
+    return Node('str', utils.stringrepr(string))
 
 @builtin("TupleNth")
 def tuplenth(arg, state):

@@ -34,6 +34,35 @@ def to_number(string):
 
     return int(val, radix)
 
+def tostr(val, depth=0):
+    """
+    returns a string representation of the malang value `val`. Won't go very deep for
+    lists and tuples.
+    """
+    T = val._type
+    if T == 'tuple' and depth > 50:
+        return "{...}"
+    elif T == 'tuple':
+        return "{" + ", ".join(tostr(elem, depth+1) for elem in val.content) + "}"
+
+    elif T == 'list':
+        return "#[{}]".format(
+            ", ".join(tostr(v, depth=depth+1) for v in generate_items(val)))
+
+    elif T in ('module', 'function', 'builtin'):
+        return '[{}]'.format(T)
+    elif T == 'str':
+        return stringrepr(val)
+    else:
+        return str(val.content)
+
+def stringrepr(string):
+    """
+    return a string representation of the malang string `string`
+    """
+    return '"{}"'.format(
+        string.content.replace('\\', r'\\').replace('"', r'\"').replace('\t', r'\t').replace('\n', r'\n'))
+
 def truthy(val):
     if val._type in ('tuple', 'str'):
         return len(val.content) != 0
@@ -158,16 +187,14 @@ def AST_to_str(ast):
         return str(ast)
 
 
-
 def is_nil(v):
     return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
 
-def generate_items(malang_list, state):
+def generate_items(malang_list):
     """
     A generator that yields all the elements of a malang list
     """
     while not is_nil(malang_list):
-        assert_type(malang_list, 'tuple', state, tuplelength=2)
         head, malang_list = malang_list.content
         yield head
 
@@ -175,18 +202,18 @@ def generate_items(malang_list, state):
 def python_list_to_malang_list(_list):
     acc = Node('atom', 'nil')
     while _list:
-        acc = Node('tuple', (_list.pop(), acc))
+        acc = Node('list', (_list.pop(), acc))
     
     return acc
 
-def transform_list_to_tuple(elems, infonode):
+def transform_list_literal(elems, infonode):
     """
     `elems` may or may not have been evaluated, this function should work either way
     """
     if len(elems) == 0:
         return Node('atom', 'nil', infonode=infonode)
     else:
-        return Node('tuple', (elems[0], transform_list_to_tuple(elems[1:], infonode)),
+        return Node('list', (elems[0], transform_list_literal(elems[1:], infonode)),
                     infonode=infonode)
 
 def assert_type(node, types, state, tuplelength=None):

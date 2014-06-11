@@ -418,11 +418,11 @@ def p_comprehension_sequence_filter_single(p):
 
 def p_list(p):
     'list : STARTLIST expr_sequence RBRACKET'
-    p[0] = Node('tuple-list', p[2], lineno=p.lineno(1))
+    p[0] = Node('list-literal', p[2], lineno=p.lineno(1))
 
 def p_list_empty(p):
     'list : STARTLIST RBRACKET'
-    p[0] = Node('tuple-list', (), lineno=p.lineno(1))
+    p[0] = Node('list-literal', (), lineno=p.lineno(1))
 
 def p_expr_sequence(p):
     'expr_sequence : expr_sequence COMMA expression'

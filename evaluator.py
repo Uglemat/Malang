@@ -50,7 +50,7 @@ def eval_list_comprehension(state, expr, emitters, acc):
         pattern = emitter.content['pattern']
         value   = trampoline(emitter.content['expr'], state)
 
-        items = (Node('str', c) for c in value.content) if value._type == 'str' else utils.generate_items(value, state)
+        items = (Node('str', c) for c in value.content) if value._type == 'str' else utils.generate_items(value)
 
         for item in items:
             temp_state = state.newenv(state.env.shallow_copy())
@@ -76,8 +76,8 @@ def patternmatch(pattern, expr, state):
         pattern.content = -pattern.content
 
 
-    if pattern._type == 'tuple-list':
-        return patternmatch(utils.transform_list_to_tuple(pattern.content, infonode=pattern),
+    if pattern._type == 'list-literal':
+        return patternmatch(utils.transform_list_literal(pattern.content, infonode=pattern),
                             expr, state)
 
     elif state.env.is_unbound_identifier(pattern):
@@ -92,6 +92,16 @@ def patternmatch(pattern, expr, state):
         val = state.env.get(pattern.content, state.newinfonode(pattern))
         if not utils.equal(val, expr):
             raise make_exception(" (identifier {!r} is already bound)".format(pattern.content))
+        return
+
+    elif pattern._type == 'cons':
+        if utils.is_nil(expr):
+            raise make_exception(" (tried to match the empty list against a cons pattern)")
+        elif expr._type != 'list':
+            raise make_exception(" (tried to match something of type {} agains a cons pattern)".format(expr._type))
+
+        patternmatch(pattern.content[0], expr.content[0], state)
+        patternmatch(pattern.content[1], expr.content[1], state)
         return
 
     elif pattern._type == 'module_access':
@@ -239,9 +249,9 @@ def maval(expr, state):
         else:
             raise MalangError("The second operand to the cons operator has to be a list", state)
 
-    elif T == 'tuple-list':
+    elif T == 'list-literal':
         elems = tuple(trampoline(e, state) for e in expr.content)
-        return utils.transform_list_to_tuple(elems, expr)
+        return utils.transform_list_literal(elems, expr)
 
     elif T == 'list_comprehension':
         result = []
