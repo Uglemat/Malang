@@ -104,7 +104,7 @@ ToList := [
     {Stream, Acc} := @.
     case Next Stream of
       empty -> Acc.
-      {Val, NewStream} -> Helper {NewStream, {Val, Acc}}.
+      {Val, NewStream} -> Helper {NewStream, Val::Acc}.
     end.
   ].
   Lists:Reverse ~ Helper $ {@, #[]}.

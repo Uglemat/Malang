@@ -39,9 +39,9 @@ Get := Funcs:Curry 2 [
   ".
   {Key, D} := @.
   case D of
-    #[]           -> nope.
-    {{Key, V}, T} -> {ok, V}.
-    {{K,   V}, T} -> Get Key T.
+    #[]         -> nope.
+    {Key, V}::T -> {ok, V}.
+    {K,   V}::T -> Get Key T.
   end.
 ].
 
@@ -63,7 +63,7 @@ Set := Funcs:Curry 3 [
   where `K` = `Key` removed. So it's obviously not constant time.
   ".
   {K, V, D} := @.
-  {{K, V}, Remove K D}.
+  {K, V}::(Remove K D).
 ].
 
 Member? := Funcs:Curry 2 [
@@ -104,8 +104,8 @@ Extend := Funcs:Curry 2 [
   {Old, New} := @.
 
   case New of
-    nil -> Old.
-    {{K, V}, Tail} -> Extend (Set K V Old) Tail.
+    #[]          -> Old.
+    {K, V}::Tail -> Extend (Set K V Old) Tail.
   end.
 ].
 

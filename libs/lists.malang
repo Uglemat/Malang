@@ -52,13 +52,13 @@ Joinwith := Funcs:Curry 2 [
   Helper := [
     {Current, Acc} := @.
     case Current of
-      #[]    -> Acc.
-      {H, T} -> Helper {T, Acc + Str + ToStr H}.
+      #[]  -> Acc.
+      H::T -> Helper {T, Acc + Str + ToStr H}.
     end.
   ].
   case List of
-    #[]    -> "".
-    {H, T} -> Helper {T, ToStr H}.
+    #[]  -> "".
+    H::T -> Helper {T, ToStr H}.
   end.
 ].
 
@@ -81,8 +81,8 @@ Reverse := [
   Helper := [
     {List, Acc} := @.
     case List of
-      #[]    -> Acc.
-      {H, T} -> Helper {T, {H, Acc}}.
+      #[]  -> Acc.
+      H::T -> Helper {T, H::Acc}.
     end.
   ].
   Helper {@, #[]}.
@@ -113,8 +113,8 @@ Reduce := Funcs:Curry 3 [
   then it will continue reducing towards the end of the list.
   ".
   case @ of
-    {F, Acc, #[]}    -> Acc.
-    {F, Acc, {H, T}} -> Reduce F (F {Acc, H}) T.
+    {F, Acc, #[]}  -> Acc.
+    {F, Acc, H::T} -> Reduce F (F {Acc, H}) T.
   end.
 ].
 
@@ -139,8 +139,8 @@ Range := Funcs:Curry 2 [
   Helper := [
     {N, Acc} := @.
     if N <= From
-      then {N, Acc}.
-      else Helper {N-1, {N, Acc}}.
+      then N::Acc.
+      else Helper {N-1, N::Acc}.
     end.
   ].
   if To <= From
@@ -156,7 +156,7 @@ Nth := Funcs:Curry 2 [
   Returns the Nth element of `List`. The list must
   be long enough.
   ".
-  {N, {H, T}} := @.
+  {N, H::T} := @.
   if N <= 1
     then H.
     else Nth (N-1) T.
@@ -182,8 +182,8 @@ Concat := Funcs:Curry 2 [
   Helper := [
     {Elems_Left, Result} := @.
     case Elems_Left of
-      #[]    -> Result.
-      {H, T} -> Helper {T, {H, Result}}.
+      #[]  -> Result.
+      H::T -> Helper {T, H::Result}.
     end.
   ].
   Helper {Reverse L1, L2}.
@@ -197,8 +197,8 @@ Any? := Funcs:Curry 2 [
   ".
   {Func, List} := @.
   case List of
-    #[]    -> nope.
-    {H, T} -> if Func H then yeah. else Any? Func T. end.
+    #[]  -> nope.
+    H::T -> if Func H then yeah. else Any? Func T. end.
   end.
 ].
 
@@ -211,8 +211,8 @@ All? := Funcs:Curry 2 [
   ".
   {Func, List} := @.
   case List of
-    #[]    -> yeah.
-    {H, T} -> if Func H then All? Func T. else nope. end.
+    #[]  -> yeah.
+    H::T -> if Func H then All? Func T. else nope. end.
   end.
 ].
 
@@ -224,8 +224,8 @@ And? := [
   Returns `yeah` if all of the elements of `List` are truthy, `nope` otherwise.
   ".
   case @ of
-    #[]    -> yeah.
-    {H, T} -> if H then And? T. else nope. end.
+    #[]  -> yeah.
+    H::T -> if H then And? T. else nope. end.
   end.
 ].
 
@@ -236,8 +236,8 @@ Or? := [
   Returns `yeah` if any of the elements of `List` are truthy, `nope` otherwise.
   ".
   case @ of
-    #[]    -> nope.
-    {H, T} -> if H then yeah. else Or? T. end.
+    #[]  -> nope.
+    H::T -> if H then yeah. else Or? T. end.
   end.
 ].
 
@@ -263,7 +263,7 @@ Repeat := Funcs:Curry 2 [
     {TimesLeft, Acc} := @.
     if TimesLeft <= 0
       then Acc.
-      else Helper {TimesLeft-1, {Elem, Acc}}.
+      else Helper {TimesLeft-1, Elem::Acc}.
     end.
   ].
   Helper {Times, #[]}.
@@ -313,9 +313,9 @@ Zipwith := Funcs:Curry 3 [
   {F, L1, L2} := @.
   Helper := [
     case @ of
-      {nil, _, Acc}             -> Acc.
-      {_, nil, Acc}             -> Acc.
-      {{H1, T1}, {H2, T2}, Acc} -> Helper {T1, T2, {F {H1, H2}, Acc}}.
+      {#[], _, Acc}         -> Acc.
+      {_, #[], Acc}         -> Acc.
+      {H1::T1, H2::T2, Acc} -> Helper {T1, T2, (F {H1, H2})::Acc}.
     end.
   ].
   Reverse (Helper {L1, L2, #[]}).].
@@ -333,14 +333,14 @@ PartitionAt := Funcs:Curry 2 [
   {N, List} := @.
   Helper := [
     case @ of
-      {_, nil,    Seen}    -> {Seen,    nil}.
-      {0, Unseen, Seen}    -> {Seen, Unseen}.
-      {Left, {H, T}, Seen} ->
-        Helper {Left-1, T, {H, Seen}}.
+      {_, #[],    Seen}  -> {Seen, #[]}.
+      {0, Unseen, Seen}  -> {Seen, Unseen}.
+      {Left, H::T, Seen} ->
+        Helper {Left-1, T, H::Seen}.
     end.
   ].
   if N > 0
-    then Helper {N, List, nil}.
+    then Helper {N, List, #[]}.
     else {#[], List}.
   end.
 ].
@@ -379,15 +379,15 @@ Takewhile := Funcs:Curry 2 [
   {F, List} := @.
   Helper := [
     case @ of
-      {nil,    Acc} -> Acc.
-      {{H, T}, Acc} ->
+      {#[],  Acc} -> Acc.
+      {H::T, Acc} ->
         if F H
-          then Helper {T, {H, Acc}}.
+          then Helper {T, H::Acc}.
           else Acc.
         end.
     end.
   ].
-  Reverse $ Helper {List, nil}.
+  Reverse $ Helper {List, #[]}.
 ].
 
 Dropwhile := Funcs:Curry 2 [
@@ -401,11 +401,11 @@ Dropwhile := Funcs:Curry 2 [
   predicate function `Func`.
   ".
   case @ of
-    {_, #[]}    -> #[].
-    {F, {H, T}} ->
+    {_, #[]}  -> #[].
+    {F, H::T} ->
       if F H
         then Dropwhile F T.
-        else {H, T}.
+        else H::T.
       end.
   end.
 ].
@@ -420,8 +420,8 @@ ToTuple := [
   
   Helper := [
     case @ of
-      {#[],    Acc} -> Acc.
-      {{H, T}, Acc} -> Helper {T, Acc + {H}}.
+      {#[],  Acc} -> Acc.
+      {H::T, Acc} -> Helper {T, Acc + {H}}.
     end.
   ].
 
@@ -437,8 +437,8 @@ ToStream := [
   List := @.
   [
     case List of
-      #[]    -> empty.
-      {H, T} -> {H, ToStream T}.
+      #[]  -> empty.
+      H::T -> {H, ToStream T}.
     end.
   ].
 ].
@@ -495,8 +495,8 @@ Max := [
   Returns the biggest element in `List`.
   ".
   case @ of
-    #[]    -> Error "Max called with empty list".
-    {H, T} -> Reduce [
+    #[]  -> Error "Max called with empty list".
+    H::T -> Reduce [
         {Acc, Elem} := @.
         if Acc > Elem
           then Acc.
@@ -513,8 +513,8 @@ Min := [
   Returns the smallest element in `List`.
   ".
   case @ of
-    #[]    -> Error "Min called with empty list".
-    {H, T} -> Reduce [
+    #[]  -> Error "Min called with empty list".
+    H::T -> Reduce [
         {Acc, Elem} := @.
         if Acc < Elem
           then Acc.
