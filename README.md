@@ -87,7 +87,7 @@ Here's an example session:
 
 #Overview
 
-It has function scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list cmprehensions and and and ....
+It has function scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list comprehensions and and and ....
 
 There are no mutable values in Malang, so you can't change a value 'in place'.
 
