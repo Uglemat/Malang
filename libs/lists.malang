@@ -17,8 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ModuleDoc :=
 "
-  Functions for manipulating lists. Lists in malang are linked lists made out
-  of two-tuples. So the list #[a, b c] is identical to {a, {b, {c, nil}}}.
+  Functions for manipulating lists.
 ".
 
 classified

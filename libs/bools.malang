@@ -34,7 +34,7 @@ Truthy? := [
 
   Returns `yeah` if `Val` is 'truthy', `nope` otherwise.
 
-  These are the 'falsy' values: `{}`, `0`, `nope`, `\"\"` and `nil`.
+  These are the 'falsy' values: `{}`, `0`, `nope`, `\"\"` and `#[]`.
   All other values are considered 'truthy'.
   ".
   if @ then yeah. else nope. end.

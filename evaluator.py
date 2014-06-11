@@ -50,7 +50,12 @@ def eval_list_comprehension(state, expr, emitters, acc):
         pattern = emitter.content['pattern']
         value   = trampoline(emitter.content['expr'], state)
 
-        items = (Node('str', c) for c in value.content) if value._type == 'str' else utils.generate_items(value)
+        if value._type == 'str':
+            items = (Node('str', c) for c in value.content)
+        elif value._type == 'list':
+            items = utils.generate_items(value)
+        else:
+            raise MalangError("Invalid emitter type ({}) in list comprehension".format(value._type), state)
 
         for item in items:
             temp_state = state.newenv(state.env.shallow_copy())
@@ -66,7 +71,7 @@ def patternmatch(pattern, expr, state):
     Keep in mind that syntactially, 'pattern' can be any expression, like a function definition
     or whatever, even though patternmatching only works on simpler things like numbers and tuples.
     """
-    make_exception = lambda s: utils.InvalidMatch("Invalid match" + s, state.newinfonode(pattern))
+    make_exception = lambda s: utils.InvalidMatch("Invalid match ({})".format(s), state.newinfonode(pattern))
 
 
     if pattern._type == 'uminus' and pattern.content._type == 'number':
@@ -91,14 +96,14 @@ def patternmatch(pattern, expr, state):
     elif pattern._type == 'id' and state.env.is_bound(pattern.content):
         val = state.env.get(pattern.content, state.newinfonode(pattern))
         if not utils.equal(val, expr):
-            raise make_exception(" (identifier {!r} is already bound)".format(pattern.content))
+            raise make_exception("identifier {!r} is already bound".format(pattern.content))
         return
 
     elif pattern._type == 'cons':
-        if utils.is_nil(expr):
-            raise make_exception(" (tried to match the empty list against a cons pattern)")
-        elif expr._type != 'list':
-            raise make_exception(" (tried to match something of type {} agains a cons pattern)".format(expr._type))
+        if expr._type != 'list':
+            raise make_exception("tried to match something of type {} agains a cons pattern".format(expr._type))
+        elif utils.is_nil(expr):
+            raise make_exception("tried to match the empty list against a cons pattern")
 
         patternmatch(pattern.content[0], expr.content[0], state)
         patternmatch(pattern.content[1], expr.content[1], state)
@@ -119,9 +124,19 @@ def patternmatch(pattern, expr, state):
 
     elif pattern._type != expr._type:
         raise make_exception(
-            " (tried to match something of type {} agains a pattern of type {})".format(expr._type, pattern._type))
+            "tried to match something of type {} agains a pattern of type {}".format(expr._type, pattern._type))
 
     elif pattern._type == 'list':
+        pattern_nil, expr_nil = utils.is_nil(pattern), utils.is_nil(expr)
+
+        if pattern_nil and expr_nil:
+            return
+        elif pattern_nil or expr_nil:
+            if pattern_nil:
+                raise make_exception("tried to match a list of 1 or more elements agains the empty list pattern")
+            elif expr_nil:
+                raise make_exception("tried to match the empty list agains a pattern-list of 1 or more elements")
+
         patternmatch(pattern.content[0], expr.content[0], state)
         patternmatch(pattern.content[1], expr.content[1], state)
         return
@@ -132,8 +147,7 @@ def patternmatch(pattern, expr, state):
         expr_len = len(expr.content)
         if not pattern_len == expr_len:
             raise make_exception(
-                (" (tried to match a tuple of length {} agains a "
-                 "pattern-tuple of length {})").format(expr_len, pattern_len))
+                "tried to match a tuple of length {} agains a pattern-tuple of length {}".format(expr_len, pattern_len))
         for pat, e in zip(pattern.content, expr.content):
             patternmatch(pat, e, state)
         return
@@ -141,8 +155,8 @@ def patternmatch(pattern, expr, state):
     elif pattern._type in ('number', 'str', 'atom'):
         if not pattern.content == expr.content:
             raise make_exception(
-                " (tried to match the {} {!r} agains the pattern-{} {!r}".format(expr._type, expr.content,
-                                                                                 pattern._type, pattern.content))
+                "tried to match the {} {!r} agains the pattern-{} {!r}".format(expr._type, expr.content,
+                                                                               pattern._type, pattern.content))
         return
 
 
@@ -249,7 +263,7 @@ def maval(expr, state):
 
     elif T == 'cons':
         head, tail = (trampoline(op, state) for op in expr.content)
-        if tail._type == 'list' or utils.is_nil(tail):
+        if tail._type == 'list':
             return Node('list', (head, tail))
         else:
             raise MalangError("The second operand to the cons operator has to be a list", state)

@@ -20,7 +20,7 @@ ModuleDoc :=
   Functions related to streams. Streams are like 'lazy' lists, and they can conceptually
   be infinite, which makes streams an interesting abstraction. A stream can take two forms:
 
-  (1) The atom `empty`, the value of the empty stream. Analogous to the `nil` for lists.
+  (1) The atom `empty`, the value of the empty stream. Analogous to the empty list for lists.
   (2) A function that will either return `empty`, or a tuple of the form {Val, NextStream}, where
       `Val` is a new item in the stream, and `NextStream` is the 'tail' of the stream.
 

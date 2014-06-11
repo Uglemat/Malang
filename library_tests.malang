@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 classified where
 
-#[] := nil.
-1::nil := #[1].
+#[] := #[].
+1::#[] := #[1].
 
 #["one", 2] := #["one", 2].
 

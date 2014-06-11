@@ -336,6 +336,8 @@ def clear_env(_arg, state):
 
     Removes the identifier bindings in the current environment.
     This doesn't remove identifier bindings from 'parent' environments.
+
+    This is meant to be used in the REPL.
     """
     state.env.clear()
     return Node('atom', 'ok')
@@ -350,7 +352,7 @@ def tolist(tup, state):
     """
     assert_type(tup, 'tuple', state)
     if tup.content == ():
-        return Node('atom', 'nil')
+        return Node('list', 'nil')
     else:
         return Node('list', (tup.content[0],
                              tolist(Node('tuple', tup.content[1:]), state)))

@@ -103,8 +103,9 @@ constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in 
 
 #Values
 
-There are 7 types of values: numbers (only integers), strings, atoms, tuples, lists, functions and modules.
+There are 8 types of values: numbers (only integers), strings, atoms, tuples, lists, functions, builtins and modules.
 And then there are bools and dicts, which are made out of other types.
+
 
 ##Numbers
 
@@ -147,7 +148,6 @@ You can use tuples in patterns.
 
 Lists have almost the same syntax as tuples: `#[1, 2, 3]`. They are implemented as linked lists.
 
-The empty list (`#[]`) is identical to the atom `nil`.
 
 You can use lists in patterns.
 
@@ -210,7 +210,7 @@ is twofold:
 
 ###Truthyness
 
-These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `nil`. All other values are considered
+These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `#[]`. All other values are considered
 'truthy'.
 
 The filters in list comprehensions, and the conditional expressions in the `if then else` constructs are places where
@@ -262,6 +262,11 @@ In the library code, I use a standard format for documentation strings, like thi
 If `<arguments>` looks like this: `{Omg, Yah}` it means that the function expects a two-tuple. If it looks like
 this: `Omg Yah` it means that the function is curried, and `Omg` and `Yah` are the first and last arguments,
 respectively. Pretty much all the functions in the library code are curried.
+
+##Builtins
+
+Builtins are functions implemented in the host language that are callable from malang. You use them the same way.
+Some functions might disallow builtins as arguments, that's the only place you have to care about the difference, I think.
 
 ##Bind operator
 

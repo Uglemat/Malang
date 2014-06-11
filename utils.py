@@ -68,8 +68,10 @@ def truthy(val):
         return len(val.content) != 0
     elif val._type == 'number':
         return val.content != 0
-    elif val._type == 'atom' and val.content in ('nil', 'nope'):
+    elif val._type == 'atom' and val.content == 'nope':
         return False
+    elif val._type == 'list':
+        return not is_nil(val)
     else:
         return True
 
@@ -209,7 +211,7 @@ def AST_to_str(ast):
 
 
 def is_nil(v):
-    return hasattr(v, '_type') and v._type == 'atom' and v.content == 'nil'
+    return v._type == 'list' and 'nil' == v.content
 
 def generate_items(malang_list):
     """
@@ -221,7 +223,7 @@ def generate_items(malang_list):
 
 
 def python_list_to_malang_list(_list):
-    acc = Node('atom', 'nil')
+    acc = Node('list', 'nil')
     while _list:
         acc = Node('list', (_list.pop(), acc))
     
@@ -232,7 +234,7 @@ def transform_list_literal(elems, infonode):
     `elems` may or may not have been evaluated, this function should work either way
     """
     if len(elems) == 0:
-        return Node('atom', 'nil', infonode=infonode)
+        return Node('list', 'nil', infonode=infonode)
     else:
         return Node('list', (elems[0], transform_list_literal(elems[1:], infonode)),
                     infonode=infonode)
