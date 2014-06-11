@@ -328,7 +328,7 @@ def p_fncall_module_access(p):
     p[0] = p[1]
 
 def p_module_access(p):
-    'module_access : item COLON module_access'
+    'module_access : cons COLON module_access'
     p[0] = Node('module_access', (p[1], p[3]), infonode=p[1])
 
 def p_module_access_cons(p):

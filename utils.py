@@ -133,15 +133,15 @@ I used `None` in the generators above for padding, when one tuple is shorter tha
 
 def compare_types(val1, val2):
     """
-    compare two malang values of the *different* types, return (-1, 0, 1) if
-    `val1` is (lt, eq, gt) `val2`.
+    compare two malang values of the *different* types, return (1, -1) if
+    `val1` is (gt, lt) `val2`.
     """
-    return 1 if val1._type > val2._type else (-1 if val1._type < val2._type else 0)
+    assert val1._type != val2._type
+    return 1 if val1._type > val2._type else -1
 
 def compare_vals(val1, val2):
     """
-    compare two malang values of the same type, return (-1, 0, 1) if
-    `val1` is (lt, eq, gt) `val2`.
+    compare two malang values, return (1, 0, -1) if `val1` is (gt, eq, lt) `val2`.
     """
     if val1._type != val2._type:
         return compare_types(val1, val2)

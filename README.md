@@ -2,8 +2,8 @@
 
 Malang is a small functional programming language. It's pretty useless, but it was fun to make.
 
-I think it's a really elegant language. I'd almost go so far as to say it's my favorite language.
-However, I may be biased.
+I think it's a really elegant language. And I'm an authority on that subject. The subject of elegance. So you should
+agree. Now is a good time to nod. I can see you.
 
 It's made in Python 3 and depends upon Python Lex-Yacc. In Debian (and probably Ubuntu), you can install it
 with `sudo apt-get install python3-ply`.
@@ -21,23 +21,23 @@ Here's an example session:
     Malang> [@ * @.] 5.
     25
     Malang> List := #[one, two, three].
-    {one, {two, {three, nil}}}
+    #[one, two, three]
     Malang> Lists:Reverse List.
-    {three, {two, {one, nil}}}
+    #[three, two, one]
     Malang> Bools:And? yeah nope.
     nope
     Malang> Ages := #[{peter, 20}, {mary, 22}, {george, 30}].
-    {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}
+    #[{peter, 20}, {mary, 22}, {george, 30}]
     Malang> Dicts:Get george Ages.
     {ok, 30}
     Malang> Dicts:Get me Ages.
     nope
     Malang> Dicts:Set me 123 Ages.
-    {{me, 123}, {{peter, 20}, {{mary, 22}, {{george, 30}, nil}}}}
+    #[{me, 123}, {peter, 20}, {mary, 22}, {george, 30}]
     Malang> Dicts:Remove peter Ages.
-    {{mary, 22}, {{george, 30}, nil}}
+    #[{mary, 22}, {george, 30}]
     Malang> Pairings := #[{P1, P2} | {P1, _} <- Ages, {P2, _} <- Ages, P1 > P2].
-    {{peter, mary}, {{peter, george}, {{mary, george}, nil}}}
+    #[{peter, mary}, {peter, george}, {mary, george}]
     Malang> Env {}.
     	Identifier bindings in current environment:
     Ages            => {{peter, 20}, {...   List            => {one, {two, {th...
@@ -87,7 +87,7 @@ Here's an example session:
 
 #Overview
 
-It has function scope, closures, modules, tail call elimination, higher order functions and pattern matching.
+It has function scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list cmprehensions and and and ....
 
 There are no mutable values in Malang, so you can't change a value 'in place'.
 
@@ -103,14 +103,15 @@ constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in 
 
 #Values
 
-There are 6 types of values: numbers (only integers), strings, atoms, tuples, functions and modules. Lists are
-not a fundamental datatype, they are simply linked lists made up of two-tuples. Dicts are just lists of two-tuples
-of the form `{<key>, <val>}`, so they are what you'd call an 'alist' in a language like Lisp.
+There are 7 types of values: numbers (only integers), strings, atoms, tuples, lists, functions and modules.
+And then there are bools and dicts, which are made out of other types.
 
 ##Numbers
 
 Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary) to 16 (for hexadecimal),
 and base defaults to 10 (decimal). Note that `<base>` and `<number>` above are not expressions.
+
+You can use numbers in patterns. `16#FF := 255` is no problem, it will match.
 
 ##Strings
 
@@ -118,26 +119,45 @@ Strings are what you'd expect, like `"string with \" < quote and \\ < backslash 
 backslash is escaped, even if it doesn't have a special meaning like \n and \t, so "\hay" is the same string
 as just "hay".
 
+You can use strings in patterns.
+
 ##Atoms
 
 Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
 in your programs (in tuples, et cetera). The keywords of the language aren't atoms, so you can't have
 an atom like `if`, `case` or `end`, that would be a syntax error.
 
+You can use atoms in patterns.
+
 ##Identifiers
 
 Identifiers are names which are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_'?]*`.
-The identifier `_` is special, it will match anything and is never bound to anything.
+The identifier `_` is special, it will match anything and is never bound to anything. The `@` is also a
+special identifier (described in the Functions section below).
 
+You can use identifiers in patterns, both if they are bound and unbound, with different semantics.
 
 ##Tuples
 
 A tuple is an ordered collection of items, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
+You can use tuples in patterns.
+
 ##Lists
 
-Lists have almost the same syntax as tuples: `#[1, 2, 3]`, however that is just syntactic sugar.
-`#[1, 2, 3]` translates into `{1, {2, {3, nil}}}` (where `nil` is an atom).
+Lists have almost the same syntax as tuples: `#[1, 2, 3]`. They are implemented as linked lists.
+
+The empty list (`#[]`) is identical to the atom `nil`.
+
+You can use lists in patterns.
+
+###The cons operator:
+
+The `::` (or cons) operator is used to prepend an item to a list. `hello::#[1, 2, 3]` creates the list
+`#[hello, 1, 2, 3]`. `hello::#[]` creates `#[hello]`. The operator is right-associative, so you can write
+`1::2::3::#[]` which creates `#[1, 2, 3]`.
+
+It can also be used it patterns, to match the 'head' and 'tail' of a list.
 
 ###List comprehensions
 
@@ -158,15 +178,15 @@ The list comprehension works the way they do in other languages, and it's a litt
 they work, so I'll just give a couple of examples:
 
     Malang> L := #[1,2,3,4,5].
-    {1, {2, {3, {4, {5, nil}}}}}
+    #[1, 2, 3, 4, 5]
     Malang> #[Elem * 2 | Elem <- L].
-    {2, {4, {6, {8, {10, nil}}}}}
+    #[2, 4, 6, 8, 10]
     Malang> #[Elem | Elem <- L, Numbers:Even? Elem].
-    {2, {4, nil}}
+    #[2, 4]
     Malang> Elem.
     Error: Identifier 'Elem' not bound to a value at line #1 in file '<REPL>'
     Malang> #[{Elem1, Elem2} | Elem1 <- L, Elem2 <- L, Elem1 >= Elem2*2].
-    {{2, 1}, {{3, 1}, {{4, 1}, {{4, 2}, {{5, 1}, {{5, 2}, nil}}}}}}
+    #[{2, 1}, {3, 1}, {4, 1}, {4, 2}, {5, 1}, {5, 2}]
 
 As you can see, all the identifiers bound inside the list comprehension are forgotten, they only exist inside `<elem_expr>`
 and any *later* emitters (so an identifier bound in `<emitter2>` is available in `<emitter5>`, but not in `<emitter1>`.
@@ -175,6 +195,10 @@ and any *later* emitters (so an identifier bound in `<emitter2>` is available in
 is just another way of saying `Lists:Filter Numbers:Even? L`.
 
 In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all combinations.
+
+##Dicts
+
+Dicts are just lists of two-tuples of the form `{<key>, <val>}`, so they are what you'd call an 'alist' in a language like Lisp.
 
 ##Booleans
 
@@ -248,8 +272,8 @@ You pattern-match with the 'bind' operator, ":=". Like this
     {One, {Two, Three}} := {1, {2, 3}}.
 
 It will evaluate the right side expression and try to match it with the left side pattern (from left to right).
-If it sees an unbound identifier (an identifier that hasn't been pattern-matched already)
-it will just bind it to the respective value on the right hand side. 
+If it sees an unbound identifier (an identifier that hasn't been pattern-matched already) it will just bind it to
+the respective value on the right hand side. There's no limit on how deep you can 'nest' patterns.
 
 This will only match tuples with two identical elements:
 
@@ -259,8 +283,8 @@ This will only match tuples with two identical elements:
 Because the second time it sees `Same`, it is no longer an unbound identifier, and malang will insist
 that it must match.
 
-The resulting value is the same as the right hand side. Combine this with the fact that the operator
-is right-associative and you can do stuff like this:
+The resulting value of the bind operator is the same as the right hand side. Combine this with the fact
+that the operator is right-associative and you can do stuff like this:
 
     Tup := {Fst, Snd} := {hello, yoyo}.
 
@@ -293,7 +317,7 @@ or this, using the function composition operator (described in the 'Operators an
     Strings:Length ~ ToStr ~ [@ * 2.] $ 83.
 
 All those lines do the same thing, but I think the bottom 2 are more aesthetically pleasing. And I really
-know what I'm talking about, because my sense of aesthetics is very refined. More so than yours.
+know what I'm talking about.
 
 ##Case of
 
@@ -325,8 +349,8 @@ in). So, as with `case of`, any identifiers bound in the compund expressions wil
 
 ##Catch/throw
 
-`catch` and `throw` are control flow contructs, and can be useful if you're in a deep recursion and want 'return'
-some special value, for example to signify an error.
+`catch` and `throw` are control flow contructs, and can be useful for example if you're in a deep recursion and want 'return'
+some special value, maybe to signify an error, or a successful search.
 
 `catch` syntax: `catch <expr>`
 
@@ -359,6 +383,7 @@ an error. You may also throw values of that form, and the REPL will not discimin
  `:`                        | Right         | Binary | Evaluating an expression in the context of some module.
  `:=`                       | Right         | Binary | Match a value agains a pattern.
  `$`                        | Right         | Binary | Calling a function with an argument.
+ `::`                       | Right         | Binary | Construct a list with a head and tail
 
 ###Precedence
 
@@ -367,19 +392,20 @@ The things at the top has higher precedence than the things at the bottom:
 Prec.  | Operators/other
 ------ | ---------------
 1      | `(...)` `#[...]` `{...}` `[...]` `case of` `if then else`
-2      | `:` (Module access)
-3      | Function application (`<func> <arg>`)
-4      | `~` (Function composition)
-5      | unary `-` (negation)
-6      | `**`
-7      | `*` `/` `%`
-8      | `+` `-`
-9      | `<` `>` `<=` `>=` `=` `!=`
-10     | `:=`
-11     | throw/catch
-12     | `$` (Also function application)
-13     | `,` (seperator)
-14     | `.` (end of compound expression)
+2      | `::` (cons operator) 
+3      | `:` (Module access)
+4      | Function application (`<func> <arg>`)
+5      | `~` (Function composition)
+6      | unary `-` (negation)
+7      | `**`
+8      | `*` `/` `%`
+9      | `+` `-`
+10      | `<` `>` `<=` `>=` `=` `!=`
+11     | `:=`
+12     | throw/catch
+13     | `$` (Also function application)
+14     | `,` (seperator)
+15     | `.` (end of compound expression)
 
 ##Modules
 
@@ -484,16 +510,16 @@ Here's how you could implement it for lists:
     ------>   {F, List} := @.
     ------>   case List of
     ------>     #[] -> #[].
-    ------>     {Head, Tail} -> {F Head, Map {F, Tail}}.
+    ------>     Head::Tail -> (F Head)::(Map {F, Tail}).
     ------>   end.
     ------> ].`
     [function]
     Malang> Map {[@ * @.], #[1,2,3,4,5]}.
-    {1, {4, {9, {16, {25, nil}}}}}
+    #[1, 4, 9, 16, 25]
     Malang> Map' := [{F, List} := @, #[F Elem | Elem <- List].].
     [function]
     Malang> Map' {[@**@.], #[1,2,3,4]}.
-    {1, {4, {27, {256, nil}}}}
+    #[1, 4, 27, 256]
     Malang> 
 
 The `Map'` above isn't very different from how the map is implemented in the `Lists` module:
@@ -508,7 +534,9 @@ The `Map'` above isn't very different from how the map is implemented in the `Li
       #[Func E | E <- List].
     ].
 
-The difference as you can see is that `Lists:Map` has a documentation string and is curried.
+The difference as you can see is that `Lists:Map` has a documentation string and is curried. The use of list comprehension is
+more appropriate because it works for very long lists. The recursive `Map` created in the REPL above is not tail recursive and
+is thus limited by python's recursion limit. And using the list comprehension is more readable, that's important too of course.
 
 #Navigating the REPL
 
