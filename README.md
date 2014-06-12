@@ -376,10 +376,10 @@ an error. You may also throw values of that form, and the REPL will not discimin
  Operators/other            | Associativity | Arity  | Explanation
  --------                   | ------------- | -----  | -------------
  `<` `>` `<=` `>=` `=` `!=` | Left          | Binary | Comparison operators. Values of different types has an inherent order, so they can be compared. Strings and tuples are compared lexicographically. The (not-)equals operator works for all types, but functions/modules/builtins aren't orderable.
- `+`                        | Left          | Binary | Add two things together. Works for numbers, strings, and tuples.
+ `+`                        | Left          | Binary | Add two things together. Works for numbers, strings, tuples, and lists.
  `-`                        | Left          | Binary | Subtract one thing from another. Numbers only.
  `-`                        | Right         | Unary  | Negation operator for a number on the right.
- `*`                        | Left          | Binary | Multiply one thing by another. Works for numbers. Also works if one operand is a number, and the other operand is a tuple or a string.
+ `*`                        | Left          | Binary | Multiply one thing by another. Works for numbers. Also works if one operand is a number, and the other operand is a tuple, string, or list.
  `/`                        | Left          | Binary | Divide one thing by another. Only works for numbers. Does floor division (Malang doesn't have real numbers. Real numbers are complicated, therefore dubious. fo real).
  `%`                        | Left          | Binary | Modulo operator. Works in the same way as the modulo in python. Numbers only.
  `~`                        | Left          | Binary | Function composition, creates a new function out if its operands. `(F ~ G) X = F(G(X))`.

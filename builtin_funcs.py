@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from utils import Node, assert_type, MalangError, python_list_to_malang_list, to_number
+from utils import Node, assert_type, MalangError, iter_to_malang_list, to_number
 import utils
 from evaluator import call_malang_func
 import time
@@ -593,7 +593,7 @@ def stringsplit(tup, state):
     if sep.content == "":
         raise MalangError("The separator cannot be the empty string", state)
 
-    return python_list_to_malang_list(
+    return iter_to_malang_list(
         list(map(lambda s: Node('str', s), string.content.split(sep.content)))
     )
 

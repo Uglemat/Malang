@@ -209,6 +209,8 @@ def AST_to_str(ast):
     else:
         return str(ast)
 
+def concat_malang_lists(list1, list2):
+    return iter_to_malang_list(itertools.chain(generate_items(list1), generate_items(list2)))
 
 def is_nil(v):
     return v._type == 'list' and 'nil' == v.content
@@ -221,13 +223,14 @@ def generate_items(malang_list):
         head, malang_list = malang_list.content
         yield head
 
+def iter_to_malang_list(iter_):
+    result = end = Node('list', 'nil')
 
-def python_list_to_malang_list(_list):
-    acc = Node('list', 'nil')
-    while _list:
-        acc = Node('list', (_list.pop(), acc))
-    
-    return acc
+    for item in iter_:
+        end.content = (item, Node('list', 'nil'))
+        end = end.content[1]
+
+    return result
 
 def transform_list_literal(elems, infonode):
     """

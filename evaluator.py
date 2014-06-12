@@ -20,6 +20,7 @@ from parser import parse
 from utils import Env, Node, MalangError
 import utils
 import operator
+import itertools
 
 
 def eval_list_comprehension(state, expr, emitters, acc):
@@ -240,12 +241,20 @@ def maval(expr, state):
                 return Node('str', op1.content + op2.content, infonode=expr)
             elif _type == 'tuple' and T == 'plus':
                 return Node('tuple', op1.content + op2.content, infonode=expr)
+            elif _type == 'list' and T == 'plus':
+                return utils.concat_malang_lists(op1, op2)
 
         elif T == 'times' and {op1._type, op2._type} == {'number', 'str'}:
             return Node('str', op1.content * op2.content)
         elif T == 'times' and {op1._type, op2._type} == {'number', 'tuple'}:
             return Node('tuple', op1.content * op2.content)
+        elif T == 'times' and {op1._type, op2._type} == {'number', 'list'}:
+            times, malanglist = (op1, op2) if op1._type == 'number' else (op2, op1)
 
+            result = Node('list', 'nil')
+            for _ in range(times.content):
+                result = utils.concat_malang_lists(result, malanglist)
+            return result
         else:
             raise MalangError("Invalid arithmetic expression", state)
 
@@ -279,7 +288,7 @@ def maval(expr, state):
         leftside_expr, emitters = expr.content
 
         eval_list_comprehension(state, leftside_expr, emitters, acc=result)
-        return utils.python_list_to_malang_list(result)
+        return utils.iter_to_malang_list(result)
 
 
     elif T == 'bind':
