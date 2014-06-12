@@ -78,6 +78,8 @@
    (cons (format "\\<%s\\>" (regexp-opt '("case" "of" "if" "then" "else" "end" "catch"
                                           "throw" "classified" "exposing" "where" "endify")))
          'font-lock-keyword-face)
+   (cons (regexp-opt '(":=" "*" "**" "/" "-" "+" "%" ":" "::" ">" "<" ">=" "<=" "=" "!=" "~" "$"))
+         'font-lock-function-name-face)
    '("->\\|<-" . font-lock-keyword-face)
    '("\\<[a-z][A-Za-z0-9_]*\\>" . font-lock-constant-face)
    '("\\<[A-Z_][A-Za-z0-9_?']*\\>" . font-lock-variable-name-face)
