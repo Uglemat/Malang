@@ -46,12 +46,12 @@ IncorrectGuess := [
 
 YesOrNo := [
   Reply := Io:Finput {"{1} [yes/no]: ", @}.
-  
-  case Reply of
-    "yes" -> yeah.
-    "no"  -> nope.
-    _     -> Io:PrintLn "I don't know what that means. say \"yes\" or \"no\", please.",
-             YesOrNo @.
+  Valid := #[{"yes", yeah}, {"y", yeah}, {"no", nope}, {"n", nope}].
+
+  case Dicts:Get (Strings:Lower Reply) Valid of
+    {ok, Bool} -> Bool.
+    nope       -> Io:PrintLn "I don't know what that means. say \"yes\" or \"no\", please.",
+                  YesOrNo @.
   end.
 ].
 

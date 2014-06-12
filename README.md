@@ -567,6 +567,8 @@ For example, you could enter the factorial function above into the REPL like thi
 
 You can't have any characters before the first \` or after the last \`, and they must be on different lines.
 
+You can use the `ClearEnv` function the clear the REPL environment of identifier bindings.
+
 #Emacs mode
 
 There's an emacs mode for this language in the file `malang-mode.el`. It has syntax highlighting, and some commands:
