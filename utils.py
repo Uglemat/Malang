@@ -209,8 +209,8 @@ def AST_to_str(ast):
     else:
         return str(ast)
 
-def concat_malang_lists(list1, list2):
-    return iter_to_malang_list(itertools.chain(generate_items(list1), generate_items(list2)))
+def concat_malang_lists(*lists):
+    return iter_to_malang_list(itertools.chain(*map(generate_items, lists)))
 
 def is_nil(v):
     return v._type == 'list' and 'nil' == v.content

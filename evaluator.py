@@ -251,10 +251,7 @@ def maval(expr, state):
         elif T == 'times' and {op1._type, op2._type} == {'number', 'list'}:
             times, malanglist = (op1, op2) if op1._type == 'number' else (op2, op1)
 
-            result = Node('list', 'nil')
-            for _ in range(times.content):
-                result = utils.concat_malang_lists(result, malanglist)
-            return result
+            return utils.concat_malang_lists(*(malanglist for _ in range(times.content)))
         else:
             raise MalangError("Invalid arithmetic expression", state)
 
