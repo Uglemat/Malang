@@ -171,8 +171,8 @@ Where the syntax of the 'emitters' are:
     or just
     <filter>
 
-Where `<expr>` should evaluate to a list, tuple or string, and every element/character will be pattern-matched
-agains `<pattern>`.
+Where `<expr>` should evaluate to a list, tuple, number or string, and every element/character will be pattern-matched
+agains `<pattern>`. In the case where `<expr>` is a number, it'll pattern-match all numbers from 1 up to that number.
 
 The list comprehension works the way they do in other languages, and it's a little tedious to explain how
 they work, so I'll just give a couple of examples:
@@ -276,7 +276,7 @@ You pattern-match with the 'bind' operator, ":=". Like this
     Three := 3.
     {One, {Two, Three}} := {1, {2, 3}}.
 
-It will evaluate the right side expression and try to match it with the left side pattern (from left to right).
+It will evaluate the right side expression and try to match it with the left side pattern.
 If it sees an unbound identifier (an identifier that hasn't been pattern-matched already) it will just bind it to
 the respective value on the right hand side. There's no limit on how deep you can 'nest' patterns.
 
@@ -294,6 +294,10 @@ that the operator is right-associative and you can do stuff like this:
     Tup := {Fst, Snd} := {hello, yoyo}.
 
 Which is parsed as `Tup := ({Fst, Snd} := {hello, yoyo}).` and thus does exactly what you'd expect.
+
+The identifiers in a pattern are only bound if the pattern-match is successful. So if you evaluate
+`{Same, Same} := {23, 11}`, then `Same` won't get bound because the pattern-match is unsuccessful. This
+is relevant when you use the REPL, which just reports errors that happens, and when you use `catch`.
 
 ##Function application
 

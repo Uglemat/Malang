@@ -293,7 +293,18 @@ def maval(expr, state):
     elif T == 'bind':
         pattern, e = expr.content
         val = trampoline(e, state)
-        patternmatch(pattern, val, state)
+        temp_state = state.newenv(state.env.shallow_copy())
+
+        patternmatch(pattern, val, temp_state)
+
+        # copying over the new bindings, after the patternmatch is successful, to avoid
+        # 'partial' pattern matching. If I used `state` in the above call to `patternmatch`
+        # then evaluating `{Same, Same} := {23, 11}.` in the REPL would leave the REPL env
+        # in an 'inconsistent' state. Using the temporary state means that `Same` will be
+        # unbound after that code has been evaluated, because the patternmatch was unsuccessful,
+        # raising an exception, thus the code below never executes.
+        for name in set(temp_state.env.bindings) - set(state.env.bindings):
+            state.env.bind(name, temp_state.env.bindings[name])
         return val
 
     elif T == 'id':

@@ -63,6 +63,9 @@ nope := case catch 100 / 2 of
   {error, _}    -> yeah.
 end.
 
+{error, _} := catch ({Same, Same} := {23, 11}).
+{error, _} := catch Same. -- asserting that `Same` is unbound, as it should be
+
 
 -3 := case -2 of
    -2 -> -3.
