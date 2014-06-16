@@ -630,3 +630,18 @@ def string_to_number(string, state):
         return Node('number', to_number(string.content))
     except ValueError:
         raise MalangError("Can't convert string to number", state)
+
+@builtin("StringReplace")
+def stringreplace(tup, state):
+    """
+    @ = What Replacement String
+
+    Replace every occurence of the string `What` in `String` by the string `Replacement`.
+    """
+    assert_type(tup, 'tuple', state, tuplelength=3)
+    what, replacement, string = tup.content
+    assert_type(what,        'str', state)
+    assert_type(replacement, 'str', state)
+    assert_type(string,      'str', state)
+    
+    return Node('str', string.content.replace(what.content, replacement.content))

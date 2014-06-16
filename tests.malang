@@ -540,6 +540,11 @@ Str := "yolo".
 "yolo|yolo" := Strings:Fmt {"{1}{2}{1}", Str, "|"}.
 "---32$"    := Strings:Fmt {"{1|->5}$",  32}.
 
+"hello-lo" := Strings:Replace "yo" "lo" "hello-yo".
+"hello-"   := Strings:Replace "yo" "" "yohello-yo".
+""         := Strings:Replace "yo" "asdfg" "".
+
+
 endify.
 
 "

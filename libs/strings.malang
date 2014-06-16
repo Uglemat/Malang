@@ -34,6 +34,7 @@ exposing Fmt
          Lstrip
          Strip
          ToNumber
+         Replace
 where
 
 Fmt    := Builtins:Fmt.
@@ -64,5 +65,7 @@ Strip  := Funcs:Curry 2 [
 ].
 
 ToNumber := Builtins:StringToNumber.
+
+Replace := Funcs:Curry 3 Builtins:StringReplace.
 
 endify.
