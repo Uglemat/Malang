@@ -81,6 +81,7 @@
    (cons (regexp-opt '(":=" "*" "**" "/" "-" "+" "%" ":" "::" ">" "<" ">=" "<=" "=" "!=" "~" "$"))
          'font-lock-function-name-face)
    '("->\\|<-" . font-lock-keyword-face)
+   '("\\<yeah\\|nope\\>" . font-lock-builtin-face)
    '("\\<[a-z][A-Za-z0-9_]*\\>" . font-lock-constant-face)
    '("\\<[A-Z_][A-Za-z0-9_?']*\\>" . font-lock-variable-name-face)
    '("@" . font-lock-variable-name-face))
