@@ -252,6 +252,9 @@ A function is a list of compound expressions surrounded by square brackets. For 
 The above function will always return the tuple `{atom, "string"}`, because functions returns the value
 of the last compound expression.
 
+The function body will be evaluated in an environment that inherits from the environment in which the function was
+defined. Thus, Malang has lexical scope, like all other languages. With the honorable exception of Emacs Lisp.
+
 ###The @
 
 As I said eariler, all functions take exactly one argument. It is automatically bound to the special
