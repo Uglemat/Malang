@@ -317,7 +317,8 @@ Zipwith := Funcs:Curry 3 [
       {H1::T1, H2::T2, Acc} -> Helper {T1, T2, (F {H1, H2})::Acc}.
     end.
   ].
-  Reverse (Helper {L1, L2, #[]}).].
+  Reverse (Helper {L1, L2, #[]}).
+].
 
 PartitionAt := Funcs:Curry 2 [
   "

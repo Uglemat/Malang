@@ -36,11 +36,10 @@ IncorrectGuess := [
 
   if Lives = 0
     then Io:Fprint {"You lose! The correct answer was {1}... you loser.", Answer}.
-    else
-      HigherOrLower := if Answer > Guess then "higher". else "lower". end,
-      LifeOrLives   := if Lives = 1 then "life". else "lives". end,
-      Io:Fprint {"You need to guess {1}! You have {2} {3} left.", HigherOrLower, Lives, LifeOrLives},
-      GuessingGame {Lives-1, Answer}.
+    else HigherOrLower := if Answer > Guess then "higher". else "lower". end,
+         LifeOrLives   := if Lives = 1 then "life". else "lives". end,
+         Io:Fprint {"You need to guess {1}! You have {2} {3} left.", HigherOrLower, Lives, LifeOrLives},
+         GuessingGame {Lives-1, Answer}.
   end.
 ].
 

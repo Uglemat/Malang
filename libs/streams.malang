@@ -49,7 +49,7 @@ where
 Next := [
   "
   @ = Stream
-
+  
   Returns `empty` if `Stream` is empty, else returns a tuple of the form
   `{Val, NewStream}` where `Val` is a new item taken from the stream, and where
   `NewStream` is the rest of the stream.
@@ -60,19 +60,19 @@ Next := [
 MakeStream := Funcs:Curry 2 [
   "
   @ = Seed Func
-
+  
   Create a new stream. The first item in the stream, lets call it `Item_1`,
   will be `Func Seed`. The next item will be `Func Item_1`. And so on, forever.
   
   If `Func` returns `empty` at any point then the stream will end.
   ".
   {Seed, Func} := @.
-
+  
   [
     NewVal := Func Seed.
     if NewVal = empty
-     then empty.
-     else {NewVal, MakeStream NewVal Func}.
+      then empty.
+      else {NewVal, MakeStream NewVal Func}.
     end.
   ].
 ].
@@ -80,16 +80,16 @@ MakeStream := Funcs:Curry 2 [
 Map := Funcs:Curry 2 [
   "
   @ = Func Stream
-
+  
   Return a new version of `Stream` where `Func` is called
   on all items.
   ".
   {Func, Stream} := @.
-
+  
   [
     case Next Stream of
-     empty               -> empty.
-     {NewVal, NewStream} -> {Func NewVal, Map Func NewStream}.
+      empty               -> empty.
+      {NewVal, NewStream} -> {Func NewVal, Map Func NewStream}.
     end.
   ].
 ].
@@ -97,7 +97,7 @@ Map := Funcs:Curry 2 [
 ToList := [
   "
   @ = Stream
-
+  
   Converts `Stream` to a list.
   ".
   Helper := [
@@ -113,7 +113,7 @@ ToList := [
 Take := Funcs:Curry 2 [
   "
   @ = N Stream
-
+  
   Returns a new version of `Stream` that has maximum `N` items.
   ".
   {N, Stream} := @.
@@ -132,7 +132,7 @@ Take := Funcs:Curry 2 [
 Takewhile := Funcs:Curry 2 [
   "
   @ = Pred Stream
-
+  
   Returns a new version of `Stream` that stops once the function `Pred`
   returns falsy for an item (and doesn't include that item).
   ".
@@ -154,7 +154,7 @@ Takewhile := Funcs:Curry 2 [
 Drop := Funcs:Curry 2 [
   "
   @ = N Stream
-
+  
   Returns a new version of `Stream` where `N` items are 'forgotten'.
   ".
   {N, Stream} := @.
@@ -164,12 +164,12 @@ Drop := Funcs:Curry 2 [
     if Current_N <= 0
       then Next Current_Stream.
       else case Next Current_Stream of
-          empty          -> empty.
-          {_, NewStream} -> Helper {NewStream, Current_N-1}.
+           empty          -> empty.
+           {_, NewStream} -> Helper {NewStream, Current_N-1}.
       end.
     end.
   ].
-
+  
   [Helper {Stream, N}.].
 ].
 
@@ -177,7 +177,7 @@ Drop := Funcs:Curry 2 [
 Dropwhile := Funcs:Curry 2 [
   "
   @ = Pred Stream
-
+  
   Returns a new version of `Stream` with items dropped off
   from the front as long as `Pred` is truthy for those items.
   ".
@@ -193,7 +193,7 @@ Dropwhile := Funcs:Curry 2 [
         end.
     end.
   ].
-
+  
   [Helper Stream.].
 ].
 
@@ -201,7 +201,7 @@ Dropwhile := Funcs:Curry 2 [
 Zipwith := Funcs:Curry 3 [
   "
   @ = Func Stream1 Stream2
-
+  
   Return a new stream where `Stream1` and `Stream2` are 'zipped' together
   with `Func`, which is called with an argument of the form `{Item1, Item2}`
   where `Item1` is an item from `Stream1` and `Item2` is the corresponding item
@@ -209,7 +209,7 @@ Zipwith := Funcs:Curry 3 [
   zipped stream becomes empty.
   ".
   {Func, Stream1, Stream2} := @.
-
+  
   [
     case {Next Stream1, Next Stream2} of
       {empty, _} -> empty.
@@ -223,7 +223,7 @@ Zipwith := Funcs:Curry 3 [
 Zip := Funcs:Curry 2 [
   "
   @ = Stream1 Stream2
-
+  
   Return a new stream of tuples of the form `{Item1, Item2}` where
   `Item1` is an item from `Stream1` and `Item2` is the corresponding
   item in `Stream2`. If either `Stream1` or `Stream2` becomes empty,
@@ -236,14 +236,14 @@ Zip := Funcs:Curry 2 [
 Chain := Funcs:Curry 2 [
   "
   @ = Stream1 Stream2
-
+  
   Create a new stream that will milk items from `Stream1` until it is
   exhausted, then it moves on to `Stream2`. This function only makes
   sense when `Stream1` is finite, obviously.
   ".
-
+  
   {Stream1, Stream2} := @.
-
+  
   [
     case Next Stream1 of
       empty -> Next Stream2.
@@ -255,15 +255,15 @@ Chain := Funcs:Curry 2 [
 Interleave := Funcs:Curry 2 [
   "
   @ = Stream1 Stream2
-
+  
   Returns a new stream that alternates between `Stream1` and `Stream2`,
   so it takes one item from `Stream1`, then one from `Stream2` then one
   from `Stream1` and so on. This stream ends as soon as one of the streams
   ends.
   ".
-
+  
   {Stream1, Stream2} := @.
-
+  
   [
     case Next Stream1 of
       empty -> empty.
@@ -275,24 +275,24 @@ Interleave := Funcs:Curry 2 [
 Cons := Funcs:Curry 2 [
   "
   @ = Item Stream
-
+  
   Return a stream where the \"head\" is `Item` and the \"tail\" is `Stream`.
   ".
-
+  
   {Item, Stream} := @.
-
+  
   [{Item, Stream}.].
 ].
 
 Filter := Funcs:Curry 2 [
   "
   @ = Pred Stream
-
+  
   Return a new version of `Stream` where only items that passes the predicate
   function `Pred` are present.
   ".
   {Pred, Stream} := @.
-
+  
   Next_Valid := [
     case Next @ of
       empty -> empty.
@@ -303,7 +303,7 @@ Filter := Funcs:Curry 2 [
         end.
     end.
   ].
-
+  
   [
     case Next_Valid Stream of
       empty -> empty.

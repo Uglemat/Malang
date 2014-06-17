@@ -41,8 +41,8 @@ Curry := [
     argument, and at the end of that chain is the function which will call `Func`
     with the accumulated arguments.
     
-    The function returned will have the same docstring and filename as `Func`, so
-    if someone uses `Help` on that function, then it will show the same docstring, 
+    The function returned will have the same docstring and filename as `Func`, so if
+    someone uses `Help` on that function, then it will show the same docstring, 
     and report that it was defined where `Func` was defined.
 
     This function was called on itself to create a curried version of itself. Neat. 
@@ -77,9 +77,9 @@ Curry := [
       else Result := Helper N,
            Curried := [Result {@}.],
            NewFunc := case Builtins:FuncsGetDocstring Func of
-               nope -> Curried.
-               Doc  -> Builtins:FuncsSetDocstring {Doc, Curried}.
-             end,
+             nope -> Curried.
+             Doc  -> Builtins:FuncsSetDocstring {Doc, Curried}.
+           end,
            case TypeOf Func of
              "builtin"  -> NewFunc.
              "function" -> Builtins:FuncsSetFilename {Builtins:FuncsGetFilename Func, NewFunc}.
@@ -113,8 +113,8 @@ Callable? := [
   "
   @ = Thing
 
-  Returns `yeah` if `Thing` is of the type `function` or the type `builtin`, in which
-  case it can be called with a value, and `false` otherwise.
+  Returns `yeah` if `Thing` is of the type `function` or the type `builtin`, in
+  which case it can be called with a value, and `false` otherwise.
   ".
   Lists:Member? (TypeOf @) #["function", "builtin"].
 ].
