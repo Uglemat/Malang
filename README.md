@@ -83,11 +83,15 @@ Here's an example session:
     [function]
     Malang> Add10 23.
     33
+    Malang> throw ball.
+    Uncaught value: ball
+    Malang> catch (throw ball).
+    ball
     Malang> 
 
 #Overview
 
-It has function scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list comprehensions and and and ....
+It has lexical scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list comprehensions and and and ....
 
 There are no mutable values in Malang, so you can't change a value 'in place'.
 
@@ -168,11 +172,16 @@ You can use list comprehensions to create new lists. This is the syntax:
 Where the syntax of the 'emitters' are:
 
     <pattern> <- <expr>
-    or just
+
+or just
+
     <filter>
 
 Where `<expr>` should evaluate to a list, tuple, number or string, and every element/character will be pattern-matched
 agains `<pattern>`. In the case where `<expr>` is a number, it'll pattern-match all numbers from 1 up to that number.
+
+If the emitter is a `<filter>`, then `<filter>` should be an expression, and it will only allow elements into the new
+list if that expression evaluates to a truthy value.
 
 The list comprehension works the way they do in other languages, and it's a little tedious to explain how
 they work, so I'll just give a couple of examples:
@@ -194,7 +203,7 @@ and any *later* emitters (so an identifier bound in `<emitter2>` is available in
 `#[Elem * 2 | Elem <- L]` is just another way of saying `Lists:Map [@*2.] L`, and `#[Elem | Elem <- L, Numbers:Even? Elem]`
 is just another way of saying `Lists:Filter Numbers:Even? L`.
 
-In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all combinations.
+In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all permutations.
 
 ##Dicts
 
@@ -581,6 +590,9 @@ There's an emacs mode for this language in the file `malang-mode.el`. It has syn
    so you just have to enter the identifier name for a new function and then use this keyboard shortcut.
  * `C-c c` (`maland-insert-case`) will insert the basic structure of a `case` construct.
  * `C-c i` (`malang-insert-if`) will insert the basic structure of an `if then else` construct.
+
+It also tries to indent code. Keep in mind that the indentation is based on heuristics, and is not perfect. It's just meant to
+make it a little bit easier to edit malang code. Don't expect to be able to indent large regions of code at once.
 
 To use the mode, you can open `malang-mode.el` in emacs, enter `M-x eval-buffer`, then go into the buffer that has
 malang code in it, and enter `M-x malang-mode`.
