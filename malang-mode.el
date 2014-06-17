@@ -58,7 +58,7 @@
     (line-begins regex)))
 
 (defun previous-ends (regex)
-  "Does the previous line that is not an empty line begin with REGEX?"
+  "Does the previous line that is not an empty line end with REGEX?"
   (save-excursion
     (previous-content-line)
     (line-ends regex)))
