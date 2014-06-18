@@ -199,7 +199,7 @@ This procedure hasn't heard about tabs. It only knows spaces."
                 ">" "<" ">=" "<=" "=" "!=" "~" "$")))
 
 (defun malang-after-change (&rest args)
-  (when (looking-back (format "\\b%s" malang-keywords-regex))
+  (when (looking-back (format "\\(->\\|\\b%s\\)" malang-keywords-regex))
     (malang-indent-line)))
 
 (defconst malang-font-lock-keywords
