@@ -17,17 +17,19 @@
 
 (defun empty-linep ()
   "Is the current line empty?"
-  (= (save-excursion (beginning-of-line) (skip-chars-forward " \t") (point))
-     (save-excursion (end-of-line) (point))))
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[ \t]*$")))
 
+(defun end-of-linep ()
+  (looking-at "$"))
 
 (defun previous-content-line ()
-  "Go to the previous line which is not empty"
-  (unless (bobp)
-    (forward-line -1)
-    (when (empty-linep)
-      (previous-content-line))))
-
+  "Go to the previous line which is not empty.
+Returns t if it found a line, nil otherwise"
+  (cond ((= (forward-line -1) -1) nil)
+        ((empty-linep) (previous-content-line))
+        (t t)))
 
 (defun find-indentation ()
   "Find indentation for line at point, searching backwards if line is empty"
@@ -54,14 +56,14 @@
 (defun previous-begins (regex)
   "Does the previous line that is not an empty line begin with REGEX?"
   (save-excursion
-    (previous-content-line)
-    (line-begins regex)))
+    (and (previous-content-line)
+         (line-begins regex))))
 
 (defun previous-ends (regex)
   "Does the previous line that is not an empty line end with REGEX?"
   (save-excursion
-    (previous-content-line)
-    (line-ends regex)))
+    (and (previous-content-line)
+         (line-ends regex))))
 
 
 (defun indentation-of-previous-open ()
@@ -74,12 +76,12 @@ This procedure tries to understand nested 'if's and 'case's, although it's kind 
            (previous-content-line)
            (cond ((bobp) 0)
                  ((or (line-begins ".* := +if .*")
-                      (line-begins ".*case .* of *")
-                      (line-begins " *\\(then \\|else \\)?if"))
+                      (line-begins ".*case .* of\\b")
+                      (line-begins " *\\(then \\|else \\)?if\\b"))
                   (if (= ends-seen 0)
                       (find-indentation)
                     (apply helper (list (1- ends-seen)))))
-                 ((line-begins " *end") (apply helper (list (1+ ends-seen))))
+                 ((line-begins " *end\\b") (apply helper (list (1+ ends-seen))))
                  (t (apply helper (list ends-seen)))))))
     (save-excursion (apply helper (list 0)))))
 
@@ -91,7 +93,7 @@ of lines correctly."
   (save-excursion
     (previous-content-line)
     (cond ((bobp) 0)
-          ((line-begins ".*case .* of *") (+ (find-indentation) 2))
+          ((line-begins ".*case .* of\\b") (+ (find-indentation) 2))
           ((line-begins ".* ->") (find-indentation))
           (t (case-clause-indentation)))))
   
@@ -99,10 +101,9 @@ of lines correctly."
 (defun malang-indent-line ()
   "Indent the line at point. It's not perfect, it will fail in many cases, but it tries to be a little smart.
 This procedure hasn't heard about tabs. It only knows spaces."
+  (save-excursion (malang-indent-line-1))
   (if (empty-linep)
-      (malang-indent-line-1)
-    (save-excursion
-      (malang-indent-line-1))))
+      (end-of-line)))
 
 (defun malang-indent-line-1 ()
   (if (bobp)
@@ -110,21 +111,21 @@ This procedure hasn't heard about tabs. It only knows spaces."
     (let* ((base-indent (save-excursion (forward-line -1) (find-indentation)))
            (additional-indent
             (cond ((line-begins " *where *$") -9)
-                  ((and (line-begins " *end") (not (line-begins " *endify")))
+                  ((line-begins " *end\\b")
                    (- (indentation-of-previous-open) base-indent))
 
-                  ((line-begins " *then") 2)
+                  ((line-begins " *then\\b") 2)
                   
                   ((line-begins " *\\]") -2)
                   ((previous-ends "\\[ *") 2)
 
-                  ((previous-begins " *\\(then\\|else\\) \\(if\\|case \\)") 2)
-                  ((previous-begins " *then") (if (line-begins " *else") 0 5))
-                  ((line-begins " *else") (if (previous-begins " *end") 0 -5))
+                  ((previous-begins " *\\(then\\|else\\) \\(if\\|case\\)\\b") 2)
+                  ((previous-begins " *then\\b") (if (line-begins " *else\\b") 0 5))
+                  ((line-begins " *else\\b") (if (previous-begins " *end\\b") 0 -5))
                   
-                  ((previous-begins " *else") 5)
-                  ((previous-begins " *\\(if\\|case\\) ") 2)
-                  ((previous-begins " *exposing") 9)
+                  ((previous-begins " *else\\b") 5)
+                  ((previous-begins " *\\(if\\|case\\)\\b") 2)
+                  ((previous-begins " *exposing\\b") 9)
                   ((line-begins ".* ->") (- (case-clause-indentation) base-indent))
                   ((previous-begins ".* ->")
                    (cond ((previous-begins ".* -> *$") 2)
@@ -189,13 +190,22 @@ This procedure hasn't heard about tabs. It only knows spaces."
 
 (add-to-list 'auto-mode-alist '("\\.malang\\'" . malang-mode))
 
+(defvar malang-keywords-regex
+  (regexp-opt '("case" "of" "if" "then" "else" "end" "catch"
+                "throw" "classified" "exposing" "where" "endify")))
+
+(defvar malang-operators-regex
+  (regexp-opt '(":=" "*" "**" "/" "-" "+" "%" ":" "::"
+                ">" "<" ">=" "<=" "=" "!=" "~" "$")))
+
+(defun malang-after-change (&rest args)
+  (when (looking-back (format "\\b%s" malang-keywords-regex))
+    (malang-indent-line)))
+
 (defconst malang-font-lock-keywords
   (list
-   (cons (format "\\<%s\\>" (regexp-opt '("case" "of" "if" "then" "else" "end" "catch"
-                                          "throw" "classified" "exposing" "where" "endify")))
-         'font-lock-keyword-face)
-   (cons (regexp-opt '(":=" "*" "**" "/" "-" "+" "%" ":" "::" ">" "<" ">=" "<=" "=" "!=" "~" "$"))
-         'font-lock-function-name-face)
+   (cons (format "\\<%s\\>" malang-keywords-regex) 'font-lock-keyword-face)
+   (cons malang-operators-regex 'font-lock-function-name-face)
    '("->\\|<-" . font-lock-keyword-face)
    '("\\<yeah\\|nope\\>" . font-lock-builtin-face)
    '("\\<[a-z][A-Za-z0-9_]*\\>" . font-lock-constant-face)
@@ -219,6 +229,7 @@ This procedure hasn't heard about tabs. It only knows spaces."
   (set-syntax-table malang-mode-syntax-table)
   (use-local-map malang-mode-map)
   (set (make-local-variable 'indent-line-function) 'malang-indent-line)
+  (add-hook 'after-change-functions 'malang-after-change nil t)
   ;; Set up font-lock
   (set (make-local-variable 'font-lock-defaults) '(malang-font-lock-keywords))
   (setq major-mode 'malang-mode)

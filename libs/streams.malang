@@ -122,8 +122,8 @@ Take := Funcs:Curry 2 [
     if N <= 0
       then empty.
       else case Next Stream of
-           empty            -> empty.
-           {Val, NewStream} -> {Val, Take (N-1) NewStream}.
+        empty            -> empty.
+        {Val, NewStream} -> {Val, Take (N-1) NewStream}.
       end.
     end.
   ].
@@ -164,8 +164,8 @@ Drop := Funcs:Curry 2 [
     if Current_N <= 0
       then Next Current_Stream.
       else case Next Current_Stream of
-           empty          -> empty.
-           {_, NewStream} -> Helper {NewStream, Current_N-1}.
+        empty          -> empty.
+        {_, NewStream} -> Helper {NewStream, Current_N-1}.
       end.
     end.
   ].
@@ -226,8 +226,8 @@ Zip := Funcs:Curry 2 [
   
   Return a new stream of tuples of the form `{Item1, Item2}` where
   `Item1` is an item from `Stream1` and `Item2` is the corresponding
-  item in `Stream2`. If either `Stream1` or `Stream2` becomes empty,
-  then the whole zipped stream becomes empty.
+  item in `Stream2`. If either `Stream1` or `Stream2` becomes empty, then
+  the whole zipped stream becomes empty.
   ".
   {Stream1, Stream2} := @.
   Zipwith [@.] Stream1 Stream2.
