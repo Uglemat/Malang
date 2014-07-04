@@ -14,121 +14,132 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+(defun malang-line-is-comment-p ()
+  "Is the current line just a comment?"
+  (malang-line-begins-p "[ \t]*--"))
 
-(defun empty-linep ()
+(defun malang-line-begins-as-string-p ()
+  "Is the start of this line a comment?"
+  (save-excursion
+    (beginning-of-line)
+    (equal (face-at-point) 'font-lock-string-face)))
+
+(defun empty-line-p ()
   "Is the current line empty?"
   (save-excursion
     (beginning-of-line)
     (looking-at "[ \t]*$")))
 
-(defun end-of-linep ()
-  (looking-at "$"))
-
-(defun previous-content-line ()
-  "Go to the previous line which is not empty.
-Returns t if it found a line, nil otherwise"
+(defun malang-previous-content-line ()
+  "Go to the previous line which is not empty, is not a comment, and doesn't begin
+as a string. Returns t if it found a line, nil otherwise"
   (cond ((= (forward-line -1) -1) nil)
-        ((empty-linep) (previous-content-line))
+        ((or (empty-line-p)
+             (malang-line-begins-as-string-p)
+             (malang-line-is-comment-p))
+         (malang-previous-content-line))
         (t t)))
 
-(defun find-indentation ()
+(defun malang-find-indentation ()
   "Find indentation for line at point, searching backwards if line is empty"
   (save-excursion
-    (when (empty-linep)
-      (previous-content-line))
+    (when (empty-line-p)
+      (malang-previous-content-line))
     (beginning-of-line)
     (skip-chars-forward " \t")))
 
 
-(defun line-begins (regex)
+(defun malang-line-begins-p (regex)
   "Does the current line begin with REGEX?"
   (save-excursion
     (beginning-of-line)
     (let ((case-fold-search nil)) (looking-at regex))))
 
-(defun line-ends (regex)
+(defun malang-line-ends-p (regex)
   "Does the current line end with REGEX?"
   (save-excursion
     (end-of-line)
     (let ((case-fold-search nil)) (looking-back regex))))
 
 
-(defun previous-begins (regex)
-  "Does the previous line that is not an empty line begin with REGEX?"
+(defun malang-previous-begins-p (regex)
+  "Does the line found by `malang-previous-content-line' begin with REGEX?"
   (save-excursion
-    (and (previous-content-line)
-         (line-begins regex))))
+    (and (malang-previous-content-line)
+         (malang-line-begins-p regex))))
 
-(defun previous-ends (regex)
-  "Does the previous line that is not an empty line end with REGEX?"
+(defun malang-previous-ends-p (regex)
+  "Does the line found by `malang-previous-content-line' end with REGEX?"
   (save-excursion
-    (and (previous-content-line)
-         (line-ends regex))))
+    (and (malang-previous-content-line)
+         (malang-line-ends-p regex))))
 
 
-(defun indentation-of-previous-open ()
+(defun malang-indentation-of-previous-open ()
   "Need this procedure to find out how much to indent lines that starts with 'end'.
 This procedure tries to understand nested 'if's and 'case's, although it's kind of difficult."
   (let ((helper
          (lambda (ends-seen)
            ;; `ends-seen` is used to count how many 'end's I've seen, to make sure
            ;; I get the right 'open'.
-           (previous-content-line)
+           (malang-previous-content-line)
            (cond ((bobp) 0)
-                 ((or (line-begins ".* := +if .*")
-                      (line-begins ".*case .* of\\b")
-                      (line-begins " *\\(then \\|else \\)?if\\b"))
+                 ((or (malang-line-begins-p ".* := +if .*")
+                      (malang-line-begins-p ".*case .* of\\b")
+                      (malang-line-begins-p " *\\(then \\|else \\)?if\\b"))
                   (if (= ends-seen 0)
-                      (find-indentation)
+                      (malang-find-indentation)
                     (apply helper (list (1- ends-seen)))))
-                 ((line-begins " *end\\b") (apply helper (list (1+ ends-seen))))
+                 ((malang-line-begins-p " *end\\b") (apply helper (list (1+ ends-seen))))
                  (t (apply helper (list ends-seen)))))))
     (save-excursion (apply helper (list 0)))))
 
-(defun case-clause-indentation ()
+(defun malang-case-clause-indentation ()
   "Need this procedure to find out how much to indent lines that contain ' ->'.
 This procedure is not very robust as it doesn't understand nested case constructs in any way,
 but nested case constructs are pretty rare. At least by using this procedure, I indent a lot
 of lines correctly."
   (save-excursion
-    (previous-content-line)
+    (malang-previous-content-line)
     (cond ((bobp) 0)
-          ((line-begins ".*case .* of\\b") (+ (find-indentation) 2))
-          ((line-begins ".* ->") (find-indentation))
-          (t (case-clause-indentation)))))
+          ((malang-line-begins-p ".*case .* of\\b") (+ (malang-find-indentation) 2))
+          ((malang-line-begins-p ".* ->") (malang-find-indentation))
+          (t (malang-case-clause-indentation)))))
   
 
 (defun malang-indent-line ()
   "Indent the line at point. It's not perfect, it will fail in many cases, but it tries to be a little smart.
 This procedure hasn't heard about tabs. It only knows spaces."
   (save-excursion (malang-indent-line-1))
-  (if (empty-linep)
+  (if (empty-line-p)
       (end-of-line)))
 
 (defun malang-indent-line-1 ()
   (if (bobp)
       (indent-line-to 0)
-    (let* ((base-indent (save-excursion (forward-line -1) (find-indentation)))
+    (let* ((base-indent (save-excursion (forward-line -1) (malang-find-indentation)))
            (additional-indent
-            (cond ((line-begins " *where *$") -9)
-                  ((line-begins " *end\\b")
-                   (- (indentation-of-previous-open) base-indent))
+            (cond ((or (malang-line-begins-as-string-p) (malang-line-is-comment-p))
+                   0)
+                  ((malang-line-begins-p " *where *$") -9)
+                  ((malang-line-begins-p " *end\\b")
+                   (- (malang-indentation-of-previous-open) base-indent))
 
-                  ((line-begins " *then\\b") 2)
+                  ((malang-line-begins-p " *then\\b") 2)
                   
-                  ((line-begins " *\\]") -2)
-                  ((previous-ends "\\[ *") 2)
+                  ((malang-line-begins-p " *\\]") -2)
+                  ((malang-previous-ends-p "\\[ *") 2)
 
-                  ((previous-begins " *\\(then\\|else\\) \\(if\\|case\\)\\b") 2)
-                  ((previous-begins " *then\\b") (if (line-begins " *else\\b") 0 5))
-                  ((line-begins " *else\\b") (if (previous-begins " *end\\b") 0 -5))
+                  ((malang-previous-begins-p " *\\(then\\|else\\) \\(if\\|case\\)\\b") 2)
+                  ((malang-previous-begins-p " *then\\b") (if (malang-line-begins-p " *else\\b") 0 5))
+                  ((malang-line-begins-p " *else\\b") (if (malang-previous-begins-p " *end\\b") 0 -5))
                   
-                  ((previous-begins " *else\\b") 5)
-                  ((previous-begins " *\\(if\\|case\\)\\b") 2)
-                  ((previous-begins " *exposing\\b") 9)
-                  ((line-begins ".* ->") (- (case-clause-indentation) base-indent))
-                  ((previous-begins ".* ->")
-                   (cond ((previous-begins ".* -> *$") 2)
+                  ((malang-previous-begins-p " *else\\b") 5)
+                  ((malang-previous-begins-p " *\\(if\\|case\\)\\b") 2)
+                  ((malang-previous-begins-p " *exposing\\b") 9)
+                  ((malang-line-begins-p ".* ->") (- (malang-case-clause-indentation) base-indent))
+                  ((malang-previous-begins-p ".* ->")
+                   (cond ((malang-previous-begins-p ".* -> *$") 2)
                          (t (save-excursion
                               (previous-content-line)
                               (- (save-excursion (re-search-forward " ->")) (point) base-indent -1)))))
@@ -146,7 +157,7 @@ This procedure hasn't heard about tabs. It only knows spaces."
 
 (defun malang-insert-func (prefix)
   (interactive "P")
-  (let ((indentation (find-indentation))
+  (let ((indentation (malang-find-indentation))
         (lines (if (null prefix)
                    ;; Insert docstring if there is a prefix arg
                    (list "  "    "].")
@@ -160,7 +171,7 @@ This procedure hasn't heard about tabs. It only knows spaces."
   (unless (null prefix) (forward-line) (end-of-line)))
 
 
-(defun insert-then-indent (string)
+(defun malang-insert-then-indent (string)
   (save-excursion
     (set-mark (point))
     (insert string)
@@ -168,14 +179,14 @@ This procedure hasn't heard about tabs. It only knows spaces."
 
 (defun malang-insert-if ()
   (interactive)
-  (insert-then-indent "if \nthen .\nelse .\nend.")
+  (malang-insert-then-indent "if \nthen .\nelse .\nend.")
   (end-of-line))
 
 (defun malang-insert-case ()
   (interactive)
-  (insert-then-indent "case ")
+  (malang-insert-then-indent "case ")
   (end-of-line)
-  (insert-then-indent " of\n-> .\nend."))
+  (malang-insert-then-indent " of\n-> .\nend."))
 
 
 (defvar malang-mode-hook nil)

@@ -482,7 +482,7 @@ ReverseSort := [
 Slice := Funcs:Curry 3 [
   "
   @ = Start Stop List
-    
+  
   Returns a sublist of `List` starting at index `Start` (inclusive),
   ending at index `Stop` (exclusive).
   ".
@@ -499,12 +499,12 @@ Max := [
   case @ of
     #[]  -> Error "Max called with empty list".
     H::T -> Reduce [
-        {Acc, Elem} := @.
-        if Acc > Elem
-          then Acc.
-          else Elem. 
-        end.
-      ] H T.
+      {Acc, Elem} := @.
+      if Acc > Elem
+        then Acc.
+        else Elem. 
+      end.
+    ] H T.
   end.
 ].
 
@@ -517,12 +517,12 @@ Min := [
   case @ of
     #[]  -> Error "Min called with empty list".
     H::T -> Reduce [
-        {Acc, Elem} := @.
-        if Acc < Elem
-          then Acc.
-          else Elem. 
-        end.
-      ] H T.
+      {Acc, Elem} := @.
+      if Acc < Elem
+        then Acc.
+        else Elem. 
+      end.
+    ] H T.
   end.
 ].
 
