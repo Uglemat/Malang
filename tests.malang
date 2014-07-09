@@ -675,6 +675,9 @@ empty := Streams:Next $ Streams:Zipwith [@*2.] empty Ones.
 #[2, 4, 6, 8] := Show 4 $ Streams:Filter Numbers:Even? Ns.
 #[]           := Show 4 $ Streams:Filter Numbers:Even? empty.
 
+#[1,2,3,4] := Streams:ToList $ Streams:Range 1 5.
+#[1,2,3,4] := Streams:ToList $ Streams:Take 4 $ Streams:Range 1 inf.
+
 endify.
 
 ---------------------------------------

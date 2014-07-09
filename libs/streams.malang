@@ -44,6 +44,7 @@ exposing Next
          Interleave
          Cons
          Filter
+         Range
 where
 
 Next := [
@@ -309,6 +310,24 @@ Filter := Funcs:Curry 2 [
       empty -> empty.
       {Val, NewStream} ->
         {Val, Filter Pred NewStream}.
+    end.
+  ].
+].
+
+Range := Funcs:Curry 2 [
+  "
+  @ = From To
+
+  Returns a stream of numbers from `From` (inclusive) to `To` (exclusive).
+
+  `To` can also be the atom `inf`, in which case the range will go on for ever.
+  ".
+  {From, To} := @.
+
+  MakeStream (From - 1) [
+    if Bools:And? (To != inf) (@+1 >= To)
+      then empty.
+      else @+1.
     end.
   ].
 ].
