@@ -35,6 +35,7 @@ exposing Fmt
          Strip
          ToNumber
          Replace
+         Capitalize
 where
 
 Fmt    := Builtins:Fmt.
@@ -67,5 +68,18 @@ Strip  := Funcs:Curry 2 [
 ToNumber := Builtins:StringToNumber.
 
 Replace := Funcs:Curry 3 Builtins:StringReplace.
+
+Capitalize := [
+  "
+  @ = String.
+
+  Capitalize the first character.
+  ".
+  Len := Length @.
+  if Len = 0
+    then "".
+    else (Upper $ Nth 1 @) + Slice 2 (Len+1) @.
+  end.
+].
 
 endify.

@@ -85,6 +85,7 @@ This procedure tries to understand nested 'if's and 'case's, although it's kind 
            (malang-previous-content-line)
            (cond ((bobp) 0)
                  ((or (malang-line-begins-p ".* := +if .*")
+                      (malang-line-begins-p ".* -> +if .*")
                       (malang-line-begins-p ".*case .* of\\b")
                       (malang-line-begins-p " *\\(then \\|else \\)?if\\b"))
                   (if (= ends-seen 0)
@@ -141,7 +142,7 @@ This procedure hasn't heard about tabs. It only knows spaces."
                   ((malang-previous-begins-p ".* ->")
                    (cond ((malang-previous-begins-p ".* -> *$") 2)
                          (t (save-excursion
-                              (previous-content-line)
+                              (malang-previous-content-line)
                               (- (save-excursion (re-search-forward " ->")) (point) base-indent -1)))))
                   (t 0))))
       (indent-line-to (max 0 (+ base-indent additional-indent))))))

@@ -24,6 +24,7 @@ classified
 exposing Odd?
          Even?
          RandRange
+         Abs
 where
 
 Odd? := [
@@ -42,6 +43,18 @@ Even? := [
   Returns `yeah` if `Number` is Even, `false` otherwise.
   ".
   Bools:Not? $ Odd? @.
+].
+
+Abs := [
+  "
+  @ = Number
+
+  Returns the absolute value of `Number`.
+  ".
+  if @ < 0
+    then -@.
+    else @.
+  end.
 ].
 
 RandRange := Funcs:Curry 2 Builtins:RandRange.

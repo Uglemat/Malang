@@ -37,7 +37,7 @@ exposing Joinwith            Member?
          Or?                 ReverseSort
          Min                 Slice
          Max                 ToStream
-         Remove
+         Remove              Distinct?
 where
 
 Joinwith := Funcs:Curry 2 [
@@ -526,5 +526,20 @@ Min := [
   end.
 ].
 
+Distinct? := [
+  "
+  @ = List
+
+  Are all elements of `List` different?
+  ".
+  case @ of
+    #[]  -> yeah.
+    #[_] -> yeah.
+    Head::Tail -> if Member? Head Tail
+      then nope.
+      else Distinct? Tail.
+    end.
+  end.
+].
 
 endify.

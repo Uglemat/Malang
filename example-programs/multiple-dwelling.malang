@@ -1,0 +1,60 @@
+#!../malang.py
+"
+Copyright (C) 2014 Mattias Ugelvik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+".
+
+-- Baker, Cooper, Fletcher, Miller, and Smith live on different floors
+-- of an apartment house that contains only five floors. Baker does
+-- not live on the top floor. Cooper does not live on the bottom floor.
+-- Fletcher does not live on either the top or the bottom floor. Miller
+-- lives on a higher floor than does Cooper. Smith does not live on a
+-- floor adjacent to fletcher's. Fletcher does not live on a floor adja-
+-- cent to Cooper's. Where does everyone live?
+--- Puzzle above snatched from SICP page 418
+
+Floors := #[1, 2, 3, 4, 5].
+
+NotAdjacent? := Funcs:Curry 2 [
+  {Fst, Snd} := @.
+  Bools:Not? $ Numbers:Abs (Fst - Snd) = 1.
+].
+
+SolvePuzzle := [
+  #[Solution] := #[People |
+    Baker <- Floors,
+    Bools:Not? $ Baker = 5,
+    Cooper <- Floors,
+    Bools:Not? $ Cooper = 1,
+    Fletcher <- Floors,
+    Bools:Not? $ Bools:Or? (Fletcher = 1) (Fletcher = 5),
+    NotAdjacent? Fletcher Cooper,
+    Miller <- Floors,
+    Miller > Cooper,
+    Smith <- Floors,
+    NotAdjacent? Smith Fletcher,
+    People := #[{baker,    Baker},
+                {cooper,   Cooper},
+                {fletcher, Fletcher},
+                {miller,   Miller},
+                {smith,    Smith}],
+    Lists:Distinct? $ Lists:Map [{Name, Floor} := @, Floor.] People].
+  Solution.
+].
+
+Lists:Map [
+  {Name, Floor} := @.
+  Io:Fprint {"{1| <12}: {2}", Strings:Capitalize $ ToStr Name, Floor}.
+] $ SolvePuzzle {}.
