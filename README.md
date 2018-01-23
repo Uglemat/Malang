@@ -1,4 +1,4 @@
-#Malang
+# Malang
 
 Malang is a small functional programming language. It's pretty useless, but it was fun to make.
 
@@ -89,7 +89,7 @@ Here's an example session:
     ball
     Malang> 
 
-#Overview
+# Overview
 
 It has lexical scope, closures, modules, dynamic typing, tail call elimination, higher order functions, pattern matching, list comprehensions and and and ....
 
@@ -105,20 +105,20 @@ identifier, once you've said that A := 3, you can't change it. A is 3 always.
 The only way to loop is to use recursion and with list comprehensions. The control flow
 constructs are 'case of', 'throw/catch' and 'if then else' (plus the filters in list comprehensions).
 
-#Values
+# Values
 
 There are 8 types of values: numbers (only integers), strings, atoms, tuples, lists, functions, builtins and modules.
 And then there are bools and dicts, which are made out of other types.
 
 
-##Numbers
+## Numbers
 
 Numbers have the syntax `(<base>#)?<number>` where base can be from 2 (for binary) to 16 (for hexadecimal),
 and base defaults to 10 (decimal). Note that `<base>` and `<number>` above are not expressions.
 
 You can use numbers in patterns. `16#FF := 255` is no problem, it will match.
 
-##Strings
+## Strings
 
 Strings are what you'd expect, like `"string with \" < quote and \\ < backslash "`. Any character following a
 backslash is escaped, even if it doesn't have a special meaning like \n and \t, so "\hay" is the same string
@@ -126,7 +126,7 @@ as just "hay".
 
 You can use strings in patterns.
 
-##Atoms
+## Atoms
 
 Atoms are tokens that match the regex `[a-z][a-zA-Z0-9_]*`, and are just values that you can use
 in your programs (in tuples, et cetera). The keywords of the language aren't atoms, so you can't have
@@ -134,7 +134,7 @@ an atom like `if`, `case` or `end`, that would be a syntax error.
 
 You can use atoms in patterns.
 
-##Identifiers
+## Identifiers
 
 Identifiers are names which are bound to values, and they must match the regex `[A-Z_][a-zA-Z0-9_'?]*`.
 The identifier `_` is special, it will match anything and is never bound to anything. The `@` is also a
@@ -142,20 +142,20 @@ special identifier (described in the Functions section below).
 
 You can use identifiers in patterns, both if they are bound and unbound, with different semantics.
 
-##Tuples
+## Tuples
 
 A tuple is an ordered collection of items, surrounded by `{` and `}`, like this: `{1, 2, 3}`.
 
 You can use tuples in patterns.
 
-##Lists
+## Lists
 
 Lists have almost the same syntax as tuples: `#[1, 2, 3]`. They are implemented as linked lists.
 
 
 You can use lists in patterns.
 
-###The cons operator:
+### The cons operator:
 
 The `::` (or cons) operator is used to prepend an item to a list. `hello::#[1, 2, 3]` creates the list
 `#[hello, 1, 2, 3]`. `hello::#[]` creates `#[hello]`. The operator is right-associative, so you can write
@@ -163,7 +163,7 @@ The `::` (or cons) operator is used to prepend an item to a list. `hello::#[1, 2
 
 It can also be used it patterns, to match the 'head' and 'tail' of a list.
 
-###List comprehensions
+### List comprehensions
 
 You can use list comprehensions to create new lists. This is the syntax:
 
@@ -205,11 +205,11 @@ is just another way of saying `Lists:Filter Numbers:Even? L`.
 
 In the last line you can see an example of more than one emitter that isn't a filter. In that case, it'll try all permutations.
 
-##Dicts
+## Dicts
 
 Dicts are just lists of two-tuples of the form `{<key>, <val>}`, so they are what you'd call an 'alist' in a language like Lisp.
 
-##Booleans
+## Booleans
 
 The boolean values in malang are the atoms `yeah` and `nope`. The purpose of choosing those atoms rather than `true` and `false`
 is twofold:
@@ -217,7 +217,7 @@ is twofold:
  1. `yeah` and `nope` aligns perfectly in a monospace font
  2. `true` and `false` are old-fashioned, `yeah` and `nope` are hip and cool.
 
-###Truthyness
+### Truthyness
 
 These are the 'falsy' values: `{}`, `0`, `nope`, `""` and `#[]`. All other values are considered
 'truthy'.
@@ -226,7 +226,7 @@ The filters in list comprehensions, and the conditional expressions in the `if t
 you can use truthy and falsy values and it will work as expected. Also, a 'predicate function' in malang does *not* have to
 return either `yeah` or `nope`, they just have to return a truthy or falsy value, and it should work as expected.
 
-#Syntax and semantics
+# Syntax and semantics
 
 A Malang program is a list of compound expressions.
 
@@ -242,7 +242,7 @@ The value of a compound expression is the value of the last expression.
 
 Whitespace (including newlines) are not significant in Malang.
 
-##Functions
+## Functions
 
 A function is a list of compound expressions surrounded by square brackets. For example:
 
@@ -255,12 +255,12 @@ of the last compound expression.
 The function body will be evaluated in an environment that inherits from the environment in which the function was
 defined. Thus, Malang has lexical scope, like all other languages. With the honorable exception of Emacs Lisp.
 
-###The @
+### The @
 
 As I said eariler, all functions take exactly one argument. It is automatically bound to the special
 identifier `@`. The `@` will shadow any outside `@` that may exist.
 
-###Documentation strings
+### Documentation strings
 
 If the first expression in a function body is a string, then that string will be the documentation string
 for that function.
@@ -275,12 +275,12 @@ If `<arguments>` looks like this: `{Omg, Yah}` it means that the function expect
 this: `Omg Yah` it means that the function is curried, and `Omg` and `Yah` are the first and last arguments,
 respectively. Pretty much all the functions in the library code are curried.
 
-##Builtins
+## Builtins
 
 Builtins are functions implemented in the host language that are callable from malang. You use them the same way.
 Some functions might disallow builtins as arguments, that's the only place you have to care about the difference, I think.
 
-##Bind operator
+## Bind operator
 
 You pattern-match with the 'bind' operator, ":=". Like this
 
@@ -311,7 +311,7 @@ The identifiers in a pattern are only bound if the pattern-match is successful. 
 `{Same, Same} := {23, 11}`, then `Same` won't get bound because the pattern-match is unsuccessful. This
 is relevant when you use the REPL, which just reports errors that happens, and when you use `catch`.
 
-##Function application
+## Function application
 
 The syntax for function application is `<function> <argument>`.
 
@@ -340,7 +340,7 @@ or this, using the function composition operator (described in the 'Operators an
 All those lines do the same thing, but I think the bottom 2 are more aesthetically pleasing. And I really
 know what I'm talking about.
 
-##Case of
+## Case of
 
 The `case of` construct is like the `:=` operator, except it tries to pattern match on several patterns,
 and stops once a pattern matches, and executes the corresponding compound expression in a *new* environment
@@ -355,7 +355,7 @@ matching and in the compund expression are forgotten once the `case of` is done 
 
 The `<expr>` above is evaluated in the outer environment (so any identifier bindings will be remembered).
 
-##If then else
+## If then else
 
 The syntax for the `if then else` construct is
 
@@ -368,7 +368,7 @@ It will evaluate `<expr>` in a new environment that inherits from the outer envi
 truthyness of the result, will decide which compound expr to evaluate (in the same environment that `<expr>` was evaluated
 in). So, as with `case of`, any identifiers bound in the compund expressions will be forgotten once `if then else` is done.
 
-##Catch/throw
+## Catch/throw
 
 `catch` and `throw` are control flow contructs, and can be useful for example if you're in a deep recursion and want 'return'
 some special value, maybe to signify an error, or a successful search.
@@ -387,7 +387,7 @@ Malang will throw a value of the form `{error, <reason>}` whenever an error occu
 an error. You may also throw values of that form, and the REPL will not disciminate you.
 
 
-##Operators and such
+## Operators and such
 
  Operators/other            | Associativity | Arity  | Explanation
  --------                   | ------------- | -----  | -------------
@@ -406,7 +406,7 @@ an error. You may also throw values of that form, and the REPL will not discimin
  `$`                        | Right         | Binary | Calling a function with an argument.
  `::`                       | Right         | Binary | Construct a list with a head and tail
 
-###Precedence
+### Precedence
 
 The things at the top has higher precedence than the things at the bottom:
 
@@ -428,7 +428,7 @@ Prec.  | Operators/other
 14     | `,` (seperator)
 15     | `.` (end of compound expression)
 
-##Modules
+## Modules
 
 You can use the builtin function `Require` to import modules. Like this:
 
@@ -456,12 +456,12 @@ So if `My_Module` contains a function bound to the identifier `Factorial` then y
 It evaluates `Factorial` in the context of `My_Module`, the result of that is a function, and it is then called with the
 argument 20000.
 
-###Module docstring
+### Module docstring
 
 If there is a string bound to the identifier `ModuleDoc` in the environment of a module, then that string is the docstring
 for that module, which the `Help` function will appreciate.
 
-##Classified
+## Classified
 
 Sometimes it's useful to hide some identifiers and expose others, for example if you're making a library and want to ensure
 backwards compatibility. You can do that with the `classified` construct, this is the syntax:
@@ -488,11 +488,11 @@ If you don't want to expose any identifiers, then you can use this alternative f
 The value of `classified` is the value of the last compound expression.
 
 
-##Comments
+## Comments
 
 Comments start with `--` and lasts until the end of the line.
 
-#Factorial example
+# Factorial example
 
 Here is factorial written in Malang:
 
@@ -522,7 +522,7 @@ hitting the recursion limit of python. Here's a tail recursive version:
 
 With that version, you *can* calculate `Factorial 20000`.
 
-#Map example
+# Map example
 
 The map function is a higher-order function that applies a function to each element of something, for example a list.
 Here's how you could implement it for lists:
@@ -559,7 +559,7 @@ The difference as you can see is that `Lists:Map` has a documentation string and
 more appropriate because it works for very long lists. The recursive `Map` created in the REPL above is not tail recursive and
 is thus limited by python's recursion limit. And using the list comprehension is more readable, that's important too of course.
 
-#Navigating the REPL
+# Navigating the REPL
 
 You can use the functions `Help` and `Env` to get information about things. Run `Help Help.` to get started.
 
@@ -585,7 +585,7 @@ You can't have any characters before the first \` or after the last \`, and they
 
 You can use the `ClearEnv` function the clear the REPL environment of identifier bindings.
 
-#Emacs mode
+# Emacs mode
 
 There's an emacs mode for this language in the file `malang-mode.el`. It has syntax highlighting, and some commands:
 
